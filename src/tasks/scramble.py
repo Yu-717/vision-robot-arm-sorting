@@ -32,6 +32,9 @@ import console_grasp as G  # noqa: E402
 import sort_blocks as SB  # noqa: E402
 
 MIN_APART_CM = 8.5          # 6 x 5 cm grid: this rules out the neighbouring markers, not the next ones out
+REACH_MARGIN_CM = 2.0       # a block lands up to ~2 cm from the marker centre; without this margin a
+                            # target just inside the reach becomes a block just outside it (2026-09-27:
+                            # 码 49 planned at 27.6 cm, landed at 28.1, and could not be picked up again)
 DRAW_TRIES = 200
 
 
@@ -40,14 +43,17 @@ def bin_markers() -> set[str]:
 
 
 def candidates() -> list[str]:
-    """Marker centres a block can be put on and picked up again: off the bin row, and with a reachable
-    grasp. Yaw is unknown until the block is down, so reachability is checked without roll alignment."""
+    """Marker centres a block can be put on and picked up again: off the bin row, inside the reach with
+    REACH_MARGIN_CM to spare, and with a reachable grasp. Yaw is unknown until the block is down, so
+    reachability is checked without roll alignment."""
     out = []
     for marker in sorted(G.MAP["layout_m"], key=lambda k: (len(k), k)):
         if not marker.isdigit() or marker in bin_markers():
             continue
         mx, my = G.marker_centre(marker)
         bx, by = G.map_to_base(mx, my)
+        if math.hypot(bx, by) * 100 > G.MAX_REACH * 100 - REACH_MARGIN_CM:
+            continue
         if G.plan_approach(bx, by, None) is not None:
             out.append(marker)
     return out

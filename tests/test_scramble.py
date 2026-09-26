@@ -16,6 +16,14 @@ class CandidatesTest(unittest.TestCase):
         """A block started on its own bin is a block the round never sorts."""
         self.assertFalse(set(S.candidates()) & S.bin_markers())
 
+    def test_candidates_keep_a_margin_inside_the_reach(self):
+        """2026-09-27: 码 49 was drawn at 27.6 cm from the base, the block landed at 28.1, and the
+        round after could not pick it up again."""
+        import math
+        for marker in S.candidates():
+            bx, by = G.map_to_base(*G.marker_centre(marker))
+            self.assertLessEqual(math.hypot(bx, by) * 100, G.MAX_REACH * 100 - S.REACH_MARGIN_CM, marker)
+
     def test_every_candidate_has_a_reachable_grasp(self):
         for marker in S.candidates():
             bx, by = G.map_to_base(*G.marker_centre(marker))

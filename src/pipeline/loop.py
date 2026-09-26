@@ -136,11 +136,13 @@ def phase(tracked: list[dict], scene: dict, sess, rng: random.Random) -> dict:
                 moved.append(dict(marker=marker, frm=cubes[i]["map_cm"], error=str(e)))
         result["moved"] = moved
         result["failed"] = sum("error" in m for m in moved)
+        result["moved_count"] = len(moved) - result["failed"]
         return result
 
     result["phase"] = "sort"
     jobs = R.decide(scene)
     result["counts"] = R.execute(scene.get("run", "loop"), scene, jobs, sess, rng=rng)
+    result["moved_count"] = result["counts"]["sorted"] + result["counts"]["cleared"]
     for p in pairs:                                    # where the sort put each block, by its own identity
         if p["cube"] and p["cube"].get("category") and any(
                 j["cube"] is p["cube"] and not j["skip"] for j in jobs):
@@ -192,6 +194,10 @@ def main() -> None:
 
             if d["missed"]:
                 print("有跟踪中的块没有在扫描里找到，停止：身份可能已经对不上。")
+                break
+            if not out["moved_count"]:
+                # nothing moved and nothing can: alternating scans forever would look like progress
+                print("这一阶段一块也没动（都够不着或都已就位），停止。原因见日志的 pipeline_skip。")
                 break
             consecutive = consecutive + 1 if out["failed"] else 0
             if consecutive >= args.stop_after_failures:

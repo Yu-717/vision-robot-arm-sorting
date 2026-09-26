@@ -114,5 +114,20 @@ class PhaseTest(unittest.TestCase):
         self.assertEqual([t['map_cm'] for t in tracked], before)
 
 
+class ProgressTest(PhaseTest):
+    def test_a_phase_reports_how_many_blocks_actually_moved(self):
+        tracked = L.bootstrap(sorted_table())
+        out = L.phase(tracked, dict(cubes=sorted_table()), None, random.Random(2))
+        self.assertEqual(out['moved_count'], 4)
+
+    def test_a_scatter_where_every_move_failed_reports_no_progress(self):
+        def boom(cube_, markers, plan_for, sess):
+            raise G.GripMissed('空夹')
+
+        L.SCR.move = boom
+        out = L.phase(L.bootstrap(sorted_table()), dict(cubes=sorted_table()), None, random.Random(2))
+        self.assertEqual(out['moved_count'], 0)
+
+
 if __name__ == '__main__':
     unittest.main()
