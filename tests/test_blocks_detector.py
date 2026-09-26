@@ -1,5 +1,7 @@
 import sys
+import tempfile
 import unittest
+import unittest.mock
 from pathlib import Path
 
 import numpy as np
@@ -23,6 +25,36 @@ class DecodeTest(unittest.TestCase):
         self.assertEqual([d['category'] for d in dets], ['hazardous', 'other'])
         self.assertEqual(dets[0]['bbox'], [270, 190, 370, 290])
         self.assertEqual(dets[1]['bbox'], [75, 90, 125, 150])
+
+
+class ChooseModelTest(unittest.TestCase):
+    """Off the board the .om cannot be loaded (no ais_bench), and picking it anyway leaves the pipeline
+    with no detector at all -- silently sorting by colour alone."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        d = Path(self.tmp.name)
+        (d / 'blocks4_yolov8n.om').write_bytes(b'')
+        (d / 'best.onnx').write_bytes(b'')
+        for attr, value in (('MODEL_DIR', d), ('_ais_bench_available', lambda: False)):
+            patch = unittest.mock.patch.object(B, attr, value)
+            patch.start()
+            self.addCleanup(patch.stop)
+
+    def test_falls_back_to_onnx_where_ais_bench_is_missing(self):
+        model, backend = B.choose_model()
+        self.assertEqual((model.name, backend), ('best.onnx', 'onnx'))
+
+    def test_takes_the_om_on_the_board(self):
+        with unittest.mock.patch.object(B, '_ais_bench_available', lambda: True):
+            model, backend = B.choose_model()
+        self.assertEqual((model.name, backend), ('blocks4_yolov8n.om', 'om'))
+
+    def test_an_explicit_backend_is_obeyed(self):
+        self.assertEqual(B.choose_model(backend='om')[0].name, 'blocks4_yolov8n.om')
+        with unittest.mock.patch.object(B, '_ais_bench_available', lambda: True):
+            self.assertEqual(B.choose_model(backend='onnx')[0].name, 'best.onnx')
 
 
 class CategorizeTest(unittest.TestCase):

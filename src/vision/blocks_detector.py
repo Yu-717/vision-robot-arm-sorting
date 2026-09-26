@@ -68,13 +68,26 @@ def decode(output: np.ndarray, ratio: float, pad: tuple[int, int], shape: tuple[
     return sorted(out, key=lambda d: -d["conf"])
 
 
+def _ais_bench_available() -> bool:
+    import importlib.util
+    return importlib.util.find_spec("ais_bench") is not None
+
+
+def choose_model(model: Path | None = None, backend: str | None = None) -> tuple[Path, str]:
+    """The model file and backend to use. The .om needs ais_bench, which only the board has, so off the
+    board an .om sitting in MODEL_DIR must not shadow the ONNX: that would silently leave the caller with
+    no detector at all. An explicit backend is obeyed as given."""
+    if model is None:
+        om = MODEL_DIR / "blocks4_yolov8n.om"
+        use_om = om.exists() and backend != "onnx" and (backend == "om" or _ais_bench_available())
+        model = om if use_om else MODEL_DIR / "best.onnx"
+    model = Path(model)
+    return model, backend or ("om" if model.suffix == ".om" else "onnx")
+
+
 class BlocksDetector:
     def __init__(self, model: Path | None = None, backend: str | None = None, device: int = 0):
-        if model is None:
-            om = MODEL_DIR / "blocks4_yolov8n.om"
-            model = om if om.exists() and backend != "onnx" else MODEL_DIR / "best.onnx"
-        self.model = Path(model)
-        self.backend = backend or ("om" if self.model.suffix == ".om" else "onnx")
+        self.model, self.backend = choose_model(model, backend)
         if self.backend == "om":
             from ais_bench.infer.interface import InferSession
             self.session = InferSession(device, str(self.model))
