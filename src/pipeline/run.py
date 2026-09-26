@@ -15,6 +15,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import random
 import sys
 import time
 from pathlib import Path
@@ -29,6 +30,7 @@ for sub in ("pipeline", "tasks", "tools", "spatial", "vision"):
 import console_grasp as G  # noqa: E402
 import cubes as C  # noqa: E402
 import scene as S  # noqa: E402
+import scramble as SCR  # noqa: E402
 import sort_blocks as SB  # noqa: E402
 from block_detector import hue_label  # noqa: E402
 
@@ -328,6 +330,90 @@ def decide(scene: dict) -> list[dict]:
     return jobs
 
 
+def blocker_of(bin_: str, positions: list[dict], mover: dict | None = None) -> dict | None:
+    """The block sitting on `bin_` that is not the one being carried there."""
+    target = [v * 100 for v in G.marker_centre(bin_)]
+    for p in positions:
+        if p is not mover and math.dist(p["map_cm"], target) <= SB.SORTING["occupied_cm"]:
+            return p
+    return None
+
+
+def execute(run, scene: dict, jobs: list[dict], sess, rng=None) -> dict:
+    """Sort every block the scan gave a category to. A block whose bin is occupied waits for the block
+    on that bin to move first; when no block can move -- two blocks each standing on the other's bin --
+    the one in the way is lifted onto a free marker, because a round that stops there sorts nothing."""
+    rng = rng or random.Random()
+    started_run = time.time()
+    G.log("pipeline_start", run=str(run), cubes=[c["map_cm"] for c in scene["cubes"]],
+          registration=scene["registration"])
+    counts = dict(sorted=0, skipped=0, missed=0, cleared=0)
+    positions = [dict(map_cm=list(j["cube"]["map_cm"]), cube=j["cube"]) for j in jobs]
+    by_cube = {id(p["cube"]): p for p in positions}
+
+    pending = []
+    for j in jobs:
+        if j["skip"]:
+            counts["skipped"] += 1
+            G.log("pipeline_skip", cube=j["cube"]["map_cm"], category=j["cube"]["category"], reason=j["skip"])
+        else:
+            pending.append(j)
+
+    def carry(j, bin_or_marker, why):
+        """One block to one place; True when it is there."""
+        plan = plan_for(j["cube"])
+        if plan is None:
+            counts["skipped"] += 1
+            G.log("pipeline_skip", cube=j["cube"]["map_cm"], category=j["cube"]["category"],
+                  reason="no reachable grasp")
+            return False
+        G.PLAN.write_text(json.dumps(plan, indent=1, ensure_ascii=False))
+        started = time.time()
+        G.hover(sess)
+        try:
+            G.grasp(sess)
+        except G.GripMissed as e:
+            counts["missed"] += 1
+            G.log("pipeline_missed", cube=j["cube"]["map_cm"], category=j["cube"]["category"], reason=str(e),
+                  seconds=round(time.time() - started))
+            return False
+        G.put(bin_or_marker, sess)
+        here = by_cube[id(j["cube"])]
+        here["map_cm"] = [round(v * 100, 1) for v in G.marker_centre(bin_or_marker)]
+        G.log("pipeline_sorted" if why == "sort" else "pipeline_cleared",
+              cube=j["cube"]["map_cm"], bin=bin_or_marker, category=j["cube"]["category"],
+              source=j["cube"]["source"], seconds=round(time.time() - started))
+        counts["sorted" if why == "sort" else "cleared"] += 1
+        return True
+
+    while pending:
+        free = [j for j in pending if blocker_of(j["bin"], positions, by_cube[id(j["cube"])]) is None]
+        if not free:
+            # every remaining block is blocked by another one: lift one blocker out of the way first
+            stuck = pending[0]
+            blocker = blocker_of(stuck["bin"], positions, by_cube[id(stuck["cube"])])
+            job = next((j for j in pending if j["cube"] is blocker["cube"]), dict(cube=blocker["cube"], bin=None))
+            taken = [p["map_cm"] for p in positions]
+            try:
+                spot = next((m for m in SCR.draw(len(pending) + 2, rng)
+                             if all(math.dist([v * 100 for v in G.marker_centre(m)], p) >= SCR.MIN_APART_CM
+                                    for p in taken)), None)
+            except ValueError:
+                spot = None
+            if spot is None or not carry(job, spot, "clear"):
+                G.log("pipeline_stuck", bin=stuck["bin"], blocker=blocker["map_cm"])
+                break
+            continue
+        j = free[0]
+        pending.remove(j)
+        carry(j, j["bin"], "sort")
+
+    G.observe(sess)
+    counts["seconds"] = round(time.time() - started_run)
+    G.log("pipeline_end", run=str(run), **counts)
+    return counts
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--scan", type=Path, help="use this scan directory instead of scanning")
@@ -352,46 +438,7 @@ def main() -> None:
         print("registration:", scene["registration"])
         if args.dry_run:
             return
-        started_run = time.time()
-        G.log("pipeline_start", run=str(run), cubes=[c["map_cm"] for c in scene["cubes"]],
-              registration=scene["registration"])
-        sorted_n = skipped = missed = 0
-        occupied = [j["cube"]["map_cm"] for j in jobs]
-        for j in jobs:
-            if j["skip"]:
-                skipped += 1
-                G.log("pipeline_skip", cube=j["cube"]["map_cm"], category=j["cube"]["category"], reason=j["skip"])
-                continue
-            target = [v * 100 for v in G.marker_centre(j["bin"])]
-            if any(math.dist(p, target) <= SB.SORTING["occupied_cm"] and p != j["cube"]["map_cm"] for p in occupied):
-                skipped += 1
-                G.log("pipeline_skip", cube=j["cube"]["map_cm"], category=j["cube"]["category"],
-                      reason=f"bin {j['bin']} occupied")
-                continue
-            plan = plan_for(j["cube"])
-            if plan is None:
-                skipped += 1
-                G.log("pipeline_skip", cube=j["cube"]["map_cm"], category=j["cube"]["category"],
-                      reason="no reachable grasp")
-                continue
-            G.PLAN.write_text(json.dumps(plan, indent=1, ensure_ascii=False))
-            started = time.time()
-            G.hover(sess)
-            try:
-                G.grasp(sess)
-            except G.GripMissed as e:
-                missed += 1
-                G.log("pipeline_missed", cube=j["cube"]["map_cm"], category=j["cube"]["category"], reason=str(e),
-                      seconds=round(time.time() - started))
-                continue
-            G.put(j["bin"], sess)
-            sorted_n += 1
-            occupied = [p for p in occupied if p != j["cube"]["map_cm"]] + [target]
-            G.log("pipeline_sorted", cube=j["cube"]["map_cm"], bin=j["bin"], category=j["cube"]["category"],
-                  source=j["cube"]["source"], seconds=round(time.time() - started))
-        G.observe(sess)
-        G.log("pipeline_end", run=str(run), sorted=sorted_n, skipped=skipped, missed=missed,
-              seconds=round(time.time() - started_run))
+        execute(run, scene, jobs, sess)
 
 
 if __name__ == "__main__":
