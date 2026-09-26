@@ -111,10 +111,14 @@ def blocks_of(run: dict) -> list[dict]:
         elif kind == "put":
             cur["put"] = round(e["t"] - cur.get("_put_t", cur["_hover_t"]), 1)
             prev_end = e["t"]
-        elif kind in ("pipeline_sorted", "pipeline_missed"):
-            cur.update(cube=e.get("cube"), category=e.get("category"), bin=e.get("bin"),
-                       source=e.get("source"), seconds=e.get("seconds"),
-                       outcome="sorted" if kind == "pipeline_sorted" else "missed", reason=e.get("reason"))
+        elif kind in ("pipeline_sorted", "pipeline_missed", "scramble_moved", "scramble_returned",
+                      "pipeline_cleared", "pipeline_put_failed"):
+            cur.update(cube=e.get("cube") or e.get("frm"), category=e.get("category"),
+                       bin=e.get("bin") or e.get("marker"), source=e.get("source"), seconds=e.get("seconds"),
+                       outcome=dict(pipeline_sorted="sorted", pipeline_missed="missed",
+                                    scramble_moved="scattered", scramble_returned="put back",
+                                    pipeline_cleared="cleared", pipeline_put_failed="put back")[kind],
+                       reason=e.get("reason"))
             prev_end = e["t"]
             cur = None
     for b in out:
@@ -127,8 +131,8 @@ def blocks_of(run: dict) -> list[dict]:
 
 def summarize(runs: list[dict]) -> dict:
     blocks = [b for r in runs for b in r["blocks"]]
-    acted = [b for b in blocks if b["outcome"] in ("sorted", "missed", "unfinished")]
-    sorted_ = [b for b in acted if b["outcome"] == "sorted"]
+    acted = [b for b in blocks if b["outcome"] != "skipped"]
+    sorted_ = [b for b in acted if b["outcome"] in ("sorted", "scattered", "cleared")]
     first_try = [b for b in sorted_ if not b["not_closed"]]
     reasons: dict[str, int] = {}
     for b in blocks:
@@ -141,7 +145,8 @@ def summarize(runs: list[dict]) -> dict:
         return dict(n=len(vals), median=round(statistics.median(vals), 1), max=max(vals)) if vals else None
 
     return dict(
-        runs=len(runs), blocks_acted_on=len(acted), sorted=len(sorted_), missed=sum(b["outcome"] == "missed" for b in acted),
+        runs=len(runs), blocks_acted_on=len(acted), sorted=len(sorted_),
+        missed=sum(b["outcome"] == "missed" for b in acted), put_back=sum(b["outcome"] == "put back" for b in acted),
         unfinished=sum(b["outcome"] == "unfinished" for b in acted), skipped=sum(b["outcome"] == "skipped" for b in blocks),
         grip_first_try=len(first_try), grip_retried=len(sorted_) - len(first_try),
         woke_first_try=sum(b["wake_refusals"] == 0 for b in acted), wake_refusals=sum(b["wake_refusals"] for b in acted),
@@ -179,7 +184,7 @@ def main() -> None:
 
     s = summarize(runs)
     print(f"\n{s['runs']} 轮，动作 {s['blocks_acted_on']} 块：成功 {s['sorted']}，夹空 {s['missed']}，"
-          f"未完成 {s['unfinished']}，跳过 {s['skipped']}")
+          f"放回 {s['put_back']}，未完成 {s['unfinished']}，跳过 {s['skipped']}")
     if s["blocks_acted_on"]:
         print(f"夹取一次成功 {s['grip_first_try']}/{s['sorted']}，夹爪一次唤醒 {s['woke_first_try']}/{s['blocks_acted_on']}"
               f"（共 {s['wake_refusals']} 次唤醒被拒）")
