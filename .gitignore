@@ -1,0 +1,12 @@
+# 原始/第三方资料与运行数据：体积大，保留在本地，不进版本库
+/资料/
+/data/
+/runs/
+/*.jpg
+
+# 工具与本机状态
+.codegraph/
+.claude/
+__pycache__/
+*.pyc
+.DS_Store

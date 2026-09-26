@@ -1,0 +1,25 @@
+{
+  "_note": "Sorting by garbage category. Bins stay on map row y = 13 cm (markers 40-44, ~20 cm from the base, pitch 145-150). The category comes from the official 3-class model (Fish_bone->kitchen, Newspaper->recyclable, Syringe->hazardous; no 'other' class) when it is confident and agrees with the block colour; the colour -> category mapping is a fact of this block set (docs/atlas-200i-dk-a2/07) and decides when the model is silent or disagrees.",
+  "max_reach_cm": 25,
+  "in_place_cm": 1.5,
+  "occupied_cm": 2.5,
+  "category_bins": {
+    "recyclable": "40",
+    "kitchen": "41",
+    "hazardous": "43",
+    "other": "44"
+  },
+  "colour_category": {
+    "blue": "recyclable",
+    "green": "kitchen",
+    "red": "hazardous",
+    "yellow": "other"
+  },
+  "category_names": {
+    "recyclable": "可回收物",
+    "kitchen": "厨余垃圾",
+    "hazardous": "有害垃圾",
+    "other": "其他垃圾"
+  },
+  "model_min_conf": 0.5
+}

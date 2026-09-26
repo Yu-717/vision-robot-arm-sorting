@@ -1,0 +1,90 @@
+{
+  "source": "data/captures/2026-09-24/charuco_1915",
+  "gripper_frame": "dofbot_kinematics.servo5_pose (servo-5 axis centre)",
+  "method": "joint reprojection least squares with weak priors",
+  "reprojection_rms_px": 21.031,
+  "servo_zero_offsets_deg_1_to_5": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "t_cam_in_gripper_cm": [
+    2.14,
+    -1.41,
+    -0.03
+  ],
+  "optical_axis_vs_link_deg": 0.76,
+  "board_origin_base_cm": [
+    4.57,
+    14.74,
+    -3.5
+  ],
+  "board_normal_base": [
+    0.008,
+    -0.03,
+    -1.0
+  ],
+  "per_view_board_origin_spread_cm_rms": 1.04,
+  "per_view_board_origin_spread_cm_max": 2.2,
+  "priors": {
+    "offset_along_link_cm": 8.6,
+    "sigma_cm": 3.0,
+    "sigma_deg": 10.0,
+    "joint_sigma_deg": 0.0,
+    "board_z_fixed_cm": -3.5
+  },
+  "cam2gripper": [
+    [
+      0.9988,
+      0.04745,
+      -0.01213,
+      0.02142
+    ],
+    [
+      -0.04752,
+      0.99886,
+      -0.00542,
+      -0.0141
+    ],
+    [
+      0.01186,
+      0.00599,
+      0.99991,
+      -0.00025
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "base2board": [
+    [
+      -0.99857,
+      0.0528,
+      0.0083,
+      0.04571
+    ],
+    [
+      0.05253,
+      0.99817,
+      -0.02985,
+      0.14742
+    ],
+    [
+      -0.00986,
+      -0.02937,
+      -0.99952,
+      -0.035
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ]
+}

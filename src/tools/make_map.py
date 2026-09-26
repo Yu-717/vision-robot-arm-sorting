@@ -1,0 +1,122 @@
+# /// script
+# requires-python = ">=3.9"
+# dependencies = ["opencv-python>=4.8,<5", "numpy", "pillow"]
+# ///
+"""Generate the printable A4 table map with an ArUco grid, plus its layout JSON.
+
+  uv run src/tools/make_map.py --name dofbot_map_a4_v2
+
+Map frame: origin at the centre of the page's near edge (the edge pushed against the
+arm's platform), X to the arm's right, Y away from the arm, metres in the JSON.
+A self-check renders the page at roughly camera resolution and fits the detected
+corners back onto the layout.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+from pathlib import Path
+
+import cv2
+import numpy as np
+from PIL import Image, ImageDraw, ImageFont
+
+ROOT = Path(__file__).resolve().parents[2]
+DPI = 300
+MM = DPI / 25.4
+W_CM, H_CM = 29.7, 21.0
+FONT = "/System/Library/Fonts/STHeiti Medium.ttc"
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--name", default="dofbot_map_a4_v2")
+    parser.add_argument("--cols", type=float, nargs="+", default=[-12, -6, 0, 6, 12], help="code centre X (cm)")
+    parser.add_argument("--rows", type=float, nargs="+", default=[3, 8, 13, 18], help="code centre Y (cm)")
+    parser.add_argument("--side-cm", type=float, default=1.5)
+    parser.add_argument("--first-id", type=int, default=30)
+    parser.add_argument("--base-offset-cm", type=float, default=8.0, help="servo-1 axis to platform front face")
+    parser.add_argument("--mat-z-cm", type=float, default=-9.0, help="map plane height in the base frame")
+    args = parser.parse_args()
+
+    count = len(args.cols) * len(args.rows)
+    if args.first_id + count > 50:
+        raise SystemExit("DICT_4X4_50 has ids 0-49 only")
+
+    def px(x_cm: float, y_cm: float) -> tuple[int, int]:
+        return round((x_cm + W_CM / 2) * 10 * MM), round((H_CM - y_cm) * 10 * MM)
+
+    page = Image.new("L", (round(W_CM * 10 * MM), round(H_CM * 10 * MM)), 255)
+    draw = ImageDraw.Draw(page)
+    font, small = ImageFont.truetype(FONT, 34), ImageFont.truetype(FONT, 26)
+    dictionary = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
+    side_px = round(args.side_cm * 10 * MM)
+    layout, mid = {}, args.first_id
+    for y in args.rows:
+        for x in args.cols:
+            marker = cv2.aruco.generateImageMarker(dictionary, mid, side_px, borderBits=1)
+            cx, cy = px(x, y)
+            page.paste(Image.fromarray(marker), (cx - side_px // 2, cy - side_px // 2))
+            draw.text((cx + side_px // 2 + 6, cy + side_px // 2 - 24), str(mid), fill=0, font=small)
+            h = args.side_cm / 2
+            layout[mid] = [[(x - h) / 100, (y + h) / 100], [(x + h) / 100, (y + h) / 100],
+                           [(x + h) / 100, (y - h) / 100], [(x - h) / 100, (y - h) / 100]]  # TL TR BR BL
+            mid += 1
+
+    x0 = px(0, 0)[0]
+    for yy in np.arange(0.3, H_CM - 0.3, 0.6):  # dashed centre line, broken around markers on X = 0
+        if 0 in args.cols and any(abs(yy + 0.15 - r) < args.side_cm / 2 + 0.4 for r in args.rows):
+            continue
+        draw.line([x0, px(0, yy)[1], x0, px(0, yy + 0.3)[1]], fill=150, width=3)
+    draw.text(px(-6.5, 1.1), "↓ 此边贴紧机械臂底座平台前沿 · 虚线对准机械臂中心", fill=0, font=font)
+    for xc in range(-14, 15):
+        a = px(xc, 0)
+        draw.line([a[0], a[1] - (30 if xc % 5 == 0 else 15), a[0], a[1]], fill=0, width=2)
+    for yc in range(1, 21):
+        a = px(-W_CM / 2, yc)
+        draw.line([a[0], a[1], a[0] + (30 if yc % 5 == 0 else 15), a[1]], fill=0, width=2)
+        if yc % 5 == 0:
+            draw.text((a[0] + 36, a[1] - 14), str(yc), fill=0, font=small)
+    draw.text(px(-14.2, 20.6), f"Dofbot 桌面地图 {args.name} · A4 横向 · 必须按 100%/实际尺寸打印 · "
+              f"DICT_4X4_50 id {args.first_id}-{mid - 1}, {args.side_cm * 10:g} mm", fill=0, font=small)
+    bar_y = 20.1
+    for t in range(11):
+        xx = px(3.0 + t, bar_y)[0]
+        draw.line([xx, px(0, bar_y)[1] - 18, xx, px(0, bar_y)[1]], fill=0, width=3)
+    draw.line([px(3.0, bar_y), px(13.0, bar_y)], fill=0, width=3)
+    draw.text((px(13.3, bar_y)[0], px(0, bar_y)[1] - 22), "100 mm", fill=0, font=small)
+
+    pdf = ROOT / "docs" / "calibration" / f"{args.name}.pdf"
+    page.save(pdf, resolution=DPI)
+    cfg = {
+        "_status": f"design layout of docs/calibration/{args.name}.pdf; exact only if printed at 100%",
+        "dictionary": "DICT_4X4_50", "side_m": args.side_cm / 100, "ids": list(layout),
+        "map_frame": "origin at the centre of the page's near edge; X right (arm's right), Y away from the arm, metres",
+        "corner_order": "ArUco order TL, TR, BR, BL with the marker top pointing to +Y",
+        "layout_m": layout,
+        "placement": {
+            "rule": "near edge flush against the front face of the arm's platform; dashed centre line under the arm's centre",
+            "base_from_map": {"dx": 0.0, "dy": args.base_offset_cm / 100, "dz": args.mat_z_cm / 100,
+                              "meaning": "base = (X + dx, Y + dy, Z + dz); the map plane is Z = 0"},
+            "source": "user tape measurements 2026-09-24, about +-1 cm; verify with a touch test on site",
+        },
+    }
+    out = ROOT / "config" / f"{args.name.replace('dofbot_', '')}.json"
+    out.write_text(json.dumps(cfg, ensure_ascii=False, indent=2) + "\n")
+
+    params = cv2.aruco.DetectorParameters()
+    params.cornerRefinementMethod = cv2.aruco.CORNER_REFINE_SUBPIX
+    small_img = cv2.resize(np.array(page), None, fx=0.3, fy=0.3, interpolation=cv2.INTER_AREA)
+    corners, ids, _ = cv2.aruco.ArucoDetector(dictionary, params).detectMarkers(small_img)
+    found = sorted(int(v) for v in ids.ravel())
+    src = np.vstack([c.reshape(4, 2) for c in corners])
+    dst = np.vstack([np.array(layout[int(v)]) for v in ids.ravel()])
+    h_fit, _ = cv2.findHomography(src, dst)
+    err = np.linalg.norm(cv2.perspectiveTransform(src.reshape(-1, 1, 2), h_fit).reshape(-1, 2) - dst, axis=1)
+    print(f"{pdf.relative_to(ROOT)}  {out.relative_to(ROOT)}")
+    print(f"self-check: found {len(found)}/{count} ids, layout residual max {err.max() * 1000:.3f} mm")
+
+
+if __name__ == "__main__":
+    main()

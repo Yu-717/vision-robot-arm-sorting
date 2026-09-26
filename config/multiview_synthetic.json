@@ -1,0 +1,15 @@
+{
+  "status": "synthetic_assumptions",
+  "resolution_px": [640, 480],
+  "horizontal_fov_deg_assumed": 110,
+  "camera_centers_m_assumed": [
+    [-0.06, -0.04, 0.32],
+    [0.0, -0.04, 0.32],
+    [0.06, -0.04, 0.32]
+  ],
+  "camera_look_at_m_assumed": [0.0, 0.15, 0.0],
+  "block_top_center_m_assumed": [0.055, 0.21, 0.025],
+  "block_side_m_assumed": 0.04,
+  "block_yaw_deg_assumed": 25,
+  "sensitivity_fov_deg_assumed": 105
+}

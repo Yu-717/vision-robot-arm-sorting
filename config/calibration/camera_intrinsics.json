@@ -1,0 +1,48 @@
+{
+  "source": "data/captures/2026-09-24/charuco_1915",
+  "image_size": [
+    640,
+    480
+  ],
+  "views_used": 11,
+  "rms_px": 0.349,
+  "per_view_rms_px": [
+    0.323,
+    0.277,
+    0.346,
+    0.343,
+    0.346,
+    0.355,
+    0.339,
+    0.414,
+    0.325,
+    0.372,
+    0.349
+  ],
+  "camera_matrix": [
+    [
+      977.383,
+      0.0,
+      320.0
+    ],
+    [
+      0.0,
+      977.383,
+      240.0
+    ],
+    [
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "dist_coeffs": [
+    -0.48053,
+    1.0606,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "hfov_deg": 36.3,
+  "flags": "intrinsic guess, fixed principal point and aspect ratio, zero tangential, fixed k3"
+}

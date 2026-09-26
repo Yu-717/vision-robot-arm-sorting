@@ -1,0 +1,63 @@
+{
+  "source": "data/captures/2026-09-25/map_handeye",
+  "gripper_frame": "dofbot_kinematics.camera_mount_pose (servo-5 axis centre, J5 held at 90; the camera does not turn with J5)",
+  "method": "map views with the map pose fixed from touch calibration; joint reprojection least squares",
+  "map_placement": {
+    "rule": "near edge flush against the front face of the arm's platform; dashed centre line under the arm's centre",
+    "base_from_map": {
+      "dx": 0.0007,
+      "dy": 0.0675,
+      "dz": -0.0142,
+      "meaning": "base = (X + dx, Y + dy, Z + dz); the map plane is Z = 0"
+    },
+    "source": "touch calibration (5 marker touches, xy rms 0.28 cm, yaw -0.8 deg not applied): 20260925_005756_78eb"
+  },
+  "reprojection_rms_px": 7.75,
+  "per_view_reprojection_px": [
+    5.1,
+    5.09,
+    5.08,
+    8.6,
+    11.52,
+    5.4,
+    16.67,
+    4.3
+  ],
+  "per_view_spread_cm": [
+    0.14,
+    0.26,
+    0.12
+  ],
+  "t_cam_in_gripper_cm": [
+    -0.37,
+    -5.68,
+    -1.42
+  ],
+  "optical_axis_vs_link_deg": 2.67,
+  "cam2gripper": [
+    [
+      0.9999,
+      0.013801,
+      0.003139,
+      -0.003746
+    ],
+    [
+      -0.013933,
+      0.998819,
+      0.046554,
+      -0.056768
+    ],
+    [
+      -0.002493,
+      -0.046593,
+      0.998911,
+      -0.014199
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ]
+}

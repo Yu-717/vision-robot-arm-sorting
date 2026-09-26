@@ -1,0 +1,60 @@
+{
+  "board": {
+    "host": "192.168.137.100",
+    "hostname": "davinci-mini",
+    "os": "Ubuntu 22.04.2 LTS",
+    "architecture": "arm64",
+    "npu": {
+      "name": "310B",
+      "health": "OK",
+      "temperature_c": 38
+    }
+  },
+  "arm_controller": {
+    "library": "Arm_Lib 0.0.5",
+    "transport": "I2C-7",
+    "address": "0x15",
+    "hardware_version": "0.20"
+  },
+  "course_limits_deg": {
+    "1": [0, 180],
+    "2": [0, 180],
+    "3": [0, 180],
+    "4": [0, 180],
+    "5": [90, 270],
+    "6": [0, 180]
+  },
+  "peripherals": {
+    "camera": {
+      "status": "PASS",
+      "device": "/dev/video0",
+      "frame": [640, 480]
+    },
+    "rgb": {
+      "status": "COMMAND_PASS",
+      "note": "red, green, blue and off commands completed without I2C error; color not visually verified"
+    },
+    "buzzer": {
+      "status": "COMMAND_PASS",
+      "note": "100 ms command and explicit off completed without I2C error; sound not instrumentally verified"
+    }
+  },
+  "servos": {
+    "1": {"ping": "0xDA", "final_read_deg": 93, "individual_write_status": "FAIL", "group_write_status": "PASS"},
+    "2": {"ping": "0xDA", "final_read_deg": 90, "individual_write_status": "FAIL", "group_write_status": "PASS"},
+    "3": {"ping": "0xDA", "final_read_deg": 91, "individual_write_status": "FAIL", "group_write_status": "PASS"},
+    "4": {"ping": "0xDA", "final_read_deg": 90, "individual_write_status": "FAIL", "group_write_status": "PASS"},
+    "5": {"ping": "0xDA", "final_read_deg": 92, "individual_write_status": "FAIL", "group_write_status": "PASS"},
+    "6": {"ping": "0xDA", "final_read_deg": 26, "individual_write_status": "PASS", "group_write_status": "PASS"}
+  },
+  "course_pose_test": {
+    "target_deg": [90, 90, 90, 90, 90, 90],
+    "observed_deg": [90, 91, 90, 90, 90, 89],
+    "status": "PASS"
+  },
+  "course_group_delta_test": {
+    "delta_deg": 5,
+    "per_servo_status": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS"]
+  },
+  "safety_result": "No endpoint limit was commanded. All joints were restored to their readable pre-test values after the group motion test."
+}
