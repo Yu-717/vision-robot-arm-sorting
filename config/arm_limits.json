@@ -128,9 +128,9 @@
     "_observe_v1_note": "2026-09-24: sees tape ~10-20 cm (base y ~18-28 cm) inside the mat-level pick zone; readback [90,105,5,6,92,11]"
   },
   "motion_explore": {
-    "segment_ms": 500,
-    "settle_ms": 150,
-    "_note": "2026-09-26: explore profile moves in 10 deg segments of 500 + 150 ms (was 5 deg, 800 + 300 ms); each segment still has its readback check and hold-at-readback. Operator asked for less cautious motion under supervision.",
-    "max_step_deg": 10
+    "segment_ms": 400,
+    "settle_ms": 120,
+    "_note": "2026-09-27: 15 deg segments of 400 + 120 ms (was 10 deg, 500 + 150; before that 5 deg, 800 + 300). Each segment still has its readback check and hold-at-readback, and the whole path is still checked for keep-out before it starts. Measured on 2026-09-26 at the previous setting: 18.2 s median to carry and place one block, 35.5 s per block (src/tools/run_stats.py). The failure mode of going faster is a readback that lags its command and reads as resistance, which stops the arm rather than driving it into anything; if spurious stops appear, put settle_ms back first.",
+    "max_step_deg": 15
   }
 }

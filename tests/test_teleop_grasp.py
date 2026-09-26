@@ -1,5 +1,6 @@
 """Grasp-oriented console features: Cartesian steps, gripper presets, grasp profile, recording."""
 import json
+import math
 import sys
 import tempfile
 import time
@@ -112,8 +113,11 @@ class ExploreProfileTest(unittest.TestCase):
         step = self.c.cfg['motion']['max_step_deg']
         with patch.object(self.arm, 'write6', wraps=self.arm.write6) as write:
             self.c.jog('a', 1, 10, self.c.revision)
-        # verified segments of at most the profile's step (5 deg standard, 10 deg explore since 2026-09-26)
-        self.assertEqual([c.args[0][0] for c in write.call_args_list], list(range(start + step, start + 11, step)))
+        # verified segments of at most the profile's step (5 deg standard, 15 deg explore since 2026-09-27)
+        writes = [c.args[0][0] for c in write.call_args_list]
+        self.assertEqual(writes[-1], start + 10)
+        self.assertEqual(len(writes), math.ceil(10 / step))
+        self.assertTrue(all(0 < b - a <= step for a, b in zip([start] + writes, writes)), writes)
         self.assertEqual(self.arm.read()[0], start + 10)
         with self.assertRaises(ValueError):
             self.c.jog('a', 1, 3, self.c.revision)
