@@ -540,23 +540,20 @@ def grasp(session: Session | None = None) -> dict:
     return result
 
 
-def put(where_: str, session: Session | None = None) -> dict:
-    """Carry the held block so its centre lands on a marker centre (or map x,y cm): retract and rise at the
-    grasp pitch, turn only the base, reach out at a pitch within 5 deg of the grasp pitch (the block tilts
-    with the gripper), descend, open, lift."""
-    plan = json.loads(PLAN.read_text())
-    if "grip_pose" not in plan:
-        raise ConsoleError("nothing gripped by this plan")
+def plan_put(grasp_pitch: float, where_: str, pose: list[int]) -> dict | None:
+    """The poses put() would use to place a held block on `where_`, starting from `pose`, or None when no
+    pitch within 15 deg of the grasp pitch reaches it. Separated from put() so a caller can ask before it
+    grips: a block picked up for a place that turns out to be unreachable has to be put back down again,
+    and until it is, the arm is carrying it (2026-09-27: three scatter moves failed this way)."""
     mx, my = parse_place(where_)
     bx, by = map_to_base(mx, my)
     j5_put = grip_roll(90 + math.degrees(math.atan2(-bx, by)), 0.0) if ALIGN_ROLL else None
-    tx, ty = finger_offset(bx, by, j5_put if j5_put is not None else status()["pose"][4], plan["pitch"])
-    s = status()
+    tx, ty = finger_offset(bx, by, j5_put if j5_put is not None else pose[4], grasp_pitch)
     carry = None   # retracted and raised; near the grasp pitch so the held block tilts little
     for dp in (0, 5, -5, 10, -10):
         for radius in (CARRY_RADIUS, 0.16, 0.18, 0.15, 0.19):
             for above in (CARRY_ABOVE_TABLE, 0.06, 0.08, 0.05):
-                carry = solve(0, radius, TABLE_Z + above, [plan["pitch"] + dp])
+                carry = solve(0, radius, TABLE_Z + above, [grasp_pitch + dp])
                 if carry:
                     break
             if carry:
@@ -564,27 +561,48 @@ def put(where_: str, session: Session | None = None) -> dict:
         if carry:
             break
     if carry is None:
-        raise ConsoleError("no carry pose near the grasp pitch")
-    a = [s["pose"][0]] + carry[1][1:]
+        return None
+    a = [pose[0]] + carry[1][1:]
     # a pitch unlike the grasp pitch tilts the held block by the difference; allow up to 15 deg (a far
     # grasp at 135 cannot place at 21 cm with 130-140, 2026-09-26) and release a little higher (below)
-    for pitch in sorted({plan["pitch"] + d for d in (0, 5, -5, 10, -10, 15, -15)}, key=lambda p: abs(p - plan["pitch"])):
+    for pitch in sorted({grasp_pitch + d for d in (0, 5, -5, 10, -10, 15, -15)}, key=lambda p: abs(p - grasp_pitch)):
         found = solve(tx, ty, TABLE_Z + BLOCK + HOVER_ABOVE_TOP, [pitch], floor=-3)
         if found is None or solve(tx, ty, TABLE_Z + BLOCK / 2, [pitch], floor=-3) is None:
             continue
         hover_pose = found[1]
         b = [hover_pose[0]] + a[1:]
         try:
-            check_path(s["pose"], a)
+            check_path(pose, a)
             check_path(b, hover_pose)
         except ConsoleError:
             continue
-        break
-    else:
-        raise ConsoleError(f"no hover within 5 deg of the grasp pitch {plan['pitch']} over map ({mx*100:.1f}, {my*100:.1f}) cm")
+        return dict(carry=a, turn=b, hover=hover_pose, pitch=pitch, tx=tx, ty=ty,
+                    j5_put=pose[4] if j5_put is None else j5_put,
+                    target_map_cm=[round(mx * 100, 2), round(my * 100, 2)])
+    return None
+
+
+def can_put(grasp_pitch: float, where_: str, pose: list[int]) -> bool:
+    return plan_put(grasp_pitch, where_, list(pose)) is not None
+
+
+def put(where_: str, session: Session | None = None) -> dict:
+    """Carry the held block so its centre lands on a marker centre (or map x,y cm): retract and rise at the
+    grasp pitch, turn only the base, reach out at a pitch within 15 deg of the grasp pitch (the block tilts
+    with the gripper), descend, open, lift."""
+    plan = json.loads(PLAN.read_text())
+    if "grip_pose" not in plan:
+        raise ConsoleError("nothing gripped by this plan")
+    s = status()
+    steps = plan_put(plan["pitch"], where_, s["pose"])
+    if steps is None:
+        mx, my = parse_place(where_)
+        raise ConsoleError(f"no hover within 15 deg of the grasp pitch {plan['pitch']} over map "
+                           f"({mx*100:.1f}, {my*100:.1f}) cm")
+    a, b, hover_pose, pitch = steps["carry"], steps["turn"], steps["hover"], steps["pitch"]
+    tx, ty, j5_put = steps["tx"], steps["ty"], steps["j5_put"]
     j5 = s["pose"][4]
-    j5_put = j5 if j5_put is None else j5_put   # square to the map at the target (fingers along its axes)
-    log("put_planned", target_map_cm=[round(mx * 100, 2), round(my * 100, 2)], pitch=pitch, hover=hover_pose, j5=j5_put)
+    log("put_planned", target_map_cm=steps["target_map_cm"], pitch=pitch, hover=hover_pose, j5=j5_put)
     with lease(session) as sess:
         sess.pose(a + [j5])                # retract and rise where the block was picked
         sess.pose(b + [j5_put])            # turn the base (and the wrist, to square the block)
@@ -594,7 +612,7 @@ def put(where_: str, session: Session | None = None) -> dict:
         released_at = descend_to(sess, tx, ty, TABLE_Z + BLOCK / 2 + 0.003 + corner, pitch)
         sess.grip("open")
         lift(sess, hover_pose)
-    result = dict(target=where_, target_map_cm=[round(mx * 100, 2), round(my * 100, 2)], released_at=released_at)
+    result = dict(target=where_, target_map_cm=steps["target_map_cm"], released_at=released_at)
     log("put", **result)
     return result
 

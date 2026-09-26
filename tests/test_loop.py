@@ -77,8 +77,13 @@ class PhaseTest(unittest.TestCase):
 
         G.log = lambda *a, **k: None
         L.R.plan_for = lambda c, prefer=150: dict(plan='x')
-        L.SCR.move = lambda cube_, marker, plan_for, sess: (
-            self.moves.append((tuple(cube_['map_cm']), marker)) or dict(marker=marker, frm=cube_['map_cm']))
+        def move(cube_, markers, plan_for, sess):
+            marker = markers[0] if isinstance(markers, list) else markers
+            self.moves.append((tuple(cube_['map_cm']), marker))
+            return dict(marker=marker, frm=cube_['map_cm'],
+                        target_map_cm=[round(v * 100, 1) for v in G.marker_centre(marker)])
+
+        L.SCR.move = move
         L.R.decide = lambda scene: [dict(cube=c, bin=L.bin_of(c['category']), skip=None) for c in scene['cubes']]
         L.R.execute = lambda run, scene, jobs, sess, rng=None: (
             self.moves.append(('sort', len(jobs))) or dict(sorted=len(jobs), missed=0, skipped=0, cleared=0))
@@ -98,7 +103,7 @@ class PhaseTest(unittest.TestCase):
         self.assertEqual([t['map_cm'] for t in tracked], [L.bin_centre('kitchen'), L.bin_centre('other')])
 
     def test_a_failed_scatter_move_is_recorded_and_the_block_stays_put(self):
-        def boom(cube_, marker, plan_for, sess):
+        def boom(cube_, markers, plan_for, sess):
             raise G.GripMissed('空夹')
 
         L.SCR.move = boom

@@ -377,7 +377,18 @@ def execute(run, scene: dict, jobs: list[dict], sess, rng=None) -> dict:
             G.log("pipeline_missed", cube=j["cube"]["map_cm"], category=j["cube"]["category"], reason=str(e),
                   seconds=round(time.time() - started))
             return False
-        G.put(bin_or_marker, sess)
+        try:
+            G.put(bin_or_marker, sess)
+        except G.ConsoleError as e:
+            # holding a block with nowhere to put it: the next hover would open the fingers and drop it
+            try:
+                G.place(sess)
+            except G.ConsoleError as back:
+                raise SCR.StillHolding(f"放不下也放不回，机械臂还夹着这一块：{back}") from back
+            counts["skipped"] += 1
+            G.log("pipeline_put_failed", cube=j["cube"]["map_cm"], bin=bin_or_marker,
+                  category=j["cube"]["category"], reason=str(e))
+            return False
         here = by_cube[id(j["cube"])]
         here["map_cm"] = [round(v * 100, 1) for v in G.marker_centre(bin_or_marker)]
         G.log("pipeline_sorted" if why == "sort" else "pipeline_cleared",

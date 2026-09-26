@@ -70,9 +70,22 @@ def draw(n: int, rng: random.Random, pool: list[str] | None = None) -> list[str]
     raise ValueError(f"no layout of {n} markers {MIN_APART_CM} cm apart in {len(pool)} candidates")
 
 
-def move(cube: dict, marker: str, plan_for, session) -> dict:
-    """One block to one marker centre, through the verified stages. The caller keeps the identity: the
-    block that was at `cube` is the block now on `marker`, which is what makes a round self-labelling."""
+class StillHolding(G.ConsoleError):
+    """The block could not be placed and could not be put back: the arm is holding it. Nothing else may
+    run -- the next hover opens the gripper, which would drop the block wherever the arm happens to be."""
+
+
+def move(cube: dict, markers: list[str] | str, plan_for, session) -> dict:
+    """One block to the first of `markers` it can be placed on, through the verified stages. The caller
+    keeps the identity: the block that was at `cube` is the block now on that marker, which is what makes
+    a round self-labelling.
+
+    Once the block is in the fingers it has to end up somewhere. Whether a place is reachable depends on
+    the pose the arm is actually in, which is a readback and not the planned pose, so it cannot be settled
+    in advance: on 2026-09-27 three scatter moves gripped a block, found no hover over the target, and
+    left the arm holding it -- the next block's hover then opened the fingers and dropped it. So the
+    alternatives are tried while holding, and if none works the block goes back where it was picked up."""
+    markers = [markers] if isinstance(markers, str) else list(markers)
     plan = plan_for(cube)
     if plan is None:
         raise G.ConsoleError(f"no reachable grasp at {cube['map_cm']}")
@@ -80,11 +93,37 @@ def move(cube: dict, marker: str, plan_for, session) -> dict:
     started = time.time()
     G.hover(session)
     G.grasp(session)
-    G.put(marker, session)
-    target = [round(v * 100, 1) for v in G.marker_centre(marker)]
-    G.log("scramble_moved", frm=cube["map_cm"], marker=marker, target_map_cm=target,
-          category=cube.get("category"), seconds=round(time.time() - started))
-    return dict(marker=marker, target_map_cm=target, frm=cube["map_cm"], category=cube.get("category"))
+
+    why = None
+    for marker in markers:
+        if not G.can_put(plan["pitch"], marker, G.status()["pose"]):
+            why = why or f"no hover over 码 {marker}"
+            continue
+        try:
+            G.put(marker, session)
+        except G.ConsoleError as e:
+            why = str(e)
+            continue
+        target = [round(v * 100, 1) for v in G.marker_centre(marker)]
+        G.log("scramble_moved", frm=cube["map_cm"], marker=marker, target_map_cm=target,
+              category=cube.get("category"), seconds=round(time.time() - started))
+        return dict(marker=marker, target_map_cm=target, frm=cube["map_cm"], category=cube.get("category"))
+
+    try:
+        G.place(session)
+    except G.ConsoleError as e:
+        raise StillHolding(f"放不下也放不回，机械臂还夹着这一块：{e}") from e
+    G.log("scramble_returned", frm=cube["map_cm"], tried=markers, reason=why)
+    raise G.ConsoleError(f"没有可放的落点（{why}）；已放回原位 {cube['map_cm']}")
+
+
+def alternatives(marker: str, taken: list[list[float]], pool: list[str] | None = None) -> list[str]:
+    """`marker` first, then the other markers far enough from everything already placed -- somewhere to
+    put the block down when the drawn marker turns out to be out of reach while it is in the fingers."""
+    centres = {m: [v * 100 for v in G.marker_centre(m)] for m in (pool or candidates())}
+    rest = [m for m, c in centres.items()
+            if m != marker and all(math.dist(c, t) >= MIN_APART_CM for t in taken)]
+    return [marker] + sorted(rest, key=lambda m: math.dist(centres[m], centres.get(marker, [0, 0])))
 
 
 def scramble(cubes: list[dict], plan_for, session, rng: random.Random) -> list[dict]:
@@ -93,9 +132,12 @@ def scramble(cubes: list[dict], plan_for, session, rng: random.Random) -> list[d
     reaching over what it just put down."""
     markers = draw(len(cubes), rng)
     order = sorted(range(len(cubes)), key=lambda i: -math.dist(cubes[i]["map_cm"], [0, 0]))
-    moved = []
+    pool, moved = candidates(), []
+    placed = [c["map_cm"] for c in cubes]
     for i, marker in zip(order, markers):
-        moved.append(move(cubes[i], marker, plan_for, session))
+        here = [p for p in placed if p is not cubes[i]["map_cm"]]
+        moved.append(move(cubes[i], alternatives(marker, here, pool), plan_for, session))
+        placed.append(moved[-1]["target_map_cm"])
     return moved
 
 

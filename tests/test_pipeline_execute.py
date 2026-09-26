@@ -25,11 +25,11 @@ class ExecuteTest(unittest.TestCase):
     """The order blocks are carried in, and what happens when a bin is not free."""
 
     def setUp(self):
-        self.moves, self.missed_at, self.current = [], set(), None
-        saved = G.hover, G.grasp, G.put, G.log, G.observe, G.PLAN, R.plan_for
+        self.moves, self.missed_at, self.current, self.put_fails = [], set(), None, set()
+        saved = G.hover, G.grasp, G.put, G.log, G.observe, G.PLAN, R.plan_for, G.place
 
         def restore():
-            (G.hover, G.grasp, G.put, G.log, G.observe, G.PLAN, R.plan_for) = saved
+            (G.hover, G.grasp, G.put, G.log, G.observe, G.PLAN, R.plan_for, G.place) = saved
 
         self.addCleanup(restore)
         G.log = lambda *a, **k: None
@@ -48,8 +48,11 @@ class ExecuteTest(unittest.TestCase):
 
         def put(where, sess):
             self.moves.append((self.current and tuple(self.current), where))
+            if where in self.put_fails:
+                raise G.ConsoleError(f'no hover over {where}')
 
         G.hover, G.grasp, G.put = hover, grasp, put
+        G.place = lambda sess=None: self.moves.append(('place', None))
 
     def run_jobs(self, jobs):
         # `current` follows whichever block the code is carrying: plan_for is called with its cube first
@@ -101,6 +104,26 @@ class ExecuteTest(unittest.TestCase):
         counts = self.run_jobs(jobs)
         self.assertEqual((counts['sorted'], counts['skipped']), (1, 1))
         self.assertEqual([m[1] for m in self.moves], ['41'])
+
+
+    def test_a_block_that_cannot_be_placed_is_put_back_not_carried_on(self):
+        """2026-09-27: a failed put left the arm holding the block, and the next hover opened the
+        fingers and dropped it."""
+        self.put_fails = {'43'}
+        counts = self.run_jobs([job('hazardous', [5, 8]), job('kitchen', [-5, 8])])
+        self.assertEqual([m[1] for m in self.moves], ['43', None, '41'])
+        self.assertEqual((counts['sorted'], counts['skipped']), (1, 1))
+
+    def test_failing_to_put_it_back_stops_the_round(self):
+        import scramble as SCR
+
+        def boom(sess=None):
+            raise G.ConsoleError('路径被拒')
+
+        self.put_fails = {'43'}
+        G.place = boom
+        with self.assertRaises(SCR.StillHolding):
+            self.run_jobs([job('hazardous', [5, 8]), job('kitchen', [-5, 8])])
 
 
 if __name__ == '__main__':

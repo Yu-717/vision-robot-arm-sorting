@@ -43,28 +43,38 @@ class DrawTest(unittest.TestCase):
             S.draw(2, random.Random(0), pool=['40', '41'])        # neighbours, 6 cm apart
 
 
-class MoveTest(unittest.TestCase):
-    class Fake:
-        def __init__(self):
-            self.calls = []
+class FakeStages(unittest.TestCase):
+    """hover / grasp / put / place replaced, so the ordering and the recovery can be tested off the arm."""
 
     def setUp(self):
-        self.saved = S.G.hover, S.G.grasp, S.G.put, S.G.log, S.G.PLAN
-        self.calls = []
+        self.saved = (S.G.hover, S.G.grasp, S.G.put, S.G.log, S.G.PLAN, S.G.place, S.G.can_put, S.G.status)
+        self.calls, self.put_fails = [], set()
         S.G.hover = lambda sess: self.calls.append('hover')
         S.G.grasp = lambda sess: self.calls.append('grasp')
-        S.G.put = lambda where, sess: self.calls.append(('put', where))
+        S.G.place = lambda sess=None: self.calls.append('place')
+        S.G.can_put = lambda pitch, marker, pose: marker not in self.unplaceable
+        S.G.status = lambda: {'pose': [90, 105, 5, 5, 92, 129]}
+        self.unplaceable = set()
+
+        def put(where, sess):
+            self.calls.append(('put', where))
+            if where in self.put_fails:
+                raise S.G.ConsoleError(f'no hover over {where}')
+
+        S.G.put = put
         S.G.log = lambda *a, **k: None
         S.G.PLAN = ROOT / 'data' / 'runs' / 'console_grasp' / 'plan_test.json'
         S.G.PLAN.parent.mkdir(parents=True, exist_ok=True)
         self.addCleanup(lambda: S.G.PLAN.unlink(missing_ok=True))
 
     def tearDown(self):
-        S.G.hover, S.G.grasp, S.G.put, S.G.log, S.G.PLAN = self.saved
+        (S.G.hover, S.G.grasp, S.G.put, S.G.log, S.G.PLAN, S.G.place, S.G.can_put, S.G.status) = self.saved
 
+
+class MoveTest(FakeStages):
     def test_a_move_runs_the_verified_stages_in_order(self):
         cube = dict(map_cm=[5.0, 8.0], yaw_deg=0.0, category='kitchen')
-        out = S.move(cube, '38', lambda c: dict(plan='x'), None)
+        out = S.move(cube, '38', lambda c: dict(plan='x', pitch=145), None)
         self.assertEqual(self.calls, ['hover', 'grasp', ('put', '38')])
         self.assertEqual(out['marker'], '38')
         self.assertEqual(out['frm'], [5.0, 8.0])
@@ -77,8 +87,53 @@ class MoveTest(unittest.TestCase):
     def test_the_farthest_block_is_moved_first(self):
         """Putting a near block down first would leave the arm reaching over it for the far one."""
         cubes = [dict(map_cm=[0.0, 8.0], yaw_deg=0), dict(map_cm=[0.0, 18.0], yaw_deg=0)]
-        moved = S.scramble(cubes, lambda c: dict(plan='x'), None, random.Random(1))
+        moved = S.scramble(cubes, lambda c: dict(plan='x', pitch=145), None, random.Random(1))
         self.assertEqual([m['frm'] for m in moved], [[0.0, 18.0], [0.0, 8.0]])
+
+
+class HoldingTest(FakeStages):
+    """A block in the fingers has to end up somewhere. 2026-09-27: three scatter moves gripped a block,
+    could not place it, and the next block's hover opened the fingers and dropped it."""
+
+    def plan(self, c):
+        return dict(plan='x', pitch=145)
+
+    def test_an_unplaceable_target_is_skipped_before_the_block_is_carried_to_it(self):
+        self.unplaceable = {'38'}
+        out = S.move(dict(map_cm=[5.0, 8.0], yaw_deg=0.0), ['38', '35'], self.plan, None)
+        self.assertEqual(out['marker'], '35')
+        self.assertEqual([c for c in self.calls if isinstance(c, tuple)], [('put', '35')])
+
+    def test_a_put_that_fails_while_holding_falls_back_to_the_next_marker(self):
+        self.put_fails = {'38'}
+        out = S.move(dict(map_cm=[5.0, 8.0], yaw_deg=0.0), ['38', '35'], self.plan, None)
+        self.assertEqual(out['marker'], '35')
+        self.assertEqual([c for c in self.calls if isinstance(c, tuple)], [('put', '38'), ('put', '35')])
+
+    def test_the_block_goes_back_where_it_came_from_when_nothing_works(self):
+        self.put_fails = {'38', '35'}
+        with self.assertRaises(S.G.ConsoleError) as e:
+            S.move(dict(map_cm=[5.0, 8.0], yaw_deg=0.0), ['38', '35'], self.plan, None)
+        self.assertNotIsInstance(e.exception, S.StillHolding)
+        self.assertEqual(self.calls[-1], 'place')
+
+    def test_failing_to_put_it_back_is_a_stop_the_session_error(self):
+        self.put_fails = {'38'}
+
+        def boom(sess=None):
+            raise S.G.ConsoleError('路径被拒')
+
+        S.G.place = boom
+        with self.assertRaises(S.StillHolding):
+            S.move(dict(map_cm=[5.0, 8.0], yaw_deg=0.0), ['38'], self.plan, None)
+
+
+class AlternativesTest(unittest.TestCase):
+    def test_the_drawn_marker_comes_first_and_occupied_places_are_left_out(self):
+        taken = [[v * 100 for v in G.marker_centre('35')]]
+        alts = S.alternatives('38', taken)
+        self.assertEqual(alts[0], '38')
+        self.assertNotIn('35', alts)
 
 
 if __name__ == '__main__':

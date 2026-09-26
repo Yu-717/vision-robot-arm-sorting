@@ -121,11 +121,17 @@ def phase(tracked: list[dict], scene: dict, sess, rng: random.Random) -> dict:
         moved = []
         markers = SCR.draw(len(cubes), rng)
         order = sorted(range(len(cubes)), key=lambda i: -math.dist(cubes[i]["map_cm"], [0, 0]))
+        pool, placed = SCR.candidates(), [c["map_cm"] for c in cubes]
         for i, marker in zip(order, markers):
             block = next(p["block"] for p in pairs if p["cube"] is cubes[i])
+            here = [p for p in placed if p is not cubes[i]["map_cm"]]
             try:
-                moved.append(SCR.move(cubes[i], marker, R.plan_for, sess))
-                block["map_cm"] = [round(v * 100, 1) for v in G.marker_centre(marker)]
+                got = SCR.move(cubes[i], SCR.alternatives(marker, here, pool), R.plan_for, sess)
+                moved.append(got)
+                block["map_cm"] = list(got["target_map_cm"])
+                placed.append(got["target_map_cm"])
+            except SCR.StillHolding:
+                raise                       # the arm is holding a block: stop, do not open the fingers
             except (G.ConsoleError, G.GripMissed) as e:
                 moved.append(dict(marker=marker, frm=cubes[i]["map_cm"], error=str(e)))
         result["moved"] = moved
