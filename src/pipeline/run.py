@@ -431,6 +431,8 @@ def main() -> None:
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
     import field_scan as SC
+    if not (args.dry_run and args.scan):
+        G.require_empty_gripper()
     with (G.nullcontext(None) if args.dry_run and args.scan else G.Session()) as sess:
         run = (args.scan.resolve() if args.scan else None) or SC.scan(session=sess)
         scene = build_scene(run)

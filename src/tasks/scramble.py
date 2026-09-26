@@ -163,6 +163,7 @@ def main() -> None:
 
     import field_scan as SC
     import run as R
+    G.require_empty_gripper()
     with G.Session() as sess:
         scan = args.scan.resolve() if args.scan else SC.scan(session=sess)
         scene = R.build_scene(scan)

@@ -617,6 +617,24 @@ def put(where_: str, session: Session | None = None) -> dict:
     return result
 
 
+def holding_now() -> bool:
+    """Whether the fingers are closed on something, by the readback alone."""
+    rb = status()["pose"][5]
+    g = CONFIG["gripper"]
+    return rb is not None and g["holding_if_readback_above_deg"] <= rb <= g["holding_if_readback_below_deg"]
+
+
+def require_empty_gripper() -> None:
+    """Refuse to start a run while a block is in the fingers. A scan taken like that is missing that
+    block, and the first hover of the run opens the gripper and drops it wherever the arm then stands
+    (2026-09-27: a run scanned all eight views carrying one, and reported three blocks on the table)."""
+    if holding_now():
+        raise ConsoleError(
+            f"夹爪里还夹着东西（J6 读回 {status()['pose'][5]}）。先松开再运行：\n"
+            "  python3 -c \"import sys; sys.path.insert(0, 'src/tools'); "
+            "from console_step import Session\\nwith Session() as s: s.grip('open')\"")
+
+
 def release_safely(session: Session | None = None) -> str:
     """Get a held block onto the table without carrying it anywhere new, and say where it went.
 

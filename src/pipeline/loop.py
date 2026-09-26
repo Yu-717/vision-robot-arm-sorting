@@ -167,6 +167,7 @@ def main() -> None:
         print(state_file.read_text() if state_file.exists() else "还没有跟踪状态")
         return
 
+    G.require_empty_gripper()
     session_dir.mkdir(parents=True, exist_ok=True)
     records = session_dir / "rounds.jsonl"
     tracked, consecutive = None, 0

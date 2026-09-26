@@ -89,6 +89,33 @@ class WakeTest(unittest.TestCase):
         self.assertEqual(arm.jogs, 4)
 
 
+class EmptyGripperTest(unittest.TestCase):
+    """2026-09-27: a run scanned all eight views with a block in the fingers and reported three blocks
+    on the table; the first hover of any sort would then have dropped the fourth."""
+
+    def setUp(self):
+        self.saved = G.status
+        self.addCleanup(lambda: setattr(G, 'status', self.saved))
+
+    def at(self, readback):
+        G.status = lambda: {'pose': [90, 105, 5, 5, 92, readback]}
+
+    def test_a_run_is_refused_while_a_block_is_held(self):
+        self.at(127)
+        self.assertTrue(G.holding_now())
+        with self.assertRaises(G.ConsoleError):
+            G.require_empty_gripper()
+
+    def test_an_open_gripper_starts_normally(self):
+        self.at(29)
+        self.assertFalse(G.holding_now())
+        G.require_empty_gripper()
+
+    def test_fingers_closed_on_nothing_are_not_holding(self):
+        self.at(133)                       # past the block width: closed on air
+        self.assertFalse(G.holding_now())
+
+
 class ReleaseSafelyTest(unittest.TestCase):
     """2026-09-27: a place descent met resistance, the console disarmed, and the recovery was refused
     for a stale readback -- the run stopped with the block still in the fingers."""
