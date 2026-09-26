@@ -89,6 +89,60 @@ class WakeTest(unittest.TestCase):
         self.assertEqual(arm.jogs, 4)
 
 
+class ReleaseSafelyTest(unittest.TestCase):
+    """2026-09-27: a place descent met resistance, the console disarmed, and the recovery was refused
+    for a stale readback -- the run stopped with the block still in the fingers."""
+
+    class Sess:
+        def __init__(self, rearm_fails=False):
+            self.calls, self.rearm_fails = [], rearm_fails
+
+        def rearm(self):
+            self.calls.append('rearm')
+            if self.rearm_fails:
+                raise G.ConsoleError('姿态模式需要探索档或标准档、稳定且新鲜的回读')
+
+        def grip(self, action):
+            self.calls.append(('grip', action))
+
+    def setUp(self):
+        self.saved = G.status, G.log, G.place, G.tip
+        G.log = lambda *a, **k: None
+        G.place = lambda sess=None: self.calls_place.append(sess)
+        self.calls_place = []
+        self.addCleanup(self.restore)
+
+    def restore(self):
+        G.status, G.log, G.place, G.tip = self.saved
+
+    def at_height(self, z_cm):
+        G.status = lambda: {'pose': [90, 90, 5, 5, 92, 129]}
+        G.tip = lambda pose: [0.0, 0.2, z_cm / 100]
+
+    def test_it_re_arms_before_anything_else(self):
+        self.at_height(z_cm=0.5)
+        sess = self.Sess()
+        G.release_safely(sess)
+        self.assertEqual(sess.calls[0], 'rearm')
+
+    def test_a_block_already_down_among_the_others_is_let_go_there(self):
+        self.at_height(z_cm=1.0)                  # table is at about -0.5 cm, a 3 cm block
+        sess = self.Sess()
+        self.assertEqual(G.release_safely(sess), '在原地松手')
+        self.assertIn(('grip', 'open'), sess.calls)
+        self.assertEqual(self.calls_place, [])    # not carried back across the map
+
+    def test_a_block_held_high_is_carried_back_to_where_it_was_picked_up(self):
+        self.at_height(z_cm=12.0)
+        self.assertEqual(G.release_safely(self.Sess()), '放回抓取位置')
+        self.assertEqual(len(self.calls_place), 1)
+
+    def test_a_refused_re_arm_is_raised_so_the_caller_stops(self):
+        self.at_height(z_cm=1.0)
+        with self.assertRaises(G.ConsoleError):
+            G.release_safely(self.Sess(rearm_fails=True))
+
+
 class PlatformTest(unittest.TestCase):
     def setUp(self):
         self.saved = G.DX, G.DY, G.TABLE_Z

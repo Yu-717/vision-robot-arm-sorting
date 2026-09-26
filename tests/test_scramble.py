@@ -55,11 +55,13 @@ class FakeStages(unittest.TestCase):
     """hover / grasp / put / place replaced, so the ordering and the recovery can be tested off the arm."""
 
     def setUp(self):
-        self.saved = (S.G.hover, S.G.grasp, S.G.put, S.G.log, S.G.PLAN, S.G.place, S.G.can_put, S.G.status)
+        self.saved = (S.G.hover, S.G.grasp, S.G.put, S.G.log, S.G.PLAN, S.G.place, S.G.can_put,
+                      S.G.status, S.G.release_safely)
         self.calls, self.put_fails = [], set()
         S.G.hover = lambda sess: self.calls.append('hover')
         S.G.grasp = lambda sess: self.calls.append('grasp')
         S.G.place = lambda sess=None: self.calls.append('place')
+        S.G.release_safely = lambda sess=None: (self.calls.append('place') or '放回抓取位置')
         S.G.can_put = lambda pitch, marker, pose: marker not in self.unplaceable
         S.G.status = lambda: {'pose': [90, 105, 5, 5, 92, 129]}
         self.unplaceable = set()
@@ -76,7 +78,8 @@ class FakeStages(unittest.TestCase):
         self.addCleanup(lambda: S.G.PLAN.unlink(missing_ok=True))
 
     def tearDown(self):
-        (S.G.hover, S.G.grasp, S.G.put, S.G.log, S.G.PLAN, S.G.place, S.G.can_put, S.G.status) = self.saved
+        (S.G.hover, S.G.grasp, S.G.put, S.G.log, S.G.PLAN, S.G.place, S.G.can_put,
+         S.G.status, S.G.release_safely) = self.saved
 
 
 class MoveTest(FakeStages):
@@ -131,7 +134,7 @@ class HoldingTest(FakeStages):
         def boom(sess=None):
             raise S.G.ConsoleError('路径被拒')
 
-        S.G.place = boom
+        S.G.release_safely = boom
         with self.assertRaises(S.StillHolding):
             S.move(dict(map_cm=[5.0, 8.0], yaw_deg=0.0), ['38'], self.plan, None)
 

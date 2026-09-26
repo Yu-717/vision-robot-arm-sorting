@@ -116,11 +116,11 @@ def move(cube: dict, markers: list[str] | str, plan_for, session) -> dict:
         return dict(marker=marker, target_map_cm=target, frm=cube["map_cm"], category=cube.get("category"))
 
     try:
-        G.place(session)
+        where = G.release_safely(session)
     except G.ConsoleError as e:
         raise StillHolding(f"放不下也放不回，机械臂还夹着这一块：{e}") from e
-    G.log("scramble_returned", frm=cube["map_cm"], tried=markers, reason=why)
-    raise G.ConsoleError(f"没有可放的落点（{why}）；已放回原位 {cube['map_cm']}")
+    G.log("scramble_returned", frm=cube["map_cm"], tried=markers, reason=why, released=where)
+    raise G.ConsoleError(f"没有可放的落点（{why}）；{where}")
 
 
 def alternatives(marker: str, taken: list[list[float]], pool: list[str] | None = None) -> list[str]:

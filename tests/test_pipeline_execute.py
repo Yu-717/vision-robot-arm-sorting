@@ -26,10 +26,10 @@ class ExecuteTest(unittest.TestCase):
 
     def setUp(self):
         self.moves, self.missed_at, self.current, self.put_fails = [], set(), None, set()
-        saved = G.hover, G.grasp, G.put, G.log, G.observe, G.PLAN, R.plan_for, G.place
+        saved = (G.hover, G.grasp, G.put, G.log, G.observe, G.PLAN, R.plan_for, G.place, G.release_safely)
 
         def restore():
-            (G.hover, G.grasp, G.put, G.log, G.observe, G.PLAN, R.plan_for, G.place) = saved
+            (G.hover, G.grasp, G.put, G.log, G.observe, G.PLAN, R.plan_for, G.place, G.release_safely) = saved
 
         self.addCleanup(restore)
         G.log = lambda *a, **k: None
@@ -53,6 +53,7 @@ class ExecuteTest(unittest.TestCase):
 
         G.hover, G.grasp, G.put = hover, grasp, put
         G.place = lambda sess=None: self.moves.append(('place', None))
+        G.release_safely = lambda sess=None: (self.moves.append(('place', None)) or '放回抓取位置')
 
     def run_jobs(self, jobs):
         # `current` follows whichever block the code is carrying: plan_for is called with its cube first
@@ -121,7 +122,7 @@ class ExecuteTest(unittest.TestCase):
             raise G.ConsoleError('路径被拒')
 
         self.put_fails = {'43'}
-        G.place = boom
+        G.release_safely = boom
         with self.assertRaises(SCR.StillHolding):
             self.run_jobs([job('hazardous', [5, 8]), job('kitchen', [-5, 8])])
 

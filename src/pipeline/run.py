@@ -382,12 +382,12 @@ def execute(run, scene: dict, jobs: list[dict], sess, rng=None) -> dict:
         except G.ConsoleError as e:
             # holding a block with nowhere to put it: the next hover would open the fingers and drop it
             try:
-                G.place(sess)
+                where = G.release_safely(sess)
             except G.ConsoleError as back:
                 raise SCR.StillHolding(f"放不下也放不回，机械臂还夹着这一块：{back}") from back
             counts["skipped"] += 1
             G.log("pipeline_put_failed", cube=j["cube"]["map_cm"], bin=bin_or_marker,
-                  category=j["cube"]["category"], reason=str(e))
+                  category=j["cube"]["category"], reason=str(e), released=where)
             return False
         here = by_cube[id(j["cube"])]
         here["map_cm"] = [round(v * 100, 1) for v in G.marker_centre(bin_or_marker)]

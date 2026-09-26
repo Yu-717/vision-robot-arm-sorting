@@ -617,6 +617,26 @@ def put(where_: str, session: Session | None = None) -> dict:
     return result
 
 
+def release_safely(session: Session | None = None) -> str:
+    """Get a held block onto the table without carrying it anywhere new, and say where it went.
+
+    Two things this has to survive. The console disarms when a segment meets resistance, so it is
+    re-armed first: on 2026-09-27 a place descent asked J3 for -9 deg (the joint reaches -4), the console
+    held and disarmed, and the recovery was then refused for a stale readback -- the run stopped with the
+    block still in the fingers. And when the tip is already down among the blocks, opening there drops the
+    block a centimetre or two onto the table, which beats carrying it back across the map."""
+    if session is not None:
+        session.rearm()
+    s = status()
+    if tip(s["pose"])[2] <= TABLE_Z + BLOCK * 1.5:
+        with lease(session) as sess:
+            sess.grip("open")
+        log("released_in_place", pose=s["pose"], tip_cm=[round(v * 100, 1) for v in tip(s["pose"])])
+        return "在原地松手"
+    place(session)
+    return "放回抓取位置"
+
+
 def place(session: Session | None = None) -> None:
     plan = json.loads(PLAN.read_text())
     if "grip_pose" not in plan:
