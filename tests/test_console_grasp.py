@@ -25,13 +25,18 @@ class WakeTest(unittest.TestCase):
     """The J6 readback, not the console's acceptance, tells that the servo woke up."""
 
     class Arm:
-        def __init__(self, wakes_after, refuse=()):
+        """A servo that ignores commands until `wakes_after` jogs have been sent: the grip command does
+        nothing and the readback stays where it was, which is what "not_closed" reports."""
+
+        def __init__(self, wakes_after, refuse=(), asleep=True):
             self.j6, self.jogs, self.rearms, self.grips = 29, 0, 0, 0
-            self.wakes_after, self.refuse = wakes_after, refuse
+            self.wakes_after, self.refuse, self.asleep = wakes_after, refuse, asleep
+            self.held = False
 
         def jog(self, joint, delta):
             self.jogs += 1
             if self.jogs >= self.wakes_after:
+                self.asleep = False
                 self.j6 += delta + 2
             if self.jogs in self.refuse:
                 raise G.ConsoleError('servo 6: expected 34, read 29')
@@ -41,9 +46,13 @@ class WakeTest(unittest.TestCase):
 
         def grip(self, action):
             self.grips += 1
+            if not self.asleep:
+                self.held, self.j6 = True, 120
 
         def status(self):
-            return {'pose': [90, 90, 5, 5, 92, self.j6], 'grip': {'result': 'holding', 'readback': 120}}
+            grip = ({'result': 'holding', 'readback': 120} if self.held else
+                    {'result': 'not_closed', 'readback': self.j6})
+            return {'pose': [90, 90, 5, 5, 92, self.j6], 'grip': grip}
 
     def setUp(self):
         self.saved = G.status, G.log, G.time.sleep
@@ -53,12 +62,25 @@ class WakeTest(unittest.TestCase):
     def tearDown(self):
         G.status, G.log, G.time.sleep = self.saved
 
-    def test_accepted_steps_do_not_count_until_the_readback_rises(self):
+    def test_an_awake_servo_is_gripped_without_waking_it(self):
+        # the wake cost 7.3 s of every 35.5 s block (2026-09-27); an awake servo must not pay it
+        arm = self.Arm(wakes_after=1, asleep=False)
+        G.status = arm.status
+        self.assertEqual(G.wake_and_grip(arm)['result'], 'holding')
+        self.assertEqual((arm.jogs, arm.grips), (0, 1))
+
+    def test_an_ignored_grip_is_followed_by_waking_and_gripping_again(self):
         # 2026-09-25 19:30: two +2 steps were accepted while J6 still read 29; the grip was then ignored
         arm = self.Arm(wakes_after=3, refuse=(2,))
         G.status = arm.status
         self.assertEqual(G.wake_and_grip(arm)['result'], 'holding')
-        self.assertEqual((arm.jogs, arm.rearms, arm.grips), (3, 1, 1))
+        self.assertEqual((arm.jogs, arm.rearms, arm.grips), (3, 1, 2))
+
+    def test_a_servo_that_never_wakes_stops_after_its_tries(self):
+        arm = self.Arm(wakes_after=99)
+        G.status = arm.status
+        self.assertEqual(G.wake_and_grip(arm, tries=2)['result'], 'not_closed')
+        self.assertEqual(arm.grips, 2)
 
     def test_a_servo_that_never_wakes_is_reported(self):
         arm = self.Arm(wakes_after=99)

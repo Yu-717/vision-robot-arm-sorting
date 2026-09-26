@@ -352,17 +352,27 @@ def main() -> None:
         print("registration:", scene["registration"])
         if args.dry_run:
             return
+        started_run = time.time()
+        G.log("pipeline_start", run=str(run), cubes=[c["map_cm"] for c in scene["cubes"]],
+              registration=scene["registration"])
+        sorted_n = skipped = missed = 0
         occupied = [j["cube"]["map_cm"] for j in jobs]
         for j in jobs:
             if j["skip"]:
+                skipped += 1
+                G.log("pipeline_skip", cube=j["cube"]["map_cm"], category=j["cube"]["category"], reason=j["skip"])
                 continue
             target = [v * 100 for v in G.marker_centre(j["bin"])]
             if any(math.dist(p, target) <= SB.SORTING["occupied_cm"] and p != j["cube"]["map_cm"] for p in occupied):
-                print("skip: bin", j["bin"], "occupied")
+                skipped += 1
+                G.log("pipeline_skip", cube=j["cube"]["map_cm"], category=j["cube"]["category"],
+                      reason=f"bin {j['bin']} occupied")
                 continue
             plan = plan_for(j["cube"])
             if plan is None:
-                print("skip: no reachable grasp for", j["cube"]["map_cm"])
+                skipped += 1
+                G.log("pipeline_skip", cube=j["cube"]["map_cm"], category=j["cube"]["category"],
+                      reason="no reachable grasp")
                 continue
             G.PLAN.write_text(json.dumps(plan, indent=1, ensure_ascii=False))
             started = time.time()
@@ -370,13 +380,18 @@ def main() -> None:
             try:
                 G.grasp(sess)
             except G.GripMissed as e:
-                print("missed:", e)
+                missed += 1
+                G.log("pipeline_missed", cube=j["cube"]["map_cm"], category=j["cube"]["category"], reason=str(e),
+                      seconds=round(time.time() - started))
                 continue
             G.put(j["bin"], sess)
+            sorted_n += 1
             occupied = [p for p in occupied if p != j["cube"]["map_cm"]] + [target]
             G.log("pipeline_sorted", cube=j["cube"]["map_cm"], bin=j["bin"], category=j["cube"]["category"],
                   source=j["cube"]["source"], seconds=round(time.time() - started))
         G.observe(sess)
+        G.log("pipeline_end", run=str(run), sorted=sorted_n, skipped=skipped, missed=missed,
+              seconds=round(time.time() - started_run))
 
 
 if __name__ == "__main__":

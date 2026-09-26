@@ -223,13 +223,17 @@ def wake_gripper(session: Session, steps: int = 10) -> bool:
     return False
 
 
-def wake_and_grip(session: Session) -> dict:
+def wake_and_grip(session: Session, tries: int = 3) -> dict:
     """Close the gripper the way that works on this servo: a single 30 -> 133 command is sometimes ignored
-    (readback stays at 29, 2026-09-25) while small J6 steps wake it; so wake it first (wake_gripper), then
-    grip; if it still did not move, wake and grip once more before calling it a jam."""
+    (readback stays at 29, 2026-09-25) while small J6 steps wake it. The ignored command is visible in the
+    readback ("not_closed"), so grip first and wake only after that, rather than waking every time: waking
+    up front cost 7.3 s of every 35.5 s block (data/runs/console_grasp, 2026-09-27) even when the servo was
+    awake, and an ignored command costs one extra grip command instead. The fingers are already around the
+    block at this point, so a command that does nothing changes nothing."""
     result = {}
-    for attempt in range(2):
-        wake_gripper(session)
+    for attempt in range(tries):
+        if attempt:
+            wake_gripper(session)
         session.grip("grip")
         result = status()["grip"]
         if result.get("result") != "not_closed":
