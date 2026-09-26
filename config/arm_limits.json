@@ -91,6 +91,8 @@
     "_holding_note": "2026-09-25 teleop session 20260925_001846_4a2a: held blocks read 128-129 (129 was wrongly called empty with the old <129 line); three grips that never moved read 29 and were wrongly called holding. Holding = above <= readback < below; empty reaches the 133 command.",
     "empty_closes_freely_to_deg": 170,
     "_note": "hold behaviour at 133 over several seconds (stall protection after 3 s) not yet verified",
+    "grasp_height_cm": 1.2,
+    "_grasp_height_note": "2026-09-27: the fingers close 1.2 cm above the table instead of the block's mid-height 1.5 cm. Two grasps that night closed on nothing (readback 132, fully shut) after meeting the block corner-on; a contact nearer the table gives a closing finger less leverage to tip or flick a 3 cm block. Fingertips stay 1.2 cm clear of the table.",
     "open_grasp_radial_offset_cm": 1.0,
     "_open_grasp_note": "2026-09-26 red block at marker 42 (board top-face localization, error 0.3 cm): with the gripper open (30) and pitch ~150, the closed-fingertip FK tip over the block centre put the fingers over the block's near edge; +1 cm radially (away from the base) centred it (operator view). Descended 1/1/1/0.5 cm to tip z 0.3 (block centre 0.1), grip read 129 and held while lifting. Open fingertips sit behind the closed-fingertip point used by the touch calibration.",
     "roll_zero_deg": 92,

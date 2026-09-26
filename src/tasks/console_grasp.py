@@ -57,7 +57,21 @@ ROLL_SIGN = CONFIG["gripper"].get("roll_sign", 1)
 J5_RANGE = (90, 180)                 # course limit 90; above 180 the gripper servo turns up into the camera's view (operator, 2026-09-26)
 ALIGN_ROLL = CONFIG["gripper"].get("align_roll", False)
 TANGENT_SIGN = CONFIG["gripper"].get("finger_offset_tangent_sign", 1)
-ROLL_WINDOW = (-2, 45)   # J5 - ROLL_ZERO allowed for alignment (J5 90-137)
+ROLL_WINDOW = (-2, 88)   # J5 - ROLL_ZERO allowed for alignment: the whole safe J5 span, 90-180.
+                         # Was (-2, 45): a block at yaw 21 seen from J1 64 wanted J5 139, two degrees
+                         # outside it, so the roll was dropped and the fingers met the block corner-on
+                         # (43 deg off its faces) and flicked it away (2026-09-27). Rolls of 13-29 deg
+                         # held in 4 of 4 grasps that night; the old caution came from J5 ~250, which
+                         # is outside J5_RANGE anyway.
+ROLL_90_MIN_PITCH = 165  # a 90 deg roll tips the finger-opening axis out of horizontal by (180 - pitch),
+                         # so the fingers meet the block's top and bottom edges instead of its faces
+                         # (2026-09-26, J5 167 at a flat pitch). Only near-vertical pitches may use one.
+ROLL_ALIGNED_DEG = 12    # fingers this far off the faces still grip a 3 cm block
+GRASP_HEIGHT = CONFIG["gripper"].get("grasp_height_cm", 1.2) / 100   # fingertips above the table when
+                         # closing on a 3 cm block. Lower than the block's mid-height on purpose: the
+                         # nearer the table the contact is, the less leverage a closing finger has to
+                         # tip the block over or flick it out (operator, 2026-09-27). The block still
+                         # spans 0-3 cm, so the fingers are well inside its faces.
 OBSERVE = [90, 105, 5, 5]
 EDGE_PX = 40            # a box this close to the image border may be a partial view
 AGREE_M = 0.015         # board and phone must agree this well, else look again
@@ -128,21 +142,40 @@ def finger_offset(bx: float, by: float, j5: float | None, pitch: float = 150) ->
     return bx + radial_m * ux - tangent_m * uy, by + radial_m * uy + tangent_m * ux
 
 
-def grip_roll(j1: float, block_yaw_deg: float | None) -> int:
-    """J5 that turns the fingers parallel to the block's faces. Turning the base by (J1 - 90) turns the
-    fingers with it. Only multiples of 180 deg are equivalent: the two fingers swap sides, but a 90 deg
-    turn makes them open along the gripper's pitch plane, where one finger hangs lower and the 1 cm
-    open-gripper offset no longer holds (2026-09-26: J5 167 instead of -15 from 92 missed the block).
-    The J5 range is exactly 180 deg wide, so one solution always exists."""
+def roll_options(j1: float, block_yaw_deg: float | None, pitch: float) -> list[int]:
+    """The J5 values that turn the fingers parallel to the block's faces, best first, for one pitch.
+
+    Turning the base by (J1 - 90) turns the fingers with it, so the roll has to undo it. Half turns are
+    always equivalent -- the fingers swap sides. Quarter turns grip the other pair of faces, which a
+    square block is happy with, but they swing the finger-opening axis into the gripper's pitch plane,
+    where it tilts by (180 - pitch) and the fingers meet the block's top and bottom edges instead of its
+    faces; so those are offered only at a near-vertical pitch.
+
+    J5 spans 90 deg (90-180: higher and the gripper servo turns up into the camera's view), which is
+    exactly the half-turn period -- so half turns alone leave half of all orientations with no solution
+    at all. That gap is what quarter turns close."""
     want = ROLL_ZERO + ROLL_SIGN * ((block_yaw_deg or 0.0) - (j1 - 90))
-    options = [want + 180 * k for k in range(-3, 4) if J5_RANGE[0] <= want + 180 * k <= J5_RANGE[1]]
-    if not options:
-        return ROLL_ZERO
-    best = min(options, key=lambda v: abs(v - ROLL_ZERO))
-    # Only small rolls are trusted: at J5 ~250 the fingers first missed and then jammed on the block
-    # (2026-09-26) although the tip was where planned. Outside the window grip unaligned, as the
-    # five grasps at J5 92-100 that all held.
-    return round(best) if ROLL_WINDOW[0] <= best - ROLL_ZERO <= ROLL_WINDOW[1] else ROLL_ZERO
+    steps = [180, -180, 0] if pitch < ROLL_90_MIN_PITCH else [180, -180, 90, -90, 0]
+    seen, out = set(), []
+    for step in sorted(steps, key=abs, reverse=True):          # 0 first once sorted back below
+        for k in range(-2, 3):
+            v = round(want + (step * k if step else 0))
+            if not (J5_RANGE[0] <= v <= J5_RANGE[1]) or v in seen:
+                continue
+            if not (ROLL_WINDOW[0] <= v - ROLL_ZERO <= ROLL_WINDOW[1]):
+                continue
+            seen.add(v)
+            out.append(v)
+    return sorted(out, key=lambda v: abs(v - ROLL_ZERO))
+
+
+def grip_roll(j1: float, block_yaw_deg: float | None, pitch: float) -> int:
+    """The best J5 for this block at this pitch, or ROLL_ZERO when nothing aligns. `pitch` is required:
+    whether a quarter turn may be used depends on it, and a quarter turn at a flat pitch is the roll that
+    missed on 2026-09-26. Callers that care whether it aligned should use roll_options and check --
+    gripping a block corner-on flicks it away rather than holding it (2026-09-27)."""
+    options = roll_options(j1, block_yaw_deg, pitch)
+    return options[0] if options else ROLL_ZERO
 
 
 def plan_approach(bx: float, by: float, yaw_deg: float | None, prefer: int = 150) -> dict | None:
@@ -151,17 +184,25 @@ def plan_approach(bx: float, by: float, yaw_deg: float | None, prefer: int = 150
     if math.hypot(bx, by) > MAX_REACH:
         return None
     bearing = 90 + math.degrees(math.atan2(-bx, by))
-    j5 = grip_roll(bearing, yaw_deg) if ALIGN_ROLL else None
-    for pitch in sorted(range(130, 171, 5), key=lambda p: abs(p - prefer)):   # steep for near blocks, flat for far
+    # a pitch that lets the fingers line up with the block beats a pitch nearer `prefer`: corner-on
+    # fingers flick a block away instead of holding it (2026-09-27)
+    pitches = sorted(range(130, 171, 5), key=lambda p: abs(p - prefer))
+    if ALIGN_ROLL and yaw_deg is not None:
+        pitches.sort(key=lambda p: (not roll_options(bearing, yaw_deg, p), abs(p - prefer)))
+    for pitch in pitches:
+        j5 = grip_roll(bearing, yaw_deg, pitch) if ALIGN_ROLL else None
         tx, ty = finger_offset(bx, by, j5, pitch)
-        low = solve(tx, ty, TABLE_Z + BLOCK / 2, [pitch], floor=-3)
+        low = solve(tx, ty, TABLE_Z + GRASP_HEIGHT, [pitch], floor=-3)
         if low is None or not clear_of_platform(low[1]):
             continue
         for up in HOVER_STEPS:
             h = solve(tx, ty, TABLE_Z + BLOCK + up, [pitch], floor=-3)
             if h and clear_of_platform(h[1]):
+                aligned = (not ALIGN_ROLL or yaw_deg is None
+                           or bool(roll_options(bearing, yaw_deg, pitch)))
                 return dict(pitch=pitch, pitch_verified=pitch in VERIFIED_PITCHES, j5=j5, hover=h[1],
-                            hover_above_top_cm=up * 100, tip_target_cm=[round(tx * 100, 2), round(ty * 100, 2)])
+                            aligned=aligned, hover_above_top_cm=up * 100,
+                            tip_target_cm=[round(tx * 100, 2), round(ty * 100, 2)])
     return None
 
 
@@ -482,7 +523,7 @@ def locate(colour: str | None, session: Session | None = None, near_cm: list[flo
         plan = dict(colour=colour or (board or {}).get("label"), near_cm=near_cm, created=time.time(),
                     run=str(run.relative_to(ROOT)), block_base_cm=[round(bx * 100, 2), round(by * 100, 2)],
                     board=board, phone=phone, block_yaw_deg=board.get("yaw_deg"),
-                    block_centre_z_cm=round((TABLE_Z + BLOCK / 2) * 100, 2), **approach)
+                    block_centre_z_cm=round((TABLE_Z + GRASP_HEIGHT) * 100, 2), **approach)
         PLAN.write_text(json.dumps(plan, indent=1, ensure_ascii=False))
         log("planned", **{k: plan[k] for k in ("colour", "block_base_cm", "tip_target_cm", "pitch", "pitch_verified",
                                                  "hover", "hover_above_top_cm", "block_yaw_deg", "j5")})
@@ -508,7 +549,8 @@ def hover(session: Session | None = None) -> None:
         sess.grip("open")
         move_to(sess, plan["hover"], plan.get("j5"))
     s = status()
-    log("hovering", pose=s["pose"], tip_cm=[round(v * 100, 1) for v in tip(s["pose"])], colour=plan["colour"])
+    log("hovering", pose=s["pose"], tip_cm=[round(v * 100, 1) for v in tip(s["pose"])], colour=plan["colour"],
+        aligned=plan.get("aligned"), block_yaw_deg=plan.get("block_yaw_deg"))
 
 
 def grasp(session: Session | None = None) -> dict:

@@ -84,6 +84,7 @@ def blocks_of(run: dict) -> list[dict]:
         if kind == "hovering":
             cur = dict(at=e["t"], cube=None, wake_refusals=0, not_closed=0, grip_readback=None,
                        outcome=None, reason=None, bin=None, category=None, source=None,
+                       aligned=e.get("aligned"), block_yaw_deg=e.get("block_yaw_deg"),
                        approach=round(e["t"] - prev_end, 1), **{p: None for p in PHASES[1:]})
             out.append(cur)
             cur["_hover_t"] = e["t"]
@@ -91,7 +92,8 @@ def blocks_of(run: dict) -> list[dict]:
             if kind == "pipeline_skip":
                 out.append(dict(at=e["t"], cube=e.get("cube"), category=e.get("category"), outcome="skipped",
                                 reason=e.get("reason"), wake_refusals=0, not_closed=0, grip_readback=None,
-                                bin=None, source=None, **{p: None for p in PHASES}))
+                                bin=None, source=None, aligned=None, block_yaw_deg=None,
+                                **{p: None for p in PHASES}))
             continue
         elif kind == "gripper_wake_refused":
             cur["wake_refusals"] += 1
@@ -144,7 +146,13 @@ def summarize(runs: list[dict]) -> dict:
         vals = [b[key] for b in acted if b.get(key) is not None]
         return dict(n=len(vals), median=round(statistics.median(vals), 1), max=max(vals)) if vals else None
 
+    by_align = {}
+    for b in acted:
+        if b.get("aligned") is not None:
+            got = by_align.setdefault("对齐" if b["aligned"] else "未对齐", [0, 0])
+            got[b["outcome"] in ("sorted", "scattered", "cleared")] += 1
     return dict(
+        grip_by_alignment={k: dict(失败=v[0], 成功=v[1]) for k, v in by_align.items()},
         runs=len(runs), blocks_acted_on=len(acted), sorted=len(sorted_),
         missed=sum(b["outcome"] == "missed" for b in acted), put_back=sum(b["outcome"] == "put back" for b in acted),
         unfinished=sum(b["outcome"] == "unfinished" for b in acted), skipped=sum(b["outcome"] == "skipped" for b in blocks),
@@ -194,6 +202,10 @@ def main() -> None:
                 print(f"  {p:9s} 中位 {t['median']:5.1f} s  最大 {t['max']:5.1f} s  (n={t['n']})")
         if s["block_seconds"]:
             print(f"  每块合计   中位 {s['block_seconds']['median']:5.1f} s  最大 {s['block_seconds']['max']:5.1f} s")
+    if s["grip_by_alignment"]:
+        # whether ROLL_90_MIN_PITCH may be relaxed rests on this, not on a guess
+        print("按手指对齐:", ", ".join(f"{k} 成功 {v['成功']}/{v['成功'] + v['失败']}"
+                                       for k, v in s["grip_by_alignment"].items()))
     if s["skip_reasons"]:
         print("跳过原因:", ", ".join(f"{k} × {v}" for k, v in sorted(s["skip_reasons"].items(), key=lambda kv: -kv[1])))
 

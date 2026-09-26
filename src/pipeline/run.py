@@ -306,7 +306,7 @@ def plan_for(cube: dict, prefer: int = 150) -> dict | None:
         return None
     return dict(colour=cube.get("colour"), created=time.time(), block_base_cm=[round(bx * 100, 2), round(by * 100, 2)],
                 board=dict(map_cm=cube["map_cm"], sticker=cube.get("sticker")), block_yaw_deg=cube["yaw_deg"],
-                block_centre_z_cm=round((G.TABLE_Z + G.BLOCK / 2) * 100, 2), **approach)
+                block_centre_z_cm=round((G.TABLE_Z + G.GRASP_HEIGHT) * 100, 2), **approach)
 
 
 def decide(scene: dict) -> list[dict]:

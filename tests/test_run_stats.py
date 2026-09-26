@@ -15,9 +15,9 @@ def log(events):
     return S.split_runs([dict(t=float(t), event=e, **f) for t, e, f in events])
 
 
-def block(t0, run='r', sorted_at=None, missed=False, wake_refusals=0):
+def block(t0, run='r', sorted_at=None, missed=False, wake_refusals=0, aligned=None):
     """The event sequence the console writes for one block."""
-    out = [(t0, 'hovering', dict(pose=[], tip_cm=[], colour=None))]
+    out = [(t0, 'hovering', dict(pose=[], tip_cm=[], colour=None, aligned=aligned))]
     out += [(t0 + 1 + i, 'gripper_wake_refused', dict(reason='servo 6')) for i in range(wake_refusals)]
     t = t0 + 1 + wake_refusals
     out += [(t, 'gripper_awake', dict(start=29, readback=33))]
@@ -97,6 +97,18 @@ class SummaryTest(unittest.TestCase):
         self.assertEqual(s['wake_refusals'], 2)
         self.assertEqual(s['skip_reasons'], {'already on its bin': 1})
         self.assertEqual(s['phase_seconds']['put']['n'], 2)
+
+    def test_grip_success_is_split_by_whether_the_fingers_lined_up(self):
+        """Corner-on fingers flick a block away (2026-09-27); whether flat pitches may use a quarter
+        turn is decided from this split, not from a guess."""
+        events = ([(0, 'scan_view', dict(run='a'))] + block(10, aligned=True)
+                  + block(40, aligned=False, missed=True) + block(70, aligned=False))
+        runs = log(events)
+        for r in runs:
+            r['blocks'] = S.blocks_of(r)
+        s = S.summarize(runs)
+        self.assertEqual(s['grip_by_alignment']['对齐'], dict(失败=0, 成功=1))
+        self.assertEqual(s['grip_by_alignment']['未对齐'], dict(失败=1, 成功=1))
 
     def test_a_torn_line_does_not_stop_the_read(self):
         with tempfile.NamedTemporaryFile('w', suffix='.jsonl', delete=False) as f:

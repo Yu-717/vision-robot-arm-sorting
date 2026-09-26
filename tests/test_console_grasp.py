@@ -232,14 +232,45 @@ class SortDecisionTest(unittest.TestCase):
 
 
 class RollTest(unittest.TestCase):
-    def test_fingers_stay_across_the_pitch_plane(self):
-        # 180 deg equivalents only: a 90 deg alternative opened the fingers along the pitch plane and missed
-        self.assertEqual(G.grip_roll(90, 0), G.ROLL_ZERO)
-        self.assertEqual(G.grip_roll(71, -10.9), 100)                  # verified by eye 2026-09-26
-        self.assertEqual(G.grip_roll(88, -16.6), G.ROLL_ZERO)          # needs -14.6: outside the trusted window
+    FLAT, STEEP = 150, 170
+
+    def residual(self, j1, yaw, j5):
+        """How far the fingers end up from the block's faces, in degrees (a square block, so mod 90)."""
+        off = ((yaw - (j1 - 90)) - (j5 - G.ROLL_ZERO)) % 90
+        return min(off, 90 - off)
+
+    def test_a_quarter_turn_is_only_offered_at_a_near_vertical_pitch(self):
+        # 2026-09-26: J5 167 at a flat pitch opened the fingers along the pitch plane and missed
+        self.assertEqual(G.grip_roll(88, -16.6, self.FLAT), G.ROLL_ZERO)   # needs -14.6, below J5 90
+        self.assertEqual(G.grip_roll(88, -16.6, self.STEEP), 167)          # a quarter turn reaches it
+
+    def test_the_verified_grasps_are_unchanged(self):
+        self.assertEqual(G.grip_roll(90, 0, self.FLAT), G.ROLL_ZERO)
+        self.assertEqual(G.grip_roll(71, -10.9, self.FLAT), 100)           # verified by eye 2026-09-26
+
+    def test_the_roll_that_flicked_a_block_away_is_now_reached(self):
+        """2026-09-27: a block at yaw 21 from J1 64 wanted J5 139, two degrees outside the old window,
+        so it was gripped 43 deg off its faces and flicked away."""
+        self.assertEqual(G.grip_roll(64, 21, self.FLAT), 139)
+        self.assertEqual(self.residual(64, 21, 139), 0)
+
+    def test_every_orientation_lines_up_at_a_near_vertical_pitch(self):
         for j1 in range(40, 141, 7):
-            for yaw in (-44, -20, 0, 20, 44):
-                self.assertTrue(G.J5_RANGE[0] <= G.grip_roll(j1, yaw) <= G.J5_RANGE[1])
+            for yaw in range(-45, 46, 3):
+                j5 = G.grip_roll(j1, yaw, self.STEEP)
+                self.assertTrue(G.J5_RANGE[0] <= j5 <= G.J5_RANGE[1])
+                self.assertLessEqual(self.residual(j1, yaw, j5), G.ROLL_ALIGNED_DEG, (j1, yaw, j5))
+
+    def test_a_flat_pitch_aligns_what_it_can_and_says_so(self):
+        """Half turns alone cover half the orientations; plan_approach prefers a pitch that aligns."""
+        covered = sum(bool(G.roll_options(j1, yaw, self.FLAT))
+                      for j1 in range(40, 141, 7) for yaw in range(-45, 46, 3))
+        total = len(range(40, 141, 7)) * len(range(-45, 46, 3))
+        self.assertGreater(covered / total, 0.45)
+        for j1 in range(40, 141, 7):
+            for yaw in range(-45, 46, 3):
+                for j5 in G.roll_options(j1, yaw, self.FLAT):
+                    self.assertLessEqual(self.residual(j1, yaw, j5), G.ROLL_ALIGNED_DEG, (j1, yaw, j5))
 
 
 class CategoryTest(unittest.TestCase):
