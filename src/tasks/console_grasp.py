@@ -359,9 +359,10 @@ PROBE_STALL_M = 0.0015    # the readback height stopped following the command by
 SLIP_DEG = 3              # J6 closing this much further across a lift means the block left the fingers
 
 
-def probe_down(session: Session, tx: float, ty: float, pitch: int, from_z: float, to_z: float) -> dict:
-    """Lower the closed fingertips at (tx, ty) from `from_z` until they meet something or reach `to_z`,
-    and report the height where they stopped.
+def probe_down(session: Session, tx: float, ty: float, pitch: int, to_z: float) -> dict:
+    """Lower the closed fingertips at (tx, ty) until they meet something or reach `to_z`, and report the
+    height where they stopped. The descent starts from the height that comes back, not from one the
+    caller believes: a readback above the commanded pose would otherwise read as contact on step one.
 
     Contact is read from the readback height, not from the console refusing a step: one step is 1-2 deg of
     joint travel, inside the console's 4 deg tolerance, so a blocked step is accepted while the arm does
@@ -373,8 +374,8 @@ def probe_down(session: Session, tx: float, ty: float, pitch: int, from_z: float
 
     Only useful downwards. A block is not fixed to the table, so a sideways probe pushes it away instead
     of meeting resistance; the table underneath is what makes a downward probe read a real height."""
-    contact, stalls, z = None, 0, from_z
-    measured = tip(status()["pose"])[2]
+    measured = z = tip(status()["pose"])[2]
+    contact, stalls = None, 0
     while z > to_z and contact is None:
         z = max(to_z, z - PROBE_STEP)
         try:

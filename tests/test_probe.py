@@ -41,8 +41,7 @@ class ProbeDownTest(unittest.TestCase):
     def run_probe(self, sess, to_above_cm=0.4):
         G.status = lambda: {'pose': [90, 90, 5, 5, 92, 170]}
         G.tip = lambda pose: [0.0, 0.2, sess.z]
-        return G.probe_down(sess, 0.0, 0.2, 150,
-                            from_z=G.TABLE_Z + 0.045, to_z=G.TABLE_Z + to_above_cm / 100)
+        return G.probe_down(sess, 0.0, 0.2, 150, to_z=G.TABLE_Z + to_above_cm / 100)
 
     def test_a_block_top_is_found_at_its_height(self):
         sess = self.Sess(blocked_at=G.TABLE_Z + 0.03)          # a 3 cm block
@@ -68,13 +67,23 @@ class ProbeDownTest(unittest.TestCase):
         G.status = lambda: {'pose': [90, 90, 5, 5, 92, 170]}
         # the reading on step 2 lags by a whole step; every other reading is honest
         G.tip = lambda pose: [0.0, 0.2, sess.z + (0.003 if sess.steps == 2 else 0.0)]
-        got = G.probe_down(sess, 0.0, 0.2, 150,
-                           from_z=G.TABLE_Z + 0.045, to_z=G.TABLE_Z + 0.004)
+        got = G.probe_down(sess, 0.0, 0.2, 150, to_z=G.TABLE_Z + 0.004)
         self.assertFalse(got['contacted'])
 
     def test_a_lower_block_reads_lower(self):
         sess = self.Sess(blocked_at=G.TABLE_Z + 0.015)
         self.assertAlmostEqual(self.run_probe(sess)['above_table_cm'], 1.5, delta=0.4)
+
+
+    def test_it_starts_from_the_readback_not_from_a_commanded_height(self):
+        """A readback above the commanded start would otherwise read as contact on the first step."""
+        sess = self.Sess(blocked_at=G.TABLE_Z + 0.03)
+        sess.z = G.TABLE_Z + 0.055                     # 1 cm higher than the nominal start
+        G.status = lambda: {'pose': [90, 90, 5, 5, 92, 170]}
+        G.tip = lambda pose: [0.0, 0.2, sess.z]
+        got = G.probe_down(sess, 0.0, 0.2, 150, to_z=G.TABLE_Z + 0.004)
+        self.assertTrue(got['contacted'])
+        self.assertAlmostEqual(got['above_table_cm'], 3.0, delta=0.4)
 
 
 class SlipTest(unittest.TestCase):

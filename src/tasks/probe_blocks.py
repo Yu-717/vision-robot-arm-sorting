@@ -44,7 +44,10 @@ def probe_one(cube: dict, plan_for, session) -> dict:
     plan = plan_for(cube)
     if plan is None:
         return dict(map_cm=cube["map_cm"], skipped="no reachable pose")
-    tx, ty = plan["tip_target_cm"][0] / 100, plan["tip_target_cm"][1] / 100
+    # the block's own predicted centre, NOT plan["tip_target_cm"]: that one carries the 1 cm outward
+    # offset that suits the open gripper, and probing 1 cm off centre would hide the very error being
+    # measured. The fingers are closed here, which is the point the forward kinematics calls the tip.
+    tx, ty = G.map_to_base(cube["map_cm"][0] / 100, cube["map_cm"][1] / 100)
     top = G.TABLE_Z + G.BLOCK
     started = time.time()
 
@@ -52,8 +55,7 @@ def probe_one(cube: dict, plan_for, session) -> dict:
     session.pose(list(plan["hover"]) + [plan["j5"] or G.ROLL_ZERO])
     session.grip("grip")                          # closed: the forward-kinematics tip is the closed fingertip
     G.descend_to(session, tx, ty, top + START_ABOVE_CM / 100, plan["pitch"])
-    got = G.probe_down(session, tx, ty, plan["pitch"],
-                       from_z=top + START_ABOVE_CM / 100, to_z=G.TABLE_Z + FLOOR_ABOVE_CM / 100)
+    got = G.probe_down(session, tx, ty, plan["pitch"], to_z=G.TABLE_Z + FLOOR_ABOVE_CM / 100)
     try:
         session.rearm()                           # a contact may have made the console hold and disarm
     except G.ConsoleError:
@@ -65,6 +67,8 @@ def probe_one(cube: dict, plan_for, session) -> dict:
     measured = got["above_table_cm"]
     return dict(map_cm=cube["map_cm"], yaw_deg=cube.get("yaw_deg"), category=cube.get("category"),
                 pitch=plan["pitch"], aligned=plan.get("aligned"), contacted=got["contacted"],
+                probe_base_cm=[round(tx * 100, 2), round(ty * 100, 2)],
+                grasp_target_base_cm=plan["tip_target_cm"],
                 why=got["why"], predicted_top_cm=predicted, measured_top_cm=measured,
                 error_cm=round(measured - predicted, 2),
                 on_block=got["contacted"] and abs(measured - predicted) <= ON_BLOCK_CM,
