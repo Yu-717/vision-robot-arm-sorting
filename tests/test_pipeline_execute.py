@@ -127,5 +127,37 @@ class ExecuteTest(unittest.TestCase):
             self.run_jobs([job('hazardous', [5, 8]), job('kitchen', [-5, 8])])
 
 
+class RegistrationTest(unittest.TestCase):
+    """The scan says where the map is; the fingertips say how high the table is. 2026-09-29: taking the
+    scan's z made every descent aim 0.8 cm high."""
+
+    def setUp(self):
+        saved = G.DX, G.DY, G.TABLE_Z, G.log
+        self.logged = []
+        G.log = lambda event, **k: self.logged.append((event, k))
+        self.addCleanup(lambda: setattr_all(saved))
+
+        def setattr_all(v):
+            G.DX, G.DY, G.TABLE_Z, G.log = v
+
+    def test_x_and_y_are_taken_from_the_scan(self):
+        R.use_registration(dict(map_origin_base_cm=[-1.27, 7.81, -0.62]))
+        self.assertAlmostEqual(G.DX * 100, -1.27, places=6)
+        self.assertAlmostEqual(G.DY * 100, 7.81, places=6)
+
+    def test_the_calibrated_table_height_survives_a_scan(self):
+        before = G.TABLE_Z
+        R.use_registration(dict(map_origin_base_cm=[-1.27, 7.81, -0.62]))
+        self.assertEqual(G.TABLE_Z, before)
+
+    def test_a_big_disagreement_is_reported(self):
+        R.use_registration(dict(map_origin_base_cm=[0.0, 7.0, 5.0]))
+        self.assertEqual([e for e, _ in self.logged], ['table_z_disagrees'])
+
+    def test_a_small_disagreement_is_not_noise_in_the_log(self):
+        R.use_registration(dict(map_origin_base_cm=[0.0, 7.0, -0.62]))
+        self.assertEqual(self.logged, [])
+
+
 if __name__ == '__main__':
     unittest.main()

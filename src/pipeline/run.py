@@ -292,10 +292,23 @@ def refine(run: Path, scene: dict, session) -> dict:
     return build_scene(run)
 
 
+TABLE_Z_DISAGREE_CM = 1.5   # beyond this the scan and the touched table are not describing one surface
+
+
 def use_registration(reg: dict) -> None:
-    """Map placement of this run for all base <-> map conversions and the table height."""
+    """Where the map lies, for every base <-> map conversion. Its x and y are taken; its z is not.
+
+    The scan's z comes through the hand-eye and the marker pose, and it reads the paper about 0.8 cm
+    higher than the fingertips find the table: touching four marker centres on 2026-09-29 agreed with the
+    calibrated -1.42 cm to a median of 0.05 cm, while that run's registration said -0.62 cm. Taking the
+    scan's z made every descent aim 0.8 cm high, which on a 3 cm block puts the fingers in its top third
+    -- where a closing finger has the most leverage to tip it over, and two blocks were flicked away.
+    The height a descent has to be right about is the one the fingertips measured, so it stays."""
     G.DX, G.DY = reg["map_origin_base_cm"][0] / 100, reg["map_origin_base_cm"][1] / 100
-    G.TABLE_Z = reg["map_origin_base_cm"][2] / 100
+    seen = reg["map_origin_base_cm"][2]
+    if abs(seen - G.TABLE_Z * 100) > TABLE_Z_DISAGREE_CM:
+        G.log("table_z_disagrees", scan_cm=round(seen, 2), calibrated_cm=round(G.TABLE_Z * 100, 2),
+              note="用的是标定值；差得这么多说明相机、地图或机械臂安装变了，该重新做触点标定")
 
 
 def plan_for(cube: dict, prefer: int = 150) -> dict | None:
