@@ -354,6 +354,49 @@ def descend_to(session: Session, tx: float, ty: float, z: float, pitch: int) -> 
     return status()["pose"]
 
 
+PROBE_STEP = 0.003        # m per step down; 1-2 deg of joint travel, below the console's 4 deg tolerance
+PROBE_STALL_M = 0.0015    # the readback height stopped following the command by this much: something is there
+SLIP_DEG = 3              # J6 closing this much further across a lift means the block left the fingers
+
+
+def probe_down(session: Session, tx: float, ty: float, pitch: int, from_z: float, to_z: float) -> dict:
+    """Lower the closed fingertips at (tx, ty) from `from_z` until they meet something or reach `to_z`,
+    and report the height where they stopped.
+
+    Contact is read from the readback height, not from the console refusing a step: one step is 1-2 deg of
+    joint travel, inside the console's 4 deg tolerance, so a blocked step is accepted while the arm does
+    not move -- the same trap as the gripper that accepted steps while its readback stayed at 29
+    (2026-09-25). A refusal still counts as contact when it comes.
+
+    The fingers must be closed: the tip of the forward kinematics is the closed fingertip point, which is
+    what the table touch calibration measured (docs/05, 2026-09-25).
+
+    Only useful downwards. A block is not fixed to the table, so a sideways probe pushes it away instead
+    of meeting resistance; the table underneath is what makes a downward probe read a real height."""
+    contact, stalls, z = None, 0, from_z
+    measured = tip(status()["pose"])[2]
+    while z > to_z and contact is None:
+        z = max(to_z, z - PROBE_STEP)
+        try:
+            session.cart("z", -PROBE_STEP * 100)
+        except ConsoleError as e:
+            contact = "refused: " + str(e)
+            break
+        time.sleep(0.25)
+        now = tip(status()["pose"])[2]
+        if now - z >= PROBE_STALL_M:
+            stalls += 1
+            if stalls >= 2:                      # two in a row: not one late readback
+                contact = "readback stalled"
+        else:
+            stalls = 0
+        measured = now
+    out = dict(contacted=contact is not None, why=contact, height_cm=round(measured * 100, 2),
+               above_table_cm=round((measured - TABLE_Z) * 100, 2), commanded_cm=round(z * 100, 2))
+    log("probe_down", tx_cm=round(tx * 100, 1), ty_cm=round(ty * 100, 1), pitch=pitch, **out)
+    return out
+
+
 def wait_localization(after: float, timeout: float = 12.0) -> dict:
     """The second board result computed at rest after the move: the first may use a frame captured while
     the arm was still moving (2026-09-26: a block seen by hand at a look pose was 'not seen' by the task)."""
@@ -578,7 +621,14 @@ def grasp(session: Session | None = None) -> dict:
             raise GripMissed(f"grip missed (readback {result.get('readback')}); opened and lifted")
         lift(sess, plan["hover"])
     s = status()
-    log("lifted", pose=s["pose"], gripper_readback=s["pose"][5])
+    after = s["pose"][5]
+    log("lifted", pose=s["pose"], gripper_readback=after, gripper_at_grip=result.get("readback"))
+    # the fingers closing further across the lift means the block left them: a readback taken at the grip
+    # says the fingers were around something, not that they still are
+    if result.get("readback") is not None and after is not None and after - result["readback"] >= SLIP_DEG:
+        with lease(session) as sess:
+            sess.grip("open")
+        raise GripMissed(f"块在抬起过程中滑脱（夹取读回 {result['readback']} -> 抬起后 {after}）")
     return result
 
 
