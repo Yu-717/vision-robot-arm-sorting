@@ -134,6 +134,7 @@ def phase(tracked: list[dict], scene: dict, sess, rng: random.Random) -> dict:
                 raise                       # the arm is holding a block: stop, do not open the fingers
             except (G.ConsoleError, G.GripMissed) as e:
                 moved.append(dict(marker=marker, frm=cubes[i]["map_cm"], error=str(e)))
+                G.back_off(sess)          # a stop leaves the arm where it stopped; start the next fresh
         result["moved"] = moved
         result["failed"] = sum("error" in m for m in moved)
         result["moved_count"] = len(moved) - result["failed"]

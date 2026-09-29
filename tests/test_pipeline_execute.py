@@ -26,10 +26,12 @@ class ExecuteTest(unittest.TestCase):
 
     def setUp(self):
         self.moves, self.missed_at, self.current, self.put_fails = [], set(), None, set()
-        saved = (G.hover, G.grasp, G.put, G.log, G.observe, G.PLAN, R.plan_for, G.place, G.release_safely)
+        saved = (G.hover, G.grasp, G.put, G.log, G.observe, G.PLAN, R.plan_for, G.place,
+                 G.release_safely, G.back_off)
 
         def restore():
-            (G.hover, G.grasp, G.put, G.log, G.observe, G.PLAN, R.plan_for, G.place, G.release_safely) = saved
+            (G.hover, G.grasp, G.put, G.log, G.observe, G.PLAN, R.plan_for, G.place,
+             G.release_safely, G.back_off) = saved
 
         self.addCleanup(restore)
         G.log = lambda *a, **k: None
@@ -44,7 +46,8 @@ class ExecuteTest(unittest.TestCase):
                 raise G.GripMissed('空夹')
 
         def hover(sess):
-            pass
+            if self.current is not None and tuple(self.current) in self.hover_fails:
+                raise G.ConsoleError('遇到阻力或偏差，已停在当前读回位置：servo 3: expected 7, read 12')
 
         def put(where, sess):
             self.moves.append((self.current and tuple(self.current), where))
@@ -53,6 +56,9 @@ class ExecuteTest(unittest.TestCase):
 
         G.hover, G.grasp, G.put = hover, grasp, put
         G.place = lambda sess=None: self.moves.append(('place', None))
+        self.backed_off = 0
+        G.back_off = lambda sess=None: setattr(self, 'backed_off', self.backed_off + 1)
+        self.hover_fails = set()
         G.release_safely = lambda sess=None: (self.moves.append(('place', None)) or '放回抓取位置')
 
     def run_jobs(self, jobs):
@@ -125,6 +131,22 @@ class ExecuteTest(unittest.TestCase):
         G.release_safely = boom
         with self.assertRaises(SCR.StillHolding):
             self.run_jobs([job('hazardous', [5, 8]), job('kitchen', [-5, 8])])
+
+
+class ApproachFailureTest(ExecuteTest):
+    """2026-09-29: resistance during an approach was not caught, so one block ending badly ended the
+    whole round -- and left the arm just inside the platform envelope for whatever ran next."""
+
+    def test_the_round_goes_on_after_an_approach_is_stopped(self):
+        self.hover_fails = {tuple(at('30'))}
+        counts = self.run_jobs([job('hazardous', at('30')), job('kitchen', [-5, 8])])
+        self.assertEqual((counts['sorted'], counts['skipped']), (1, 1))
+        self.assertEqual([m[1] for m in self.moves], ['41'])
+
+    def test_the_arm_retreats_before_the_next_block(self):
+        self.hover_fails = {tuple(at('30'))}
+        self.run_jobs([job('hazardous', at('30')), job('kitchen', [-5, 8])])
+        self.assertEqual(self.backed_off, 1)
 
 
 class RegistrationTest(unittest.TestCase):

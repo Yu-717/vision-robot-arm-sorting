@@ -69,11 +69,14 @@ class MatchTest(unittest.TestCase):
 class PhaseTest(unittest.TestCase):
     def setUp(self):
         self.moves = []
-        saved = L.SCR.move, L.R.decide, L.R.execute, L.R.plan_for, G.log
+        saved = L.SCR.move, L.R.decide, L.R.execute, L.R.plan_for, G.log, G.back_off
         self.addCleanup(lambda: setattr_all(saved))
 
         def setattr_all(v):
-            L.SCR.move, L.R.decide, L.R.execute, L.R.plan_for, G.log = v
+            L.SCR.move, L.R.decide, L.R.execute, L.R.plan_for, G.log, G.back_off = v
+
+        self.backed_off = 0
+        G.back_off = lambda sess=None: setattr(self, 'backed_off', self.backed_off + 1)
 
         G.log = lambda *a, **k: None
         L.R.plan_for = lambda c, prefer=150: dict(plan='x')
@@ -112,6 +115,8 @@ class PhaseTest(unittest.TestCase):
         out = L.phase(tracked, dict(cubes=sorted_table()), None, random.Random(2))
         self.assertEqual(out['failed'], 4)
         self.assertEqual([t['map_cm'] for t in tracked], before)
+        # a stop leaves the arm where it stopped; the next block must not plan its path from there
+        self.assertEqual(self.backed_off, 4)
 
 
 class ProgressTest(PhaseTest):

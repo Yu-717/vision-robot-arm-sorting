@@ -382,7 +382,16 @@ def execute(run, scene: dict, jobs: list[dict], sess, rng=None) -> dict:
             return False
         G.PLAN.write_text(json.dumps(plan, indent=1, ensure_ascii=False))
         started = time.time()
-        G.hover(sess)
+        try:
+            G.hover(sess)
+        except G.ConsoleError as e:
+            # resistance on the way in: one block's approach failing must not end the round, and the arm
+            # may have stopped somewhere the next approach could not plan a path out of
+            counts["skipped"] += 1
+            G.log("pipeline_approach_failed", cube=j["cube"]["map_cm"], category=j["cube"]["category"],
+                  reason=str(e), seconds=round(time.time() - started))
+            G.back_off(sess)
+            return False
         try:
             G.grasp(sess)
         except G.GripMissed as e:

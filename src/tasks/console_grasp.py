@@ -760,6 +760,21 @@ def require_empty_gripper() -> None:
             "from console_step import Session\\nwith Session() as s: s.grip('open')\"")
 
 
+def back_off(session: Session | None = None) -> None:
+    """Re-arm and retreat to the observe pose after a move was stopped by resistance.
+
+    The console holds at its readback and disarms, which can leave the arm low, or just inside the
+    platform envelope (2026-09-29: clearance -0.16 cm after J3 met resistance during an approach).
+    Carrying on from there means the next approach plans its path from a pose the keep-out model would
+    refuse. Rising and retreating first is what makes the next block's attempt a fresh one."""
+    if session is not None:
+        try:
+            session.rearm()
+        except ConsoleError as e:
+            log("back_off_rearm_failed", reason=str(e))
+    observe(session)
+
+
 def release_safely(session: Session | None = None) -> str:
     """Get a held block onto the table without carrying it anywhere new, and say where it went.
 
