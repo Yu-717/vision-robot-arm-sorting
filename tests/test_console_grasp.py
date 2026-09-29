@@ -294,3 +294,25 @@ class ResolveTest(unittest.TestCase):
         self.assertEqual(S.resolve('blue', None)[0], 'recyclable')
         self.assertIsNone(S.resolve(None, None)[0])
         self.assertIsNone(S.resolve(None, dict(fish, conf=0.3))[0])
+
+
+class CallSignatureTest(unittest.TestCase):
+    """2026-09-29: plan_put still called grip_roll with two arguments after pitch became required.
+    The TypeError was not a ConsoleError, so nothing caught it: the run died between the lift and the
+    place, and the arm was left holding the block."""
+
+    def test_every_grip_roll_call_passes_a_pitch(self):
+        import ast
+        from pathlib import Path
+        root = Path(__file__).resolve().parents[1] / 'src'
+        for path in root.rglob('*.py'):
+            tree = ast.parse(path.read_text())
+            for node in ast.walk(tree):
+                if isinstance(node, ast.Call) and getattr(node.func, 'id', '') == 'grip_roll':
+                    self.assertEqual(len(node.args), 3, f'{path.name}:{node.lineno}')
+
+    def test_plan_put_returns_poses_for_a_reachable_target(self):
+        """Exercises the call that was broken, on the geometry a carry actually uses."""
+        steps = G.plan_put(145, '43', [90, 105, 5, 5, 92, 129])
+        self.assertIsNotNone(steps)
+        self.assertIn('hover', steps)

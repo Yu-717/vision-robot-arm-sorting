@@ -671,7 +671,8 @@ def plan_put(grasp_pitch: float, where_: str, pose: list[int]) -> dict | None:
     and until it is, the arm is carrying it (2026-09-27: three scatter moves failed this way)."""
     mx, my = parse_place(where_)
     bx, by = map_to_base(mx, my)
-    j5_put = grip_roll(90 + math.degrees(math.atan2(-bx, by)), 0.0) if ALIGN_ROLL else None
+    # the block is square to the map when it goes down, so yaw 0; the pitch is the one it is carried at
+    j5_put = grip_roll(90 + math.degrees(math.atan2(-bx, by)), 0.0, grasp_pitch) if ALIGN_ROLL else None
     tx, ty = finger_offset(bx, by, j5_put if j5_put is not None else pose[4], grasp_pitch)
     carry = None   # retracted and raised; near the grasp pitch so the held block tilts little
     for dp in (0, 5, -5, 10, -10):
