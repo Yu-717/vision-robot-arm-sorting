@@ -354,46 +354,61 @@ def descend_to(session: Session, tx: float, ty: float, z: float, pitch: int) -> 
     return status()["pose"]
 
 
-PROBE_STEP = 0.003        # m per step down; 1-2 deg of joint travel, below the console's 4 deg tolerance
-PROBE_STALL_M = 0.0015    # the readback height stopped following the command by this much: something is there
+PROBE_STEP = 0.005        # m per step down; the console allows Cartesian steps of 0.5/1/2/3 cm only,
+                          # so 0.5 cm is the finest probe available and the resolution of the result
+PROBE_STALL_M = 0.002     # the readback height stopped following the command by this much: something is there
+RESISTANCE = "遇到阻力或偏差"   # the console's wording when a servo did not reach its command
 SLIP_DEG = 3              # J6 closing this much further across a lift means the block left the fingers
 
 
 def probe_down(session: Session, tx: float, ty: float, pitch: int, to_z: float) -> dict:
     """Lower the closed fingertips at (tx, ty) until they meet something or reach `to_z`, and report the
-    height where they stopped. The descent starts from the height that comes back, not from one the
-    caller believes: a readback above the commanded pose would otherwise read as contact on step one.
+    height where they stopped. The descent starts from the height that comes back, not from one the caller
+    believes: a readback above the commanded pose would otherwise read as contact on step one.
 
-    Contact is read from the readback height, not from the console refusing a step: one step is 1-2 deg of
-    joint travel, inside the console's 4 deg tolerance, so a blocked step is accepted while the arm does
-    not move -- the same trap as the gripper that accepted steps while its readback stayed at 29
-    (2026-09-25). A refusal still counts as contact when it comes.
+    Contact is read from the readback height, not from the console refusing a step: one 0.5 cm step is a
+    few degrees of joint travel, inside the console's 4 deg tolerance, so a blocked step is accepted while
+    the arm does not move -- the same trap as the gripper that accepted steps while its readback stayed at
+    29 (2026-09-25). A refusal counts as contact ONLY when it is about resistance: a step the console
+    rejects for its size, or for a stale readback, is not a measurement, and reading it as one invents a
+    contact height that never happened (2026-09-29: four probes 'measured' a top face without descending
+    a millimetre, because a rejected step size was taken for contact).
 
-    The fingers must be closed: the tip of the forward kinematics is the closed fingertip point, which is
-    what the table touch calibration measured (docs/05, 2026-09-25).
+    `height_cm` is where the fingers stopped; the surface is between that and `last_free_cm`, one step
+    above. The fingers must be closed: the tip of the forward kinematics is the closed fingertip point,
+    which is what the table touch calibration measured (docs/05, 2026-09-25).
 
     Only useful downwards. A block is not fixed to the table, so a sideways probe pushes it away instead
     of meeting resistance; the table underneath is what makes a downward probe read a real height."""
     measured = z = tip(status()["pose"])[2]
-    contact, stalls = None, 0
-    while z > to_z and contact is None:
-        z = max(to_z, z - PROBE_STEP)
+    contact, stalls, last_free, steps = None, 0, measured, 0
+    # only whole steps, and only while one more keeps the fingers at or above to_z: clamping the command
+    # while still sending a full step would push them below the floor this limit exists to keep
+    while z - PROBE_STEP >= to_z - 1e-9 and contact is None:
+        z -= PROBE_STEP
         try:
             session.cart("z", -PROBE_STEP * 100)
         except ConsoleError as e:
-            contact = "refused: " + str(e)
+            if RESISTANCE not in str(e):
+                raise                       # a rejected step size or a stale readback is not a contact
+            contact = "resistance: " + str(e)
             break
+        steps += 1
         time.sleep(0.25)
         now = tip(status()["pose"])[2]
         if now - z >= PROBE_STALL_M:
             stalls += 1
-            if stalls >= 2:                      # two in a row: not one late readback
+            if stalls >= 2:                 # two in a row: not one late readback
                 contact = "readback stalled"
         else:
-            stalls = 0
+            stalls, last_free = 0, now
         measured = now
-    out = dict(contacted=contact is not None, why=contact, height_cm=round(measured * 100, 2),
-               above_table_cm=round((measured - TABLE_Z) * 100, 2), commanded_cm=round(z * 100, 2))
+    out = dict(contacted=contact is not None, why=contact, steps=steps,
+               height_cm=round(measured * 100, 2),
+               above_table_cm=round((measured - TABLE_Z) * 100, 2),
+               last_free_cm=round((last_free - TABLE_Z) * 100, 2),
+               floor_cm=round((to_z - TABLE_Z) * 100, 2),
+               resolution_cm=round(PROBE_STEP * 100, 2), commanded_cm=round(z * 100, 2))
     log("probe_down", tx_cm=round(tx * 100, 1), ty_cm=round(ty * 100, 1), pitch=pitch, **out)
     return out
 
