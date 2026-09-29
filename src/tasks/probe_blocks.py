@@ -53,7 +53,7 @@ def probe_one(cube: dict, plan_for, session) -> dict:
 
     G.check_path(G.status()["pose"], plan["hover"])
     session.pose(list(plan["hover"]) + [plan["j5"] or G.ROLL_ZERO])
-    session.grip("grip")                          # closed: the forward-kinematics tip is the closed fingertip
+    G.close_for_probe(session)                    # closed, and proven closed: an open probe measures nothing
     G.descend_to(session, tx, ty, top + START_ABOVE_CM / 100, plan["pitch"])
     got = G.probe_down(session, tx, ty, plan["pitch"], to_z=G.TABLE_Z + FLOOR_ABOVE_CM / 100)
     try:
@@ -75,15 +75,69 @@ def probe_one(cube: dict, plan_for, session) -> dict:
                 seconds=round(time.time() - started))
 
 
+def probe_table(markers: list[str]) -> None:
+    """Touch the bare table at marker centres and compare with the calibrated height.
+
+    The geometry here stays in the touch-calibrated frame (`table_surface_z_m`), not the height a scan
+    derives from the map markers: the calibrated value is where the fingertips were when they last met
+    the table, which is the number a descent has to be right about. A scan's z comes through the hand-eye
+    and the marker pose, and on 2026-09-29 the two differed by 0.8 cm -- this says which one the arm
+    agrees with now."""
+    calibrated = G.CONFIG["keep_out"]["table_surface_z_m"]
+    G.TABLE_Z = calibrated                       # descend in the frame being tested
+    rows = []
+    with G.Session() as sess:
+        for marker in markers:
+            mx, my = G.marker_centre(marker)
+            bx, by = G.map_to_base(mx, my)
+            plan = G.plan_approach(bx, by, None, prefer=160)
+            if plan is None:
+                print(f"  码 {marker}: 无可达姿态，跳过")
+                continue
+            G.check_path(G.status()["pose"], plan["hover"])
+            sess.pose(list(plan["hover"]) + [plan["j5"] or G.ROLL_ZERO])
+            G.close_for_probe(sess)
+            G.descend_to(sess, bx, by, calibrated + 0.02, plan["pitch"])
+            got = G.probe_down(sess, bx, by, plan["pitch"], to_z=calibrated - 0.015)
+            try:
+                sess.rearm()
+            except G.ConsoleError:
+                pass
+            G.lift(sess, plan["hover"])
+            rows.append(dict(marker=marker, map_cm=[round(mx * 100, 1), round(my * 100, 1)], **got))
+            print(f"  码 {marker} 地图 {rows[-1]['map_cm']}  接触于正解 z = {got['height_cm']:+.2f} cm  "
+                  f"（标定值 {calibrated * 100:+.2f}，差 {got['height_cm'] - calibrated * 100:+.2f} cm）"
+                  f"  {'碰到' if got['contacted'] else '未碰到，探到下限'}")
+        sess.grip("open")
+        G.observe(sess)
+
+    hit = [r for r in rows if r["contacted"]]
+    if hit:
+        errs = [r["height_cm"] - calibrated * 100 for r in hit]
+        print(f"\n{len(hit)}/{len(rows)} 点碰到桌面。与触点标定的差：中位 {statistics.median(errs):+.2f} cm，"
+              f"范围 {min(errs):+.2f} .. {max(errs):+.2f} cm（探测分辨率 {G.PROBE_STEP * 100:.1f} cm）")
+        print("差值接近 0 说明标定仍然成立，扫描注册的 z 不该覆盖它。")
+    RUNS.mkdir(parents=True, exist_ok=True)
+    out = RUNS / ("table_" + time.strftime("%Y%m%d_%H%M%S") + ".json")
+    out.write_text(json.dumps(dict(rows=rows, calibrated_table_z_cm=round(calibrated * 100, 2)),
+                              ensure_ascii=False, indent=1))
+    print("记录：", out)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--scan", type=Path)
     parser.add_argument("--plan-only", action="store_true")
+    parser.add_argument("--table", metavar="标记号", default=None,
+                        help="改为探测裸桌面（逗号分隔的地图码，如 40,42,43,44），检验触点标定是否仍然成立")
     args = parser.parse_args()
 
     import field_scan as SC
     import run as R
     G.require_empty_gripper()
+    if args.table:
+        probe_table([m.strip() for m in args.table.split(",") if m.strip()])
+        return
     with (G.nullcontext(None) if args.plan_only and args.scan else G.Session()) as sess:
         scan = args.scan.resolve() if args.scan else SC.scan(session=sess)
         scene = R.build_scene(scan)

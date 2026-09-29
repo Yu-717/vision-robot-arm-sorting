@@ -361,6 +361,22 @@ RESISTANCE = "遇到阻力或偏差"   # the console's wording when a servo did 
 SLIP_DEG = 3              # J6 closing this much further across a lift means the block left the fingers
 
 
+def close_for_probe(session: Session) -> int:
+    """Shut the fingers and prove they shut, before anything measures a height with them.
+
+    The forward-kinematics tip is the closed fingertip point, so a probe taken with the fingers open
+    measures nothing: they straddle a 3 cm block and pass either side of it. The gripper servo ignores a
+    large command often enough that this has to be checked rather than assumed -- on 2026-09-29 two of
+    four probes ran with the fingers at 29 deg because the grip was ignored, and their heights were
+    quietly wrong. Raises instead of guessing."""
+    result = wake_and_grip(session)
+    rb = status()["pose"][5]
+    if rb is None or rb < CONFIG["gripper"]["holding_if_readback_below_deg"]:
+        raise ConsoleError(f"探测前夹爪没有真正闭合（读回 {rb}，结果 {result.get('result')}）；"
+                           "张开的手指会从方块两侧滑过去，量到的高度没有意义")
+    return rb
+
+
 def probe_down(session: Session, tx: float, ty: float, pitch: int, to_z: float) -> dict:
     """Lower the closed fingertips at (tx, ty) until they meet something or reach `to_z`, and report the
     height where they stopped. The descent starts from the height that comes back, not from one the caller
