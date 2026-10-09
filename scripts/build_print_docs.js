@@ -20,7 +20,7 @@ const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 // name: 输出文件名；src: 源文件；pick: 只取这些二级标题的小节（缺省取全文）；title: 覆盖一级标题
 const JOBS = [
   { name: "需求规格", src: "10-需求规格.md" },
-  { name: "需求审查一页纸", src: "13-需求审查讲稿.md", pick: ["一、一页纸摘要"], title: "需求审查一页纸", compact: true },
+  { name: "需求审查两页纸", src: "14-需求审查两页纸.md", compact: true },
   { name: "需求审查讲稿", src: "13-需求审查讲稿.md", pick: ["二、5 分钟讲稿", "三、问答预案（3 分钟）", "四、讲前检查"], title: "需求审查讲稿（10.9）" },
   { name: "探索记录", src: "11-探索记录.md" },
 ];
@@ -51,7 +51,7 @@ function runs(tokens, base, dir, st) {
     else if (t.type === "link") {
       const kids = runs(t.tokens, /^https?:/.test(t.href) ? { ...base, color: "1F5FA8", underline: {} } : base, dir, st);
       out.push(/^https?:/.test(t.href) ? new D.ExternalHyperlink({ link: t.href, children: kids }) : kids);
-    } else if (t.type === "image") out.push(image(t, dir));
+    } else if (t.type === "image") out.push(image(t, dir, st.rowH));
     else if (t.tokens && t.tokens.length) out.push(...runs(t.tokens, base, dir, st));
     else out.push(new D.TextRun({ ...base, text: unescape(t.text ?? t.raw ?? "") }));
   }
@@ -62,11 +62,11 @@ function unescape(s) {
   return s.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#39;/g, "'");
 }
 
-function image(t, dir) {
+function image(t, dir, rowH) {
   const file = path.resolve(dir, decodeURI(t.href));
   const { width, height } = sizeOf(file);
-  const maxW = 440, maxH = 330; // pt 近似
-  const k = Math.min(maxW / width, maxH / height, 1);
+  const maxW = 640, maxH = 330; // 像素，96 dpi
+  const k = rowH ? rowH / height : Math.min(maxW / width, maxH / height, 1);
   return new D.ImageRun({
     type: path.extname(file).slice(1).toLowerCase().replace("jpeg", "jpg"),
     data: fs.readFileSync(file),
@@ -115,13 +115,19 @@ function blocks(tokens, dir, st, ctx = { level: 0 }) {
       const lv = [D.HeadingLevel.TITLE, D.HeadingLevel.HEADING_1, D.HeadingLevel.HEADING_2, D.HeadingLevel.HEADING_3][Math.min(t.depth, 4) - 1];
       out.push(new D.Paragraph({ heading: lv, keepNext: true, children: runs(t.tokens, {}, dir, st) }));
     } else if (t.type === "paragraph") {
-      const onlyImage = t.tokens.length === 1 && t.tokens[0].type === "image";
+      const imgs = t.tokens.filter((x) => x.type === "image");
+      const onlyImage = imgs.length > 0 && t.tokens.every((x) => x.type === "image" || !x.raw.trim());
+      if (imgs.length > 1) {
+        // 一行多图：高度统一，总宽不超过版心
+        const ratio = imgs.reduce((a, x) => { const d = sizeOf(path.resolve(dir, decodeURI(x.href))); return a + d.width / d.height; }, 0);
+        st = { ...st, rowH: Math.floor((640 - 8 * imgs.length) / ratio) };
+      }
       const caption = t.tokens.length === 1 && t.tokens[0].type === "em";
       out.push(new D.Paragraph({
         alignment: onlyImage || caption ? D.AlignmentType.CENTER : undefined,
         keepNext: onlyImage || undefined,
         spacing: { after: st.after, line: st.line },
-        children: runs(t.tokens, caption ? { size: st.size - 2, color: "555555" } : {}, dir, st),
+        children: runs(onlyImage ? imgs.flatMap((x, i) => (i ? [{ type: "text", text: " " }, x] : [x])) : t.tokens, caption ? { size: st.size - 2, color: "555555" } : {}, dir, st),
       }));
     } else if (t.type === "table") {
       out.push(table(t, dir, st), new D.Paragraph({ spacing: { after: st.after / 2 }, children: [] }));
@@ -162,7 +168,7 @@ function blocks(tokens, dir, st, ctx = { level: 0 }) {
 }
 
 async function docx(md, job, dir) {
-  const st = job.compact ? { size: 20, table: 19, after: 90, line: 290 } : { size: 21, table: 18, after: 140, line: 320 };
+  const st = job.compact ? { size: 19, table: 17, after: 70, line: 264 } : { size: 21, table: 18, after: 140, line: 320 };
   let olCount = 0;
   const ctx = { level: 0, next: () => olCount++ };
   // 每个有序列表一个独立编号实例，避免跨列表续号
@@ -206,24 +212,29 @@ async function docx(md, job, dir) {
 // ---------- HTML / PDF ----------
 
 function html(md, job, dir) {
-  const body = marked.parse(md).replace(/src="([^"]+)"/g, (_, src) => `src="file://${encodeURI(path.resolve(dir, decodeURI(src)))}"`);
+  const body = marked.parse(md)
+    .replace(/src="([^"]+)"/g, (_, src) => `src="file://${encodeURI(path.resolve(dir, decodeURI(src)))}"`)
+    // 短单元格不换行，避免“排/期”这样的断行把行高撑成两行
+    .replace(/<(td|th)>((?:<strong>)?[^<]{1,12}(?:<\/strong>)?)<\/\1>/g, (m, tag, text) => (visualLen(text.replace(/<[^>]+>/g, "")) <= 22 ? `<${tag} style="white-space:nowrap">${text}</${tag}>` : m));
   const c = job.compact;
   return `<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>${job.title || job.name}</title><style>
-@page { size: A4; margin: ${c ? "12mm 14mm" : "18mm 18mm 20mm"}; }
-body { font: ${c ? "10pt/1.5" : "10.5pt/1.62"} "PingFang SC", "Microsoft YaHei", Arial, sans-serif; color: #1a1a1a; margin: 0; }
-h1 { font-size: ${c ? "17pt" : "18pt"}; margin: 0 0 ${c ? "6pt" : "10pt"}; }
-h2 { font-size: ${c ? "12pt" : "14pt"}; color: #1b3a5c; margin: ${c ? "9pt 0 4pt" : "20pt 0 8pt"}; border-bottom: 0.6pt solid #c9d1da; padding-bottom: 2pt; break-after: avoid; }
+@page { size: A4; margin: ${c ? "9mm 12mm" : "18mm 18mm 20mm"}; }
+body { font: ${c ? "9pt/1.38" : "10.5pt/1.62"} "PingFang SC", "Microsoft YaHei", Arial, sans-serif; color: #1a1a1a; margin: 0; }
+h1 { font-size: ${c ? "16pt" : "18pt"}; margin: 0 0 ${c ? "5pt" : "10pt"}; }
+h2 { font-size: ${c ? "11pt" : "14pt"}; color: #1b3a5c; margin: ${c ? "6pt 0 3pt" : "20pt 0 8pt"}; border-bottom: 0.6pt solid #c9d1da; padding-bottom: 2pt; break-after: avoid; }
 h3 { font-size: ${c ? "9.5pt" : "12pt"}; color: #1b3a5c; margin: 14pt 0 6pt; break-after: avoid; }
 h4 { font-size: 10.5pt; margin: 10pt 0 4pt; break-after: avoid; }
-p { margin: 0 0 ${c ? "6pt" : "7pt"}; }
-table { border-collapse: collapse; width: 100%; margin: ${c ? "5pt 0 9pt" : "6pt 0 10pt"}; font-size: ${c ? "9.5pt" : "9pt"}; line-height: 1.4; }
-th, td { border: 0.5pt solid #b5b5b5; padding: ${c ? "3.5pt 5pt" : "3.5pt 5pt"}; vertical-align: top; text-align: left; }
+p { margin: 0 0 ${c ? "3.5pt" : "7pt"}; }
+table { border-collapse: collapse; width: 100%; margin: ${c ? "3pt 0 4pt" : "6pt 0 10pt"}; font-size: ${c ? "8.4pt" : "9pt"}; line-height: ${c ? 1.3 : 1.4}; }
+th, td { border: 0.5pt solid #b5b5b5; padding: ${c ? "1.7pt 4pt" : "3.5pt 5pt"}; vertical-align: top; text-align: left; }
 th { background: #edeff2; } tr { break-inside: avoid; } thead { display: table-header-group; }
 code { font: 0.88em Menlo, monospace; background: #f1f2f4; padding: 0 2pt; border-radius: 2pt; }
 pre { background: #f4f5f7; padding: 6pt 8pt; font-size: 8.5pt; line-height: 1.45; white-space: pre-wrap; break-inside: avoid; }
 pre code { background: none; padding: 0; }
-img { max-width: 78%; max-height: 82mm; display: block; margin: 6pt auto 3pt; break-inside: avoid; }
-p:has(> img:only-child) { break-after: avoid; } p > em:only-child { display: block; text-align: center; font-size: 9pt; color: #555; font-style: normal; }
+img { max-width: ${c ? "100%" : "78%"}; max-height: 82mm; display: block; margin: ${c ? "3pt auto 2pt" : "6pt auto 3pt"}; break-inside: avoid; }
+p:has(> img + img) { display: flex; justify-content: space-between; align-items: stretch; gap: 5pt; height: 24mm; }
+p:has(> img + img) img { height: 100%; width: auto; max-width: none; margin: 0; border: 0.5pt solid #c9d1da; }
+p:has(> img:only-child) { break-after: avoid; } p > em:only-child { display: block; text-align: center; font-size: ${c ? "8pt" : "9pt"}; color: #555; font-style: normal; }
 blockquote { margin: 6pt 0; padding-left: 8pt; border-left: 2pt solid #9aa3ae; color: #444; }
 ul, ol { margin: 0 0 7pt; padding-left: 18pt; } li { margin-bottom: 2pt; } li:has(> input) { list-style: none; margin-left: -14pt; }
 a { color: inherit; text-decoration: none; } a[href^="http"] { color: #1f5fa8; } hr { display: none; }
