@@ -5,6 +5,12 @@
 """Generate the printable A4 table map with an ArUco grid, plus its layout JSON.
 
   uv run src/tools/make_map.py --name dofbot_map_a4_v2
+  uv run src/tools/make_map.py --name dofbot_map_a4_v3 --bins config/bins_acrylic_v1.json \
+      --placement-from config/map_a4_v2.json
+
+With --bins, codes that a planned bin plate would cover are left out (the others keep the
+ids and positions of the full grid, so a v2 calibration still applies) and the plate
+outlines are printed as seating marks.
 
 Map frame: origin at the centre of the page's near edge (the edge pushed against the
 arm's platform), X to the arm's right, Y away from the arm, metres in the JSON.
@@ -16,6 +22,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 from pathlib import Path
 
 import cv2
@@ -38,7 +45,26 @@ def main() -> None:
     parser.add_argument("--first-id", type=int, default=30)
     parser.add_argument("--base-offset-cm", type=float, default=8.0, help="servo-1 axis to platform front face")
     parser.add_argument("--mat-z-cm", type=float, default=-9.0, help="map plane height in the base frame")
+    parser.add_argument("--bins", type=Path, help="bin design JSON from make_bins.py; needs --placement-from")
+    parser.add_argument("--placement-from", type=Path, help="map JSON whose base_from_map placement is carried over")
     args = parser.parse_args()
+    placement = json.loads(args.placement_from.read_text())["placement"] if args.placement_from else None
+    plates = {}  # bin number -> (name, plate corners, opening corners) in map cm
+    if args.bins:
+        if not placement:
+            raise SystemExit("--bins needs --placement-from to turn base coordinates into map coordinates")
+        design, off = json.loads(args.bins.read_text()), placement["base_from_map"]
+        geo = design["geometry_mm"]
+        w, (y0, y1), inner = geo["plate"][0] / 20, [v / 10 for v in geo["plate_y_range"]], geo["inner"] / 20
+        for number, entry in design["bins"].items():
+            cx, cy = [v * 100 for v in entry["planned_centre_base_m"]]
+            th = math.radians(entry["planned_flange_direction_deg"] - 90)
+
+            def on_map(pts):
+                return [(cx + x * math.cos(th) - y * math.sin(th) - off["dx"] * 100,
+                         cy + x * math.sin(th) + y * math.cos(th) - off["dy"] * 100) for x, y in pts]
+            plates[number] = (entry["name"], on_map([(-w, y0), (w, y0), (w, y1), (-w, y1)]),
+                              on_map([(-inner, -inner), (inner, -inner), (inner, inner), (-inner, inner)]))
 
     count = len(args.cols) * len(args.rows)
     if args.first_id + count > 50:
@@ -53,8 +79,15 @@ def main() -> None:
     dictionary = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
     side_px = round(args.side_cm * 10 * MM)
     layout, mid = {}, args.first_id
+    skipped = []
     for y in args.rows:
         for x in args.cols:
+            # a code is dropped when a plate edge comes within 3 mm of its quiet zone
+            if any(cv2.pointPolygonTest(np.array(plate, np.float32), (x, y), True) > -(args.side_cm / 2 + 0.3)
+                   for _, plate, _ in plates.values()):
+                skipped.append(mid)
+                mid += 1
+                continue
             marker = cv2.aruco.generateImageMarker(dictionary, mid, side_px, borderBits=1)
             cx, cy = px(x, y)
             page.paste(Image.fromarray(marker), (cx - side_px // 2, cy - side_px // 2))
@@ -63,6 +96,13 @@ def main() -> None:
             layout[mid] = [[(x - h) / 100, (y + h) / 100], [(x + h) / 100, (y + h) / 100],
                            [(x + h) / 100, (y - h) / 100], [(x - h) / 100, (y - h) / 100]]  # TL TR BR BL
             mid += 1
+
+    for number, (name, plate, opening) in plates.items():
+        for pts, width in ((plate, 4), (opening, 2)):
+            draw.line([px(*q) for q in pts + pts[:1]], fill=110, width=width)
+        cx, cy = np.mean(opening, axis=0)
+        if 0 < cx + W_CM / 2 < W_CM and 0 < cy < H_CM:
+            draw.text(px(cx, cy), f"{number} 号桶\n{name}", fill=110, font=small, anchor="mm", align="center")
 
     x0 = px(0, 0)[0]
     for yy in np.arange(0.3, H_CM - 0.3, 0.6):  # dashed centre line, broken around markers on X = 0
@@ -79,7 +119,8 @@ def main() -> None:
         if yc % 5 == 0:
             draw.text((a[0] + 36, a[1] - 14), str(yc), fill=0, font=small)
     draw.text(px(-14.2, 20.6), f"Dofbot 桌面地图 {args.name} · A4 横向 · 必须按 100%/实际尺寸打印 · "
-              f"DICT_4X4_50 id {args.first_id}-{mid - 1}, {args.side_cm * 10:g} mm", fill=0, font=small)
+              f"DICT_4X4_50 id {args.first_id}-{mid - 1}, {args.side_cm * 10:g} mm"
+              + (f" · 桶位下不印码：{skipped}" if skipped else ""), fill=0, font=small)
     bar_y = 20.1
     for t in range(11):
         xx = px(3.0 + t, bar_y)[0]
@@ -102,6 +143,12 @@ def main() -> None:
             "source": "user tape measurements 2026-09-24, about +-1 cm; verify with a touch test on site",
         },
     }
+    if placement:
+        cfg["placement"] = dict(placement, source=f"carried over from {args.placement_from}: " + placement["source"])
+    if plates:
+        cfg["bins"] = {"design": str(args.bins), "omitted_ids": skipped,
+                       "plate_outline_map_cm": {n: [[round(v, 2) for v in q] for q in pl] for n, (_, pl, _) in plates.items()},
+                       "_note": "outlines are the planned bin seats, not measured positions"}
     out = ROOT / "config" / f"{args.name.replace('dofbot_', '')}.json"
     out.write_text(json.dumps(cfg, ensure_ascii=False, indent=2) + "\n")
 
@@ -115,7 +162,7 @@ def main() -> None:
     h_fit, _ = cv2.findHomography(src, dst)
     err = np.linalg.norm(cv2.perspectiveTransform(src.reshape(-1, 1, 2), h_fit).reshape(-1, 2) - dst, axis=1)
     print(f"{pdf.relative_to(ROOT)}  {out.relative_to(ROOT)}")
-    print(f"self-check: found {len(found)}/{count} ids, layout residual max {err.max() * 1000:.3f} mm")
+    print(f"self-check: found {len(found)}/{len(layout)} ids, layout residual max {err.max() * 1000:.3f} mm")
 
 
 if __name__ == "__main__":
