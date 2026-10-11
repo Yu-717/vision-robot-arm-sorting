@@ -168,6 +168,8 @@ class CalibrationTest(unittest.TestCase):
 class HTTPTest(unittest.TestCase):
     def setUp(self):
         self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup)
+        if not (ROOT/'data/captures/2026-09-24/map_v2_placed.jpg').exists():
+            self.skipTest('needs the recorded frame under data/captures (not in the repository)')
         self.camera=Camera(replay=ROOT/'data/captures/2026-09-24/map_v2_placed.jpg')
         self.control=Controller(self.tmp.name,camera=self.camera)
         self.app=App(self.control,self.camera)

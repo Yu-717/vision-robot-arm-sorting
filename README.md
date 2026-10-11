@@ -13,7 +13,7 @@
 | 管理看板 | **正式前端尚未开始**；接口文档、仿真后端和壳子页面已就绪 | 仿真后端 2026-10-11 在 Mac 上跑通，未接实机 |
 | 兜底机制 | 代码已实现 7 条失败路径 | 待按课程口径量化 |
 | 实体容器 | 桶的图纸与地图 v3 已出，**未切割、未到货** | 设计值，未测量 |
-| 工程基础 | — | **237 项测试通过**（2026-10-11），约 1.2 万行 Python 应用代码 |
+| 工程基础 | — | **237 项测试**：开发机全部通过；全新克隆取回资产后 231 通过、6 跳过（2026-10-11）。约 1.2 万行 Python 应用代码 |
 
 离线评分（15 轮手摆 60 块）：**100% 找到、100% 类别正确**，中心误差中位 0.0 cm、p90 1.04 cm。
 
@@ -84,7 +84,18 @@ unzip -o /tmp/arm-assets/blocks4_v3_models.zip -d . && unzip -o /tmp/arm-assets/
 
 ```sh
 uv run --with 'opencv-python<5' --with numpy --with onnxruntime python -m unittest discover -s tests   # 237 项测试，不需要硬件
-python3 -m unittest discover -s tests          # 没有 numpy/OpenCV 时：依赖它们的测试文件导入失败或跳过，其余照常
+```
+
+测试结果取决于机器上有什么（2026-10-11 逐种核对过）：
+
+| 环境 | 结果 |
+|---|---|
+| 持有全部 `data/` 的开发机 | 237 项全部通过 |
+| 全新克隆 + 取回 Release 资产（见下文） | 231 项通过，6 项跳过（需要 `data/captures/` 里的实机采集画面） |
+| 全新克隆、没有取回资产 | 通过其余部分，29 项跳过（仿真和贴面相关） |
+| 没有 numpy / OpenCV（直接 `python3 -m unittest`） | 6 个测试文件导入失败，属预期；请用上面的 `uv run` 命令 |
+
+```sh
 python3 src/pipeline/run.py --dry-run --scan <扫描目录>   # 用已有扫描重建场景，不动机械臂
 ```
 

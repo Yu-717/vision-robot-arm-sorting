@@ -305,7 +305,11 @@ const API = [
   ['记录与标定'],
   ['POST', '/api/sample', '{"kind": "note", "label": "", "note": ""}', '采样：状态 + 画面存入会话目录'],
   ['POST', '/api/record', '{"on": true, "label": "trial", "note": ""}', '开始/结束录制'],
-  ['POST', '/api/freeze', '{}', '冻结当前画面用于标定'],
+  ['POST', '/api/verify', '{"kind": "grasped", "note": ""}', '人工确认记录：grasped / released / boundary_clear / platform_contact / table_contact'],
+  ['POST', '/api/freeze', '{}', '冻结当前画面用于标定；返回 frozen.id'],
+  ['IMG', '/api/frozen', '', '最近一次冻结的画面'],
+  ['POST', '/api/calibrate', '{"frame_id": "", "plane": "table", "points": [[100, 100, -5, 15], [540, 100, 5, 15], [540, 380, 5, 8], [100, 380, -5, 8]]}', '冻结帧上的平面单应标定：[u, v, x_cm, y_cm] 至少 4 点；frame_id 填冻结返回的 id'],
+  ['POST', '/api/measure', '{"frame_id": "", "pixels": [[320, 240]]}', '冻结帧上像素 → 平面坐标，或两点距离'],
   ['POST', '/api/localization/save', '{}', '保存当前定位结果'],
 ];
 let picked = null;

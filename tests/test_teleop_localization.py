@@ -42,6 +42,8 @@ class PhoneParallaxTest(unittest.TestCase):
     def test_blocks_on_marker_centres_within_a_centimetre(self):
         import json
         d = Path(__file__).resolve().parents[1] / 'data' / 'captures' / '2026-09-26'
+        if not (d / 'phone_blocks_on_markers.json').exists():
+            self.skipTest('needs the recorded frames under data/captures (not in the repository)')
         meta = json.loads((d / 'phone_blocks_on_markers.json').read_text())
         layout = json.loads((Path(__file__).resolve().parents[1] / 'config' / 'map_a4_v2.json').read_text())['layout_m']
         result = L.locate_phone((d / meta['image']).read_bytes(), meta['arm_pose'])
@@ -62,6 +64,8 @@ class BoardSplitTest(unittest.TestCase):
         """2026-09-26: splitting merged blobs appended to the list being iterated and hung the locator."""
         import signal
         d = Path(__file__).resolve().parents[1] / 'data' / 'captures' / '2026-09-25' / 'map_handeye'
+        if not (d / 'views.json').exists():
+            self.skipTest('needs the recorded frames under data/captures (not in the repository)')
         views = __import__('json').loads((d / 'views.json').read_text())
         signal.signal(signal.SIGALRM, lambda *a: (_ for _ in ()).throw(TimeoutError('locate_board hung')))
         for v in views[:3]:
@@ -79,6 +83,8 @@ class BoardPerHueTest(unittest.TestCase):
     def test_red_next_to_yellow_and_background_is_found(self):
         import json
         d = Path(__file__).resolve().parents[1] / 'data' / 'captures' / '2026-09-26'
+        if not (d / 'board_red_near_yellow.json').exists():
+            self.skipTest('needs the recorded frames under data/captures (not in the repository)')
         meta = json.loads((d / 'board_red_near_yellow.json').read_text())
         result = L.locate_board((d / meta['image']).read_bytes(), meta['servos'])
         red = [o for o in result['objects'] if o['label'] == 'red']

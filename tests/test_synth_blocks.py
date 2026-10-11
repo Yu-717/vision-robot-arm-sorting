@@ -35,6 +35,8 @@ class CubeGeometryTest(unittest.TestCase):
         self.assertAlmostEqual(c[:, 2].max(), SY.BLOCK)
 
     def test_every_block_has_six_faces_including_its_colour(self):
+        if not (SY.FACES_DIR / 'index.json').exists():
+            self.skipTest('needs data/reference/block_faces (Release assets-v3)')
         blocks = SY.load_blocks()
         self.assertEqual(sorted(blocks), sorted(SY.CLASSES))
         for cat, faces in blocks.items():
