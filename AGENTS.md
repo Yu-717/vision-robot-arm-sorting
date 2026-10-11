@@ -6,4 +6,7 @@
 - 四贴纸垃圾图案是当前任务；旧四色模型的 Blue/Green/Red/Yellow 标签不可直接当作垃圾类别。
 - 当前实测 1–5 号单舵机写入不生效，六舵机批量小步动作和回读可用。任何动作先查 [硬件安全边界](docs/05-板卡连接与硬件实测.md)，执行前人工确认设备周围安全。不要把 `Arm_Action_Mode(0)` 未经验证地命名为急停。
 - 优先用项目 CodeGraph 查符号、调用关系和影响；纯文字、课程内容和非代码资料用文本搜索。若索引不可用，按工具提示处理，不自动重建。
+- `src/sim/` 是独立的仿真后端（[说明](docs/atlas-200i-dk-a2/16-仿真模块.md)）：不导入 `Arm_Lib`，复用 `src/teleop` 的 `Controller`。仿真结果只说明几何与接口自洽，不写成实机结论。
+- 前端依赖的日志事件以 [日志契约](docs/atlas-200i-dk-a2/18-日志契约.md)为准，唯一来源是 `src/tools/log_contract.py` 的事件表；增改事件或字段先改事件表，再运行 `python3 src/tools/log_contract.py schema > docs/contracts/log_event.schema.json`。
+- `data/` 与 `资料/` 不入库；模型与物块贴面在 Release `assets-v3`，换模型发新的 Release，不覆盖旧包。
 - 官方 `ros2_robot_arm` 固定源码已归档；[导入审计](docs/atlas-200i-dk-a2/06-官方源码导入审计.md)记录提交 SHA、NOTICE、逐文件校验、模型缺项和关键接口。上游快照保持原样，不把其配置改写成已在当前板验证的应用。
