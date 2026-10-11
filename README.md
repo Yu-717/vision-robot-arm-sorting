@@ -39,14 +39,37 @@
 
 ### 不在仓库里的东西
 
-`data/` 和 `资料/` 整个目录不入库（`.gitignore`），远程仓库里也没有 Release 或 LFS。克隆下来的人**没有**下面这些，需要从持有的机器另行拷贝：
+`data/` 和 `资料/` 整个目录不入库（`.gitignore`），仓库不用 LFS。克隆下来的人**没有**下面这些；前两项挂在 Release 上，其余要从持有的机器另行拷贝：
 
-| 缺什么 | 本机位置 | 大小 | 没有它会怎样 |
+| 缺什么 | 放在哪 | 从哪拿 | 没有它会怎样 |
 |---|---|---|---|
-| 四类检测模型 v3（`best.onnx`、`best.pt`、`blocks4_yolov8n.om`） | `data/models/blocks4/v3/` | 25 MB | 自动分拣和仿真里的检测对照不可用；仿真的画面与控制不受影响 |
-| 物块 20 张贴面 | `data/reference/block_faces/` | 0.6 MB | **仿真后端无法启动**，`tests/test_sim.py` 全部跳过 |
-| 数据集、运行日志、采集画面 | `data/datasets/`、`data/runs/`、`data/captures/` | — | 不能重训；前端没有真实 `log.jsonl` 可回放 |
+| 四类检测模型 v3（`best.onnx`、`best.pt`、`blocks4_yolov8n.om`） | `data/models/blocks4/v3/` | Release `assets-v3` 的 `blocks4_v3_models.zip`（22 MB） | 自动分拣和仿真里的检测对照不可用；仿真的画面与控制不受影响 |
+| 物块 20 张贴面 | `data/reference/block_faces/` | Release `assets-v3` 的 `block_faces.zip`（0.6 MB） | **仿真后端无法启动**，`tests/test_sim.py` 全部跳过 |
+| 数据集、运行日志、采集画面 | `data/datasets/`、`data/runs/`、`data/captures/` | 另行拷贝 | 不能重训；前端没有真实 `log.jsonl` 可回放 |
 | 官方三类模型、课程包、`Arm_Lib` 源码、上游 ROS 2 工程 | `data/models/official_arm/`、`资料/` | 约 2.7 GB | 第三方内容，按[资产清单](docs/atlas-200i-dk-a2/09-资产清单.md)里的链接自行下载 |
+
+### 取回模型与贴面
+
+两个压缩包里的路径都从仓库根目录算起，在仓库根目录解压即落到正确位置。[Release 页面](https://github.com/anweat/vision-robot-arm-sorting/releases/tag/assets-v3)上可以直接点下载，或者：
+
+```sh
+gh release download assets-v3 -R anweat/vision-robot-arm-sorting -D /tmp/arm-assets
+```
+
+```sh
+cd /tmp/arm-assets && shasum -a 256 -c SHA256SUMS.txt
+```
+
+```sh
+unzip -o /tmp/arm-assets/blocks4_v3_models.zip -d . && unzip -o /tmp/arm-assets/block_faces.zip -d .
+```
+
+最后一条在仓库根目录执行。完成后 `tests/test_sim.py` 不再跳过，仿真后端可以启动。
+
+- 只做前端联调：两个包都要（贴面必需；没有模型时“检测对照”一栏报不可用，其余正常）。
+- 上板跑分拣：用包里的 `blocks4_yolov8n.om`（`Ascend310B1`）；`best.onnx` 用于 Mac 等其他机器。
+- 模型是 v3：2026-09-26 训练，136 张真实图 + 800 张合成图，验证集 mAP@0.5 0.952；训练细节见[资产清单](docs/atlas-200i-dk-a2/09-资产清单.md)。换了模型要发新的 Release 并改这里的标签名，不要覆盖旧包。
+- 权重由 Ultralytics YOLOv8n（AGPL-3.0）训练得到；贴面是本组实物物块的照片，贴纸图案来自课程套件。两者只为本课程项目使用。
 
 ## 文档入口
 
