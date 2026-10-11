@@ -29,7 +29,8 @@
 ## 快速开始
 
 ```sh
-python3 -m unittest discover -s tests          # 209 项测试，不需要硬件
+uv run --with 'opencv-python<5' --with numpy --with onnxruntime python -m unittest discover -s tests   # 228 项测试，不需要硬件
+python3 -m unittest discover -s tests          # 没有 numpy/OpenCV 时：依赖它们的测试文件导入失败或跳过，其余照常
 python3 src/pipeline/run.py --dry-run --scan <扫描目录>   # 用已有扫描重建场景，不动机械臂
 ```
 
@@ -40,6 +41,16 @@ python3 src/pipeline/run.py --dry-run --scan <扫描目录>   # 用已有扫描�
 新增本地工作台：`python3 src/teleop/server.py`，打开 <http://127.0.0.1:8765/>。默认离线模拟，支持关节点动、腕部相机视锥、场景物块、冻结帧平面标定与采样。
 
 [使用说明、当前记录索引和实机边界](docs/atlas-200i-dk-a2/08-遥控与场景标定工作台.md)。本次只完成离线验证，未执行实机动作。
+
+## 仿真后端（给前端联调）
+
+```sh
+uv run --with 'opencv-python<5' --with numpy --with onnxruntime src/sim/sim_server.py --map map_a4_v3 --bins bins_acrylic_v1
+```
+
+打开 <http://127.0.0.1:8770/sim/>。独立模块 `src/sim/`：与实机控制台同一套 `/api/*`（同一个 `Controller`），外加合成的腕部相机画面、可抓放的物块、可更换的地图和垃圾桶、检测模型与真值的对照，以及列出全部接口的壳子页面。允许跨域，`--lan` 可供手机和局域网访问。不导入 `Arm_Lib`，不可能驱动实机。
+
+[接口、参数来源、未建模的部分和 2026-10-11 的评估结果](docs/atlas-200i-dk-a2/16-仿真模块.md)。仿真结果不是实机精度。
 
 ## 开发入口
 
