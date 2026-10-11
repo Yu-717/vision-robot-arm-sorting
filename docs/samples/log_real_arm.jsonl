@@ -1,0 +1,687 @@
+{"t": 1790305605.892704, "event": "localized", "attempt": "observe", "pose": [89, 104, 5, 6, 92, 29], "board": {"label": "blue", "map_cm": [-4.36, 12.9], "base_cm": [-4.29, 19.65, 1.58], "bbox": [12, 181, 114, 184], "method": "edges", "height_cm": 3, "precision": "rough; tentative intrinsics, assumed 3 cm block and map placement"}, "phone": {"label": "blue", "map_cm": [-6.13, 12.84], "bbox": [773, 355, 82, 102], "method": "colour-top-face-3cm", "height_corrected": true, "precision": "~0.3 cm when the coloured face is on top (2026-09-26 check); ~1.5 cm off if it is a side face"}, "problems": ["box near the image border (partial view)", "method edges", "board and phone differ by 1.8 cm"]}
+{"t": 1790305611.9485178, "event": "localized", "attempt": "look", "pose": [101, 104, 5, 6, 92, 29], "board": {"label": "blue", "map_cm": [-6.4, 13.15], "base_cm": [-6.33, 19.9, 1.58], "bbox": [85, 112, 212, 184], "method": "top-face", "height_cm": 3, "precision": "rough; tentative intrinsics, assumed 3 cm block and map placement"}, "phone": {"label": "blue", "map_cm": [-6.12, 12.84], "bbox": [772, 356, 84, 100], "method": "colour-top-face-3cm", "height_corrected": true, "precision": "~0.3 cm when the coloured face is on top (2026-09-26 check); ~1.5 cm off if it is a side face"}, "problems": []}
+{"t": 1790305611.963236, "event": "planned", "colour": "blue", "run": "data/runs/console_grasp/20260925_110630", "block_base_cm": [-6.33, 19.9], "board": {"label": "blue", "map_cm": [-6.4, 13.15], "base_cm": [-6.33, 19.9, 1.58], "bbox": [85, 112, 212, 184], "method": "top-face", "height_cm": 3, "precision": "rough; tentative intrinsics, assumed 3 cm block and map placement"}, "phone": {"label": "blue", "map_cm": [-6.12, 12.84], "bbox": [772, 356, 84, 100], "method": "colour-top-face-3cm", "height_corrected": true, "precision": "~0.3 cm when the coloured face is on top (2026-09-26 check); ~1.5 cm off if it is a side face"}, "tip_target_cm": [-6.63, 20.85], "pitch": 150, "hover": [108, 59, 49, 12], "block_centre_z_cm": 0.08}
+{"t": 1790305658.2159, "event": "hovering", "pose": [107, 59, 48, 12, 92, 29], "tip_cm": [-6.3, 20.6, 3.3], "colour": "blue"}
+{"t": 1790305694.054036, "event": "gripped", "pose": [107, 60, 26, 30, 92, 29], "grip": {"action": "grip", "command": 133, "readback": 128, "at": 1790334578.0760756, "holding": true, "result": "holding"}}
+{"t": 1790305701.813875, "event": "lifted", "pose": [107, 58, 52, 8, 92, 127], "gripper_readback": 127, "tip_cm": [-6.2, 20.3, 3.5]}
+{"t": 1790305934.147489, "event": "put_planned", "target_map_cm": [12.0, 13.0], "tip_target_cm": [12.59, 20.6], "pitch": 145, "carry_out": [107, 92, 22, 6], "carry_in": [59, 92, 22, 6], "hover": [59, 53, 52, 20]}
+{"t": 1790305982.571152, "event": "put", "target": "44", "released_at": [59, 54, 31, 38, 92, 127], "pose": [59, 53, 59, 15, 92, 29]}
+{"t": 1790306017.0252109, "event": "localized", "attempt": "observe", "pose": [89, 104, 5, 6, 92, 29], "board": null, "phone": {"label": "yellow", "map_cm": [-12.36, 17.58], "bbox": [789, 138, 89, 113], "method": "colour-top-face-3cm", "height_corrected": true, "precision": "~0.3 cm when the coloured face is on top (2026-09-26 check); ~1.5 cm off if it is a side face"}, "problems": ["not seen by the board camera"]}
+{"t": 1790306025.5980659, "event": "localized", "attempt": "look", "pose": [116, 104, 5, 6, 92, 29], "board": null, "phone": {"label": "yellow", "map_cm": [-12.35, 17.59], "bbox": [790, 138, 88, 113], "method": "colour-top-face-3cm", "height_corrected": true, "precision": "~0.3 cm when the coloured face is on top (2026-09-26 check); ~1.5 cm off if it is a side face"}, "problems": ["not seen by the board camera"]}
+{"t": 1790306025.636847, "event": "stopped", "reason": "yellow: still unreliable after looking again: ['not seen by the board camera']"}
+{"t": 1790306049.9019442, "event": "look_pose", "block_base_cm": [-11.9, 24.8], "pose": [116, 120, 5, 5], "off_centre_px": 41}
+{"t": 1790306049.904973, "event": "look_pose", "block_base_cm": [-5.9, 19.8], "pose": [105, 105, 5, 5], "off_centre_px": 22}
+{"t": 1790306049.908057, "event": "look_pose", "block_base_cm": [6.1, 19.8], "pose": [73, 105, 5, 5], "off_centre_px": 26}
+{"t": 1790306093.990846, "event": "localized", "attempt": "observe", "pose": [90, 104, 5, 6, 92, 29], "board": null, "phone": {"label": "green", "map_cm": [6.84, 13.73], "bbox": [944, 665, 56, 89], "method": "colour-top-face-3cm", "height_corrected": true, "precision": "~0.3 cm when the coloured face is on top (2026-09-26 check); ~1.5 cm off if it is a side face"}, "problems": ["not seen by the board camera"]}
+{"t": 1790306094.375255, "event": "look_pose", "block_base_cm": [6.9, 20.5], "pose": [71, 110, 5, 5], "off_centre_px": 16}
+{"t": 1790306101.7666922, "event": "localized", "attempt": "look", "pose": [71, 109, 5, 6, 92, 29], "board": {"label": "green", "map_cm": [6.89, 13.54], "base_cm": [6.96, 20.29, 1.58], "bbox": [177, 163, 192, 188], "method": "top-face", "height_cm": 3, "precision": "rough; tentative intrinsics, assumed 3 cm block and map placement"}, "phone": {"label": "green", "map_cm": [7.03, 13.44], "bbox": [936, 681, 73, 73], "method": "colour-top-face-3cm", "height_corrected": true, "precision": "~0.3 cm when the coloured face is on top (2026-09-26 check); ~1.5 cm off if it is a side face"}, "problems": []}
+{"t": 1790306101.783605, "event": "planned", "colour": "green", "run": "data/runs/console_grasp/20260925_111445", "block_base_cm": [6.96, 20.29], "pitch_verified": true, "board": {"label": "green", "map_cm": [6.89, 13.54], "base_cm": [6.96, 20.29, 1.58], "bbox": [177, 163, 192, 188], "method": "top-face", "height_cm": 3, "precision": "rough; tentative intrinsics, assumed 3 cm block and map placement"}, "phone": {"label": "green", "map_cm": [7.03, 13.44], "bbox": [936, 681, 73, 73], "method": "colour-top-face-3cm", "height_corrected": true, "precision": "~0.3 cm when the coloured face is on top (2026-09-26 check); ~1.5 cm off if it is a side face"}, "tip_target_cm": [7.28, 21.24], "pitch": 150, "hover": [71, 52, 59, 8], "block_centre_z_cm": 0.08}
+{"t": 1790306118.8674629, "event": "hovering", "pose": [71, 52, 58, 8, 92, 29], "tip_cm": [7.2, 20.8, 3.0], "colour": "green"}
+{"t": 1790306126.983968, "event": "gripped", "pose": [71, 54, 37, 25, 92, 29], "grip": {"action": "grip", "command": 133, "readback": 128, "at": 1790335011.0067322, "holding": true, "result": "holding"}}
+{"t": 1790306127.153449, "event": "lifted", "pose": [71, 54, 37, 25, 92, 128], "gripper_readback": 128, "tip_cm": [7.0, 20.5, 0.2]}
+{"t": 1790306177.6880488, "event": "put_planned", "target_map_cm": [-6.0, 13.0], "tip_target_cm": [-6.22, 20.71], "pitch": 150, "carry_out": [71, 92, 22, 6], "carry_in": [107, 92, 22, 6], "hover": [107, 61, 45, 14]}
+{"t": 1790306222.382072, "event": "put", "target": "41", "released_at": [106, 62, 24, 32, 92, 129], "pose": [106, 62, 44, 15, 92, 29]}
+{"t": 1790306342.2220101, "event": "localized", "attempt": "observe", "pose": [90, 104, 5, 6, 92, 29], "board": null, "phone": {"label": "yellow", "map_cm": [-12.35, 17.61], "bbox": [789, 137, 89, 114], "method": "colour-top-face-3cm", "height_corrected": true, "precision": "~0.3 cm when the coloured face is on top (2026-09-26 check); ~1.5 cm off if it is a side face"}, "problems": ["not seen by the board camera"]}
+{"t": 1790306342.3945951, "event": "look_pose", "block_base_cm": [-12.3, 24.4], "pose": [117, 120, 5, 5], "off_centre_px": 35}
+{"t": 1790306351.7703, "event": "localized", "attempt": "look", "pose": [116, 120, 5, 6, 92, 29], "board": {"label": "yellow", "map_cm": [-11.17, 17.08], "base_cm": [-11.1, 23.83, 1.58], "bbox": [226, 182, 168, 145], "method": "top-face", "height_cm": 3, "precision": "rough; tentative intrinsics, assumed 3 cm block and map placement"}, "phone": {"label": "yellow", "map_cm": [-12.35, 17.59], "bbox": [789, 137, 89, 114], "method": "colour-top-face-3cm", "height_corrected": true, "precision": "~0.3 cm when the coloured face is on top (2026-09-26 check); ~1.5 cm off if it is a side face"}, "problems": []}
+{"t": 1790306351.784662, "event": "planned", "colour": "yellow", "run": "data/runs/console_grasp/20260925_111856", "block_base_cm": [-11.1, 23.83], "pitch_verified": false, "board": {"label": "yellow", "map_cm": [-11.17, 17.08], "base_cm": [-11.1, 23.83, 1.58], "bbox": [226, 182, 168, 145], "method": "top-face", "height_cm": 3, "precision": "rough; tentative intrinsics, assumed 3 cm block and map placement"}, "phone": {"label": "yellow", "map_cm": [-12.35, 17.59], "bbox": [789, 137, 89, 114], "method": "colour-top-face-3cm", "height_corrected": true, "precision": "~0.3 cm when the coloured face is on top (2026-09-26 check); ~1.5 cm off if it is a side face"}, "tip_target_cm": [-11.52, 24.74], "pitch": 135, "hover": [115, 50, 41, 44], "block_centre_z_cm": 0.08}
+{"t": 1790306371.330352, "event": "hovering", "pose": [115, 50, 40, 44, 92, 29], "tip_cm": [-11.4, 24.5, 3.1], "colour": "yellow"}
+{"t": 1790306371.331688, "event": "paused", "reason": "pitch outside the verified range: check the alignment, then run 'grasp'"}
+{"t": 1790307236.964407, "event": "sort_decision", "colour": "blue", "category": "可回收", "action": "move", "reason": "(11.5, 13.0) -> bin 40 (-12.0, 13.0)"}
+{"t": 1790307236.96805, "event": "sort_decision", "colour": "green", "category": "厨余", "action": "skip", "reason": "not seen"}
+{"t": 1790307236.9765298, "event": "sort_decision", "colour": "red", "category": "有害", "action": "move", "reason": "(-0.3, 13.2) -> bin 43 (6.0, 13.0)"}
+{"t": 1790307236.980908, "event": "sort_decision", "colour": "yellow", "category": "其他", "action": "skip", "reason": "bin 44 is occupied by blue"}
+{"t": 1790307276.5796301, "event": "sort_decision", "colour": "blue", "category": "可回收", "action": "move", "reason": "(11.5, 13.1) -> bin 40 (-12.0, 13.0)"}
+{"t": 1790307276.5911648, "event": "localized", "colour": "blue", "attempt": "observe", "pose": [90, 105, 5, 6, 92, 29], "board": null, "phone": {"label": "blue", "map_cm": [11.5, 13.05], "bbox": [970, 790, 97, 106], "method": "colour-top-face-3cm", "height_corrected": true, "precision": "~0.3 cm when the coloured face is on top (2026-09-26 check); ~1.5 cm off if it is a side face"}, "problems": ["not seen by the board camera"]}
+{"t": 1790307283.909864, "event": "localized", "colour": "blue", "attempt": "look", "pose": [57, 115, 5, 6, 92, 29], "board": {"label": "blue", "map_cm": [11.92, 13.49], "base_cm": [11.99, 20.24, 1.58], "bbox": [148, 206, 188, 149], "method": "top-face", "height_cm": 3, "precision": "rough; tentative intrinsics, assumed 3 cm block and map placement"}, "phone": {"label": "blue", "map_cm": [11.5, 13.03], "bbox": [970, 790, 97, 106], "method": "colour-top-face-3cm", "height_corrected": true, "precision": "~0.3 cm when the coloured face is on top (2026-09-26 check); ~1.5 cm off if it is a side face"}, "problems": []}
+{"t": 1790307283.9499369, "event": "planned", "colour": "blue", "block_base_cm": [11.99, 20.24], "tip_target_cm": [12.5, 21.1], "pitch": 145, "pitch_verified": true, "hover": [59, 48, 60, 17]}
+{"t": 1790307296.7466471, "event": "hovering", "pose": [58, 48, 59, 17, 92, 29], "tip_cm": [12.9, 20.6, 3.3], "colour": "blue"}
+{"t": 1790307302.809998, "event": "gripped", "pose": [58, 49, 30, 44, 92, 29], "tip_cm": [12.8, 20.5, -0.8], "grip": {"action": "grip", "command": 133, "readback": 128, "at": 1790336186.8312457, "holding": true, "result": "holding"}}
+{"t": 1790307302.815368, "event": "lift_fallback", "reason": "path dips to tip z -0.8 cm; refused (ends -0.8 / 3.6)"}
+{"t": 1790307308.191375, "event": "lifted", "pose": [58, 49, 50, 24, 92, 127], "gripper_readback": 127}
+{"t": 1790307308.198146, "event": "put_planned", "target_map_cm": [-12.0, 13.0], "pitch": 145, "hover": [121, 54, 51, 21]}
+{"t": 1790307346.320642, "event": "put", "target": "40", "target_map_cm": [-12.0, 13.0], "released_at": [120, 54, 26, 44, 92, 127]}
+{"t": 1790307358.004735, "event": "sorted", "colour": "blue", "action": "moved", "bin": "40", "landed": [-10.55, 12.54], "error_cm": 1.52, "seconds": 81}
+{"t": 1790307358.0103328, "event": "sort_decision", "colour": "green", "category": "厨余", "action": "skip", "reason": "not seen"}
+{"t": 1790307358.0154638, "event": "sort_decision", "colour": "red", "category": "有害", "action": "move", "reason": "(-0.3, 13.3) -> bin 43 (6.0, 13.0)"}
+{"t": 1790307358.024671, "event": "localized", "colour": "red", "attempt": "observe", "pose": [90, 104, 5, 6, 92, 29], "board": null, "phone": {"label": "red", "map_cm": [-0.35, 13.28], "bbox": [844, 480, 90, 109], "method": "colour-top-face-3cm", "height_corrected": true, "precision": "~0.3 cm when the coloured face is on top (2026-09-26 check); ~1.5 cm off if it is a side face"}, "problems": ["not seen by the board camera"]}
+{"t": 1790307358.095776, "event": "localized", "colour": "red", "attempt": "look", "pose": [90, 104, 5, 6, 92, 29], "board": null, "phone": {"label": "red", "map_cm": [-0.35, 13.28], "bbox": [844, 480, 90, 109], "method": "colour-top-face-3cm", "height_corrected": true, "precision": "~0.3 cm when the coloured face is on top (2026-09-26 check); ~1.5 cm off if it is a side face"}, "problems": ["not seen by the board camera"]}
+{"t": 1790307358.130228, "event": "sort_stopped", "reason": "red: still unreliable after looking again: ['not seen by the board camera']", "done": [{"colour": "blue", "action": "moved", "bin": "40", "landed": [-10.55, 12.54], "error_cm": 1.52, "seconds": 81}, {"colour": "green", "action": "skip", "reason": "not seen"}]}
+{"t": 1790307538.483107, "event": "sort_decision", "colour": "blue", "category": "可回收", "action": "move", "reason": "(-10.5, 12.6) -> bin 40 (-12.0, 13.0)"}
+{"t": 1790307538.491172, "event": "localized", "colour": "blue", "attempt": "observe", "pose": [90, 104, 5, 6, 92, 29], "board": null, "phone": {"label": "blue", "map_cm": [-10.54, 12.55], "bbox": [727, 255, 83, 103], "method": "colour-top-face-3cm", "height_corrected": true, "precision": "~0.3 cm when the coloured face is on top (2026-09-26 check); ~1.5 cm off if it is a side face"}, "problems": ["not seen by the board camera"]}
+{"t": 1790307546.348217, "event": "localized", "colour": "blue", "attempt": "look", "pose": [117, 109, 5, 6, 92, 29], "board": {"label": "blue", "map_cm": [-10.59, 12.51], "base_cm": [-10.52, 19.26, 1.58], "bbox": [195, 143, 161, 134], "method": "top-face", "height_cm": 3, "precision": "rough; tentative intrinsics, assumed 3 cm block and map placement"}, "phone": {"label": "blue", "map_cm": [-10.55, 12.54], "bbox": [727, 254, 82, 104], "method": "colour-top-face-3cm", "height_corrected": true, "precision": "~0.3 cm when the coloured face is on top (2026-09-26 check); ~1.5 cm off if it is a side face"}, "problems": []}
+{"t": 1790307546.361803, "event": "planned", "colour": "blue", "block_base_cm": [-10.52, 19.26], "tip_target_cm": [-11.0, 20.14], "pitch": 150, "pitch_verified": true, "hover": [119, 45, 72, 3]}
+{"t": 1790307546.362236, "event": "sort_decision", "colour": "blue", "action": "skip", "reason": "already on bin (close look: 1.5 cm)"}
+{"t": 1790307546.3701582, "event": "sort_decision", "colour": "green", "category": "厨余", "action": "skip", "reason": "already on bin 41 (0.5 cm)"}
+{"t": 1790307546.376043, "event": "sort_decision", "colour": "red", "category": "有害", "action": "move", "reason": "(-0.3, 13.2) -> bin 43 (6.0, 13.0)"}
+{"t": 1790307554.5097558, "event": "localized", "colour": "red", "attempt": "observe", "pose": [90, 105, 5, 6, 92, 29], "board": {"label": "red", "map_cm": [-0.23, 13.35], "base_cm": [-0.16, 20.1, 1.58], "bbox": [187, 150, 205, 168], "method": "top-face", "height_cm": 3, "precision": "rough; tentative intrinsics, assumed 3 cm block and map placement"}, "phone": {"label": "red", "map_cm": [-0.33, 13.28], "bbox": [843, 480, 91, 110], "method": "colour-top-face-3cm", "height_corrected": true, "precision": "~0.3 cm when the coloured face is on top (2026-09-26 check); ~1.5 cm off if it is a side face"}, "problems": []}
+{"t": 1790307554.522812, "event": "planned", "colour": "red", "block_base_cm": [-0.16, 20.1], "tip_target_cm": [-0.17, 21.1], "pitch": 150, "pitch_verified": true, "hover": [90, 66, 38, 16]}
+{"t": 1790307562.231833, "event": "hovering", "pose": [90, 66, 37, 16, 92, 29], "tip_cm": [-0.0, 20.8, 3.2], "colour": "red"}
+{"t": 1790307567.899002, "event": "gripped", "pose": [90, 66, 13, 40, 92, 29], "tip_cm": [-0.0, 20.9, -0.2], "grip": {"action": "grip", "command": 133, "readback": 128, "at": 1790336451.918551, "holding": true, "result": "holding"}}
+{"t": 1790307572.165802, "event": "lifted", "pose": [90, 66, 37, 17, 92, 127], "gripper_readback": 127}
+{"t": 1790307572.175091, "event": "put_planned", "target_map_cm": [6.0, 13.0], "pitch": 150, "hover": [73, 61, 46, 13]}
+{"t": 1790307598.1533718, "event": "put", "target": "43", "target_map_cm": [6.0, 13.0], "released_at": [73, 61, 20, 37, 92, 127]}
+{"t": 1790307607.7863638, "event": "sorted", "colour": "red", "action": "moved", "bin": "43", "landed": [6.73, 12.79], "error_cm": 0.76, "seconds": 61}
+{"t": 1790307607.7928572, "event": "sort_decision", "colour": "yellow", "category": "其他", "action": "move", "reason": "(-11.5, 8.1) -> bin 44 (12.0, 13.0)"}
+{"t": 1790307607.8045802, "event": "localized", "colour": "yellow", "attempt": "observe", "pose": [89, 104, 5, 6, 92, 29], "board": null, "phone": {"label": "yellow", "map_cm": [-11.54, 8.06], "bbox": [646, 296, 73, 100], "method": "colour-top-face-3cm", "height_corrected": true, "precision": "~0.3 cm when the coloured face is on top (2026-09-26 check); ~1.5 cm off if it is a side face"}, "problems": ["not seen by the board camera"]}
+{"t": 1790307624.990908, "event": "sort_stopped", "reason": "no fresh board localization after the move (camera stale or no markers?)", "done": [{"colour": "blue", "action": "skip", "reason": "already on bin (close look: 1.5 cm)"}, {"colour": "green", "action": "skip", "reason": "already on bin 41 (0.5 cm)"}, {"colour": "red", "action": "moved", "bin": "43", "landed": [6.73, 12.79], "error_cm": 0.76, "seconds": 61}]}
+{"t": 1790307862.880048, "event": "sort_stopped", "reason": "no fresh board localization after the move (camera stale or no markers?)", "done": []}
+{"t": 1790307939.5805042, "event": "sort_decision", "colour": "blue", "category": "可回收", "action": "skip", "reason": "already on bin 40 (0.0 cm)"}
+{"t": 1790307939.584513, "event": "sort_decision", "colour": "green", "category": "厨余", "action": "move", "reason": "(-4.0, 13.7) -> bin 41 (-6.0, 13.0)"}
+{"t": 1790307939.591913, "event": "localized", "colour": "green", "attempt": "observe", "pose": [90, 105, 5, 5, 92, 29], "board": {"label": "green", "map_cm": [-4.01, 13.74], "base_cm": [-3.94, 20.49, 1.58], "bbox": [12, 118, 151, 219], "method": "top-face", "height_cm": 3, "precision": "rough; tentative intrinsics, assumed 3 cm block and map placement"}, "phone": null, "problems": ["box near the image border (partial view)"]}
+{"t": 1790307944.083532, "event": "localized", "colour": "green", "attempt": "look", "pose": [100, 105, 5, 5, 92, 29], "board": {"label": "green", "map_cm": [-5.22, 13.37], "base_cm": [-5.15, 20.12, 1.58], "bbox": [81, 94, 274, 243], "method": "top-face", "height_cm": 3, "precision": "rough; tentative intrinsics, assumed 3 cm block and map placement"}, "phone": null, "problems": []}
+{"t": 1790307944.115625, "event": "planned", "colour": "green", "block_base_cm": [-5.15, 20.12], "tip_target_cm": [-5.4, 21.09], "pitch": 150, "pitch_verified": true, "hover": [104, 60, 47, 13]}
+{"t": 1790307944.116087, "event": "sort_decision", "colour": "green", "action": "skip", "reason": "already on bin (close look: 0.9 cm)"}
+{"t": 1790307944.127413, "event": "sort_decision", "colour": "red", "category": "有害", "action": "skip", "reason": "already on bin 43 (0.8 cm)"}
+{"t": 1790307944.151819, "event": "sort_decision", "colour": "yellow", "category": "其他", "action": "move", "reason": "(6.5, 7.7) -> bin 44 (12.0, 13.0)"}
+{"t": 1790307948.482974, "event": "localized", "colour": "yellow", "attempt": "observe", "pose": [90, 105, 5, 5, 92, 29], "board": {"label": "yellow", "map_cm": [-3.95, 13.8], "base_cm": [-3.88, 20.55, 1.58], "bbox": [12, 117, 156, 238], "method": "top-face", "height_cm": 3, "precision": "rough; tentative intrinsics, assumed 3 cm block and map placement"}, "phone": {"label": "yellow", "map_cm": [6.55, 7.63], "bbox": [805, 715, 92, 109], "method": "colour-top-face-3cm", "height_corrected": true, "precision": "~0.3 cm when the coloured face is on top (2026-09-26 check); ~1.5 cm off if it is a side face"}, "problems": ["box near the image border (partial view)", "board and phone differ by 12.2 cm"]}
+{"t": 1790307952.859772, "event": "localized", "colour": "yellow", "attempt": "look", "pose": [98, 105, 5, 5, 92, 29], "board": null, "phone": {"label": "yellow", "map_cm": [6.54, 7.66], "bbox": [805, 715, 92, 109], "method": "colour-top-face-3cm", "height_corrected": true, "precision": "~0.3 cm when the coloured face is on top (2026-09-26 check); ~1.5 cm off if it is a side face"}, "problems": ["not seen by the board camera"]}
+{"t": 1790307952.876406, "event": "sort_decision", "colour": "yellow", "action": "skip", "reason": "could not localize: yellow: still unreliable after looking again: ['not seen by the board camera']"}
+{"t": 1790308054.2517881, "event": "localized", "colour": "red", "attempt": "observe", "pose": [90, 104, 5, 5, 92, 29], "board": null, "phone": {"label": "red", "map_cm": [6.74, 12.75], "bbox": [911, 668, 92, 103], "method": "colour-top-face-3cm", "height_corrected": true, "precision": "~0.3 cm when the coloured face is on top (2026-09-26 check); ~1.5 cm off if it is a side face"}, "problems": ["not seen by the board camera"]}
+{"t": 1790308060.462893, "event": "localized", "colour": "red", "attempt": "look", "pose": [69, 105, 5, 5, 92, 29], "board": null, "phone": {"label": "red", "map_cm": [6.75, 12.78], "bbox": [912, 666, 92, 105], "method": "colour-top-face-3cm", "height_corrected": true, "precision": "~0.3 cm when the coloured face is on top (2026-09-26 check); ~1.5 cm off if it is a side face"}, "problems": ["not seen by the board camera"]}
+{"t": 1790308060.483038, "event": "stopped", "reason": "red: still unreliable after looking again: ['not seen by the board camera']"}
+{"t": 1790308069.2472541, "event": "hovering", "pose": [103, 60, 46, 13, 92, 29], "tip_cm": [-4.8, 20.9, 3.2], "colour": "green"}
+{"t": 1790308223.21088, "event": "localized", "colour": "red", "attempt": "observe", "pose": [89, 104, 5, 5, 92, 29], "board": null, "phone": {"label": "red", "map_cm": [6.74, 12.77], "bbox": [911, 668, 92, 103], "method": "colour-top-face-3cm", "height_corrected": true, "precision": "~0.3 cm when the coloured face is on top (2026-09-26 check); ~1.5 cm off if it is a side face"}, "problems": ["not seen by the board camera"]}
+{"t": 1790308229.264454, "event": "localized", "colour": "red", "attempt": "look", "pose": [69, 104, 5, 5, 92, 29], "board": {"label": "red", "map_cm": [6.64, 12.92], "yaw_deg": -10.9, "base_cm": [6.71, 19.67, 1.58], "bbox": [141, 123, 176, 161], "method": "top-face", "height_cm": 3, "precision": "rough; tentative intrinsics, assumed 3 cm block and map placement"}, "phone": {"label": "red", "map_cm": [6.75, 12.77], "bbox": [913, 666, 90, 105], "method": "colour-top-face-3cm", "height_corrected": true, "precision": "~0.3 cm when the coloured face is on top (2026-09-26 check); ~1.5 cm off if it is a side face"}, "problems": []}
+{"t": 1790308229.282697, "event": "planned", "colour": "red", "block_base_cm": [6.71, 19.67], "tip_target_cm": [7.03, 20.62], "pitch": 150, "pitch_verified": true, "hover": [71, 60, 48, 13], "block_yaw_deg": -10.9, "j5": 100}
+{"t": 1790308247.631196, "event": "hovering", "pose": [70, 60, 47, 13, 99, 29], "tip_cm": [7.4, 20.4, 3.6], "colour": "red"}
+{"t": 1790308311.8713658, "event": "gripped", "pose": [70, 60, 20, 38, 99, 29], "tip_cm": [7.3, 20.1, -0.6], "grip": {"action": "grip", "command": 133, "readback": 128, "at": 1790337195.8908057, "holding": true, "result": "holding"}}
+{"t": 1790308317.0667021, "event": "lifted", "pose": [71, 60, 47, 14, 99, 126], "gripper_readback": 126}
+{"t": 1790308326.220609, "event": "put_planned", "target_map_cm": [0.0, 13.0], "pitch": 150, "hover": [90, 69, 34, 17], "j5": 92}
+{"t": 1790308349.965929, "event": "put", "target": "42", "target_map_cm": [0.0, 13.0], "released_at": [89, 70, 11, 39, 92, 126]}
+{"t": 1790308439.518534, "event": "localized", "colour": "red", "attempt": "observe", "pose": [89, 104, 5, 6, 92, 29], "board": {"label": "red", "map_cm": [0.55, 12.32], "yaw_deg": -16.6, "base_cm": [0.62, 19.07, 1.58], "bbox": [184, 151, 246, 235], "method": "top-face", "height_cm": 3, "precision": "rough; tentative intrinsics, assumed 3 cm block and map placement"}, "phone": {"label": "red", "map_cm": [0.19, 12.26], "bbox": [830, 509, 83, 99], "method": "colour-top-face-3cm", "height_corrected": true, "precision": "~0.3 cm when the coloured face is on top (2026-09-26 check); ~1.5 cm off if it is a side face"}, "problems": []}
+{"t": 1790308439.5328581, "event": "planned", "colour": "red", "block_base_cm": [0.62, 19.07], "tip_target_cm": [0.65, 20.07], "pitch": 150, "pitch_verified": true, "hover": [88, 74, 27, 18], "block_yaw_deg": -16.6, "j5": 167}
+{"t": 1790308453.169307, "event": "hovering", "pose": [88, 74, 26, 18, 166, 29], "tip_cm": [0.7, 19.5, 3.0], "colour": "red"}
+{"t": 1790308458.990595, "event": "gripped", "pose": [88, 74, 3, 43, 166, 29], "tip_cm": [0.7, 20.0, 0.1], "grip": {"action": "grip", "command": 133, "readback": 132, "at": 1790337343.010252, "holding": false, "result": "empty"}}
+{"t": 1790308464.2256498, "event": "stopped", "reason": "grip not holding (readback 132); opened and lifted"}
+{"t": 1790308526.093846, "event": "localized", "colour": "red", "attempt": "observe", "pose": [89, 104, 5, 6, 166, 29], "board": {"label": "red", "map_cm": [0.06, 11.93], "yaw_deg": -20.0, "base_cm": [0.13, 18.68, 1.58], "bbox": [167, 192, 212, 198], "method": "top-face", "height_cm": 3, "precision": "rough; tentative intrinsics, assumed 3 cm block and map placement"}, "phone": null, "problems": []}
+{"t": 1790308526.1279519, "event": "planned", "colour": "red", "block_base_cm": [0.13, 18.68], "tip_target_cm": [0.14, 19.68], "pitch": 150, "pitch_verified": true, "hover": [90, 77, 24, 19], "block_yaw_deg": -20.0, "j5": 252}
+{"t": 1790308542.283308, "event": "hovering", "pose": [89, 78, 23, 19, 251, 29], "tip_cm": [0.3, 19.5, 3.6], "colour": "red"}
+{"t": 1790308548.031755, "event": "gripped", "pose": [89, 76, 0, 44, 251, 29], "tip_cm": [0.3, 19.7, -0.0], "grip": {"action": "grip", "command": 133, "readback": 132, "at": 1790337432.05071, "holding": false, "result": "empty"}}
+{"t": 1790308553.4407308, "event": "stopped", "reason": "grip not holding (readback 132); opened and lifted"}
+{"t": 1790308644.57429, "event": "localized", "colour": "red", "attempt": "observe", "pose": [89, 104, 5, 6, 251, 29], "board": {"label": "red", "map_cm": [0.62, 13.35], "yaw_deg": -23.9, "base_cm": [0.69, 20.1, 1.58], "bbox": [206, 132, 197, 192], "method": "top-face", "height_cm": 3, "precision": "rough; tentative intrinsics, assumed 3 cm block and map placement"}, "phone": {"label": "red", "map_cm": [0.43, 13.2], "bbox": [858, 509, 71, 89], "method": "colour-top-face-3cm", "height_corrected": true, "precision": "~0.3 cm when the coloured face is on top (2026-09-26 check); ~1.5 cm off if it is a side face"}, "problems": []}
+{"t": 1790308644.618444, "event": "planned", "colour": "red", "block_base_cm": [0.69, 20.1], "tip_target_cm": [0.28, 19.19], "pitch": 155, "pitch_verified": true, "hover": [89, 67, 42, 6], "block_yaw_deg": -23.9, "j5": 250}
+{"t": 1790308652.421616, "event": "hovering", "pose": [89, 67, 41, 6, 250, 29], "tip_cm": [0.3, 19.0, 3.2], "colour": "red"}
+{"t": 1790308659.020333, "event": "gripped", "pose": [89, 69, 13, 31, 250, 29], "tip_cm": [0.3, 18.7, -0.5], "grip": {"action": "grip", "command": 133, "readback": 29, "at": 1790337543.0396175, "holding": false, "result": "not_closed"}}
+{"t": 1790308665.177103, "event": "stopped", "reason": "grip not holding (readback 29); opened and lifted"}
+{"t": 1790308705.8217752, "event": "localized", "colour": "red", "attempt": "observe", "pose": [89, 104, 5, 6, 250, 30], "board": {"label": "red", "map_cm": [0.57, 13.31], "yaw_deg": -24.0, "base_cm": [0.64, 20.06, 1.58], "bbox": [204, 134, 199, 192], "method": "top-face", "height_cm": 3, "precision": "rough; tentative intrinsics, assumed 3 cm block and map placement"}, "phone": {"label": "red", "map_cm": [0.42, 13.22], "bbox": [857, 509, 73, 89], "method": "colour-top-face-3cm", "height_corrected": true, "precision": "~0.3 cm when the coloured face is on top (2026-09-26 check); ~1.5 cm off if it is a side face"}, "problems": []}
+{"t": 1790308705.8510442, "event": "planned", "colour": "red", "block_base_cm": [0.64, 20.06], "tip_target_cm": [0.67, 21.06], "pitch": 150, "pitch_verified": true, "hover": [88, 66, 38, 16], "block_yaw_deg": -24.0, "j5": 92}
+{"t": 1790308733.7531362, "event": "hovering", "pose": [88, 66, 37, 16, 92, 29], "tip_cm": [0.7, 20.8, 3.2], "colour": "red"}
+{"t": 1790308740.459488, "event": "gripped", "pose": [88, 66, 12, 40, 92, 29], "tip_cm": [0.7, 20.6, -0.5], "grip": {"action": "grip", "command": 133, "readback": 30, "at": 1790337624.47996, "holding": false, "result": "not_closed"}}
+{"t": 1790308746.520399, "event": "stopped", "reason": "grip not holding (readback 30); opened and lifted"}
+{"t": 1790309080.750858, "event": "sort_decision", "colour": "blue", "category": "可回收", "action": "skip", "reason": "already on bin 40 (0.0 cm)"}
+{"t": 1790309080.755388, "event": "sort_decision", "colour": "green", "category": "厨余", "action": "skip", "reason": "not seen"}
+{"t": 1790309080.759607, "event": "sort_decision", "colour": "red", "category": "有害", "action": "move", "reason": "(-0.0, 13.1) -> bin 43 (6.0, 13.0)"}
+{"t": 1790309080.7684941, "event": "localized", "colour": "red", "attempt": "observe", "pose": [90, 104, 5, 6, 92, 29], "board": {"label": "red", "map_cm": [0.43, 13.55], "yaw_deg": -9.1, "base_cm": [0.5, 20.3, 1.58], "bbox": [180, 116, 245, 217], "method": "top-face", "height_cm": 3, "precision": "rough; tentative intrinsics, assumed 3 cm block and map placement"}, "phone": {"label": "red", "map_cm": [-0.03, 13.13], "bbox": [856, 446, 77, 101], "method": "colour-top-face-3cm", "height_corrected": true, "precision": "~0.3 cm when the coloured face is on top (2026-09-26 check); ~1.5 cm off if it is a side face"}, "problems": []}
+{"t": 1790309096.868209, "event": "sort_decision", "colour": "blue", "category": "可回收", "action": "skip", "reason": "already on bin 40 (0.0 cm)"}
+{"t": 1790309096.8722508, "event": "sort_decision", "colour": "green", "category": "厨余", "action": "skip", "reason": "not seen"}
+{"t": 1790309096.876381, "event": "sort_decision", "colour": "red", "category": "有害", "action": "move", "reason": "(0.0, 13.2) -> bin 43 (6.0, 13.0)"}
+{"t": 1790309096.8874838, "event": "localized", "colour": "red", "attempt": "observe", "pose": [90, 104, 5, 6, 92, 30], "board": {"label": "red", "map_cm": [0.42, 13.51], "yaw_deg": -8.4, "base_cm": [0.49, 20.26, 1.58], "bbox": [180, 115, 244, 217], "method": "top-face", "height_cm": 3, "precision": "rough; tentative intrinsics, assumed 3 cm block and map placement"}, "phone": {"label": "red", "map_cm": [0.0, 13.19], "bbox": [854, 448, 78, 100], "method": "colour-top-face-3cm", "height_corrected": true, "precision": "~0.3 cm when the coloured face is on top (2026-09-26 check); ~1.5 cm off if it is a side face"}, "problems": []}
+{"t": 1790309096.8957791, "event": "planned", "colour": "red", "block_base_cm": [0.49, 20.26], "tip_target_cm": [0.51, 21.26], "pitch": 150, "pitch_verified": true, "hover": [89, 64, 40, 15], "block_yaw_deg": -8.4, "j5": 92}
+{"t": 1790309105.528878, "event": "hovering", "pose": [89, 64, 39, 15, 92, 29], "tip_cm": [0.4, 20.8, 2.9], "colour": "red"}
+{"t": 1790309111.993978, "event": "gripped", "pose": [89, 64, 14, 40, 92, 29], "tip_cm": [0.4, 20.8, -0.6], "grip": {"action": "grip", "command": 133, "readback": 29, "at": 1790337996.0132847, "holding": false, "result": "not_closed"}}
+{"t": 1790309118.171349, "event": "sort_stopped", "reason": "grip not holding (readback 29); opened and lifted", "done": [{"colour": "blue", "action": "skip", "reason": "already on bin 40 (0.0 cm)"}, {"colour": "green", "action": "skip", "reason": "not seen"}]}
+{"t": 1790309336.615825, "event": "sort_decision", "colour": "blue", "category": "可回收", "action": "skip", "reason": "already on bin 40 (0.1 cm)"}
+{"t": 1790309336.619334, "event": "sort_decision", "colour": "green", "category": "厨余", "action": "skip", "reason": "not seen"}
+{"t": 1790309336.622796, "event": "sort_decision", "colour": "red", "category": "有害", "action": "move", "reason": "(0.9, 13.3) -> bin 43 (6.0, 13.0)"}
+{"t": 1790309336.6297889, "event": "localized", "colour": "red", "attempt": "observe", "pose": [89, 104, 5, 6, 91, 29], "board": {"label": "red", "map_cm": [1.54, 13.76], "yaw_deg": 2.5, "base_cm": [1.61, 20.51, 1.58], "bbox": [228, 113, 245, 202], "method": "top-face", "height_cm": 3, "precision": "rough; tentative intrinsics, assumed 3 cm block and map placement"}, "phone": {"label": "red", "map_cm": [0.9, 13.3], "bbox": [860, 469, 80, 100], "method": "colour-top-face-3cm", "height_corrected": true, "precision": "~0.3 cm when the coloured face is on top (2026-09-26 check); ~1.5 cm off if it is a side face"}, "problems": []}
+{"t": 1790309336.639116, "event": "planned", "colour": "red", "block_base_cm": [1.61, 20.51], "tip_target_cm": [1.57, 21.51], "pitch": 150, "pitch_verified": true, "hover": [86, 62, 44, 14], "block_yaw_deg": 2.5, "j5": 99}
+{"t": 1790309345.2593338, "event": "hovering", "pose": [86, 62, 43, 14, 98, 29], "tip_cm": [1.5, 21.2, 3.3], "colour": "red"}
+{"t": 1790309351.731404, "event": "gripped", "pose": [86, 62, 17, 39, 98, 29], "tip_cm": [1.5, 21.1, -0.6], "grip": {"action": "grip", "command": 133, "readback": 128, "at": 1790338235.7503948, "holding": true, "result": "holding"}}
+{"t": 1790309356.825243, "event": "lifted", "pose": [86, 62, 43, 15, 98, 127], "gripper_readback": 127}
+{"t": 1790309356.8341491, "event": "put_planned", "target_map_cm": [6.0, 13.0], "pitch": 150, "hover": [74, 61, 45, 14], "j5": 109}
+{"t": 1790309380.3466802, "event": "put", "target": "43", "target_map_cm": [6.0, 13.0], "released_at": [74, 62, 20, 37, 108, 127]}
+{"t": 1790309390.382348, "event": "sorted", "colour": "red", "action": "moved", "bin": "43", "landed": [6.55, 12.03], "error_cm": 1.12, "seconds": 54}
+{"t": 1790309390.388642, "event": "sort_decision", "colour": "yellow", "category": "其他", "action": "skip", "reason": "16.0 cm from the base (< 17.5); move it to map y 11-18 cm"}
+{"t": 1790310250.139242, "event": "sort_round", "blocks": [{"map_cm": [6.59, 12.53], "colour": "red", "seen_by": "phone"}, {"map_cm": [-0.44, 18.07], "colour": "yellow", "seen_by": "phone"}, {"map_cm": [-12.04, 12.99], "colour": "blue", "seen_by": "phone"}, {"map_cm": [-3.74, 13.85], "colour": null, "seen_by": "board"}], "todo": [[-0.44, 18.07], [-3.74, 13.85]]}
+{"t": 1790310264.2292569, "event": "sort_round", "blocks": [{"map_cm": [6.6, 12.5], "colour": "red", "seen_by": "phone"}, {"map_cm": [-0.43, 18.03], "colour": "yellow", "seen_by": "phone"}, {"map_cm": [-12.03, 12.96], "colour": "blue", "seen_by": "phone"}, {"map_cm": [-3.7, 13.83], "colour": null, "seen_by": "board"}], "todo": [[-0.43, 18.03], [-3.7, 13.83]]}
+{"t": 1790310264.243733, "event": "localized", "colour": null, "attempt": "observe", "pose": [89, 104, 5, 6, 108, 29], "board": null, "phone": {"label": "yellow", "map_cm": [-0.43, 18.03], "bbox": [930, 370, 90, 111], "method": "colour-top-face-3cm", "height_corrected": true, "precision": "~0.3 cm when the coloured face is on top (2026-09-26 check); ~1.5 cm off if it is a side face"}, "problems": ["not seen by the board camera"]}
+{"t": 1790310269.177291, "event": "localized", "colour": null, "attempt": "look", "pose": [90, 115, 5, 6, 108, 29], "board": {"label": "yellow", "map_cm": [-0.02, 17.46], "yaw_deg": -0.6, "base_cm": [0.05, 24.21, 1.58], "bbox": [207, 174, 168, 129], "method": "top-face", "height_cm": 3, "precision": "rough; tentative intrinsics, assumed 3 cm block and map placement", "sticker": {"label": "Fish_bone", "category": "kitchen", "conf": 0.734, "bbox": [207, 143, 341, 247]}}, "phone": {"label": "yellow", "map_cm": [-0.46, 17.98], "bbox": [930, 371, 90, 110], "method": "colour-top-face-3cm", "height_corrected": true, "precision": "~0.3 cm when the coloured face is on top (2026-09-26 check); ~1.5 cm off if it is a side face"}, "problems": []}
+{"t": 1790310269.194746, "event": "planned", "colour": "yellow", "block_base_cm": [0.05, 24.21], "tip_target_cm": [0.05, 25.21], "pitch": 145, "pitch_verified": true, "hover": [90, 33, 87, 5], "block_yaw_deg": -0.6, "j5": 92}
+{"t": 1790310269.200754, "event": "category", "block": [-0.02, 17.46], "colour_top": "yellow", "sticker": {"label": "Fish_bone", "category": "kitchen", "conf": 0.734, "bbox": [207, 143, 341, 247]}, "category": "other", "source": "colour; official model disagreed (Fish_bone 0.73 -> kitchen)"}
+{"t": 1790310284.297646, "event": "hovering", "pose": [90, 33, 86, 6, 92, 29], "tip_cm": [-0.0, 25.3, 3.4], "colour": "yellow"}
+{"t": 1790310294.0528152, "event": "gripped", "pose": [90, 43, 40, 40, 92, 29], "tip_cm": [-0.0, 24.8, -0.9], "grip": {"action": "grip", "command": 133, "readback": 132, "at": 1790339178.0684571, "holding": false, "result": "empty"}}
+{"t": 1790310303.453634, "event": "sort_stopped", "reason": "grip not holding (readback 132); opened and lifted", "done": []}
+{"t": 1790310345.922949, "event": "sort_round", "blocks": [{"map_cm": [6.59, 12.52], "colour": "red", "seen_by": "phone"}, {"map_cm": [0.58, 19.18], "colour": "yellow", "seen_by": "phone"}, {"map_cm": [-12.05, 12.98], "colour": "blue", "seen_by": "phone"}, {"map_cm": [-3.82, 13.89], "colour": null, "seen_by": "board"}], "todo": [[-3.82, 13.89]]}
+{"t": 1790310345.9355168, "event": "localized", "colour": null, "attempt": "observe", "pose": [90, 105, 5, 6, 92, 29], "board": {"label": "unknown", "map_cm": [-3.82, 13.89], "yaw_deg": 3.2, "base_cm": [-3.75, 20.64, 1.58], "bbox": [12, 115, 131, 197], "method": "top-face", "height_cm": 3, "precision": "rough; tentative intrinsics, assumed 3 cm block and map placement", "sticker": null}, "phone": null, "problems": ["box near the image border (partial view)"]}
+{"t": 1790310351.2293901, "event": "localized", "colour": null, "attempt": "look", "pose": [99, 105, 5, 6, 92, 29], "board": null, "phone": null, "problems": ["not seen by the board camera"]}
+{"t": 1790310356.4544241, "event": "sort_round", "blocks": [{"map_cm": [6.6, 12.54], "colour": "red", "seen_by": "phone"}, {"map_cm": [0.57, 19.21], "colour": "yellow", "seen_by": "phone"}, {"map_cm": [-12.05, 12.99], "colour": "blue", "seen_by": "phone"}, {"map_cm": [-3.79, 13.81], "colour": null, "seen_by": "board"}], "todo": []}
+{"t": 1790310420.366175, "event": "sort_round", "blocks": [{"map_cm": [6.59, 12.51], "colour": "red", "seen_by": "phone"}, {"map_cm": [0.57, 19.18], "colour": "yellow", "seen_by": "phone"}, {"map_cm": [-12.07, 12.96], "colour": "blue", "seen_by": "phone"}, {"map_cm": [-3.81, 13.81], "colour": null, "seen_by": "board"}], "todo": [[-3.81, 13.81]]}
+{"t": 1790310420.378813, "event": "localized", "colour": null, "attempt": "observe", "pose": [90, 104, 5, 6, 92, 29], "board": {"label": "unknown", "map_cm": [-3.81, 13.81], "yaw_deg": 3.2, "base_cm": [-3.74, 20.56, 1.58], "bbox": [12, 112, 135, 245], "method": "top-face", "height_cm": 3, "precision": "rough; tentative intrinsics, assumed 3 cm block and map placement", "sticker": null}, "phone": null, "problems": ["box near the image border (partial view)"]}
+{"t": 1790310425.180585, "event": "localized", "colour": null, "attempt": "look", "pose": [99, 105, 5, 6, 92, 29], "board": null, "phone": null, "problems": ["not seen by the board camera"]}
+{"t": 1790310425.2130291, "event": "localized", "colour": null, "attempt": "look again", "pose": [99, 105, 5, 6, 92, 29], "board": null, "phone": null, "problems": ["not seen by the board camera"]}
+{"t": 1790310429.910121, "event": "sort_round", "blocks": [{"map_cm": [6.6, 12.49], "colour": "red", "seen_by": "phone"}, {"map_cm": [0.57, 19.14], "colour": "yellow", "seen_by": "phone"}, {"map_cm": [-12.08, 12.94], "colour": "blue", "seen_by": "phone"}, {"map_cm": [-3.8, 13.81], "colour": null, "seen_by": "board"}], "todo": []}
+{"t": 1790310459.796052, "event": "sort_round", "blocks": [{"map_cm": [6.6, 12.49], "colour": "red", "seen_by": "phone"}, {"map_cm": [0.58, 19.15], "colour": "yellow", "seen_by": "phone"}, {"map_cm": [-12.03, 12.95], "colour": "blue", "seen_by": "phone"}, {"map_cm": [-3.81, 13.8], "colour": null, "seen_by": "board"}], "todo": [[-3.81, 13.8]]}
+{"t": 1790310463.253268, "event": "localized", "colour": null, "attempt": "observe", "pose": [90, 105, 5, 6, 92, 29], "board": {"label": "red", "map_cm": [-3.8, 13.81], "yaw_deg": 6.8, "base_cm": [-3.73, 20.56, 1.58], "bbox": [12, 111, 132, 247], "method": "top-face", "height_cm": 3, "precision": "rough; tentative intrinsics, assumed 3 cm block and map placement", "sticker": null}, "phone": null, "problems": ["box near the image border (partial view)"]}
+{"t": 1790310470.874238, "event": "localized", "colour": null, "attempt": "look", "pose": [99, 104, 5, 6, 92, 29], "board": null, "phone": null, "problems": ["not seen by the board camera"]}
+{"t": 1790310474.088245, "event": "localized", "colour": null, "attempt": "look again", "pose": [99, 104, 5, 6, 92, 29], "board": null, "phone": null, "problems": ["not seen by the board camera"]}
+{"t": 1790310482.84211, "event": "sort_round", "blocks": [{"map_cm": [6.6, 12.47], "colour": "red", "seen_by": "phone"}, {"map_cm": [0.56, 19.15], "colour": "yellow", "seen_by": "phone"}, {"map_cm": [-12.07, 12.93], "colour": "blue", "seen_by": "phone"}, {"map_cm": [-3.79, 13.8], "colour": null, "seen_by": "board"}], "todo": []}
+{"t": 1790310547.817433, "event": "localized", "colour": null, "attempt": "observe", "pose": [90, 105, 5, 6, 92, 29], "board": {"label": "red", "map_cm": [-3.8, 13.78], "yaw_deg": 6.8, "base_cm": [-3.73, 20.53, 1.58], "bbox": [12, 113, 134, 245], "method": "top-face", "height_cm": 3, "precision": "rough; tentative intrinsics, assumed 3 cm block and map placement", "sticker": null}, "phone": null, "problems": ["box near the image border (partial view)"], "near_cm": [-3.8, 13.78], "board_all": [["red", [-3.8, 13.78], "top-face"]], "board_t": 1790339431.686555}
+{"t": 1790310555.755873, "event": "localized", "colour": null, "attempt": "look", "pose": [99, 104, 5, 6, 92, 29], "board": null, "phone": null, "problems": ["not seen by the board camera"], "near_cm": [-3.8, 13.78], "board_all": [], "board_t": 1790339439.751823}
+{"t": 1790310558.943371, "event": "localized", "colour": null, "attempt": "look again", "pose": [99, 105, 5, 6, 92, 29], "board": null, "phone": null, "problems": ["not seen by the board camera"], "near_cm": [-3.8, 13.78], "board_all": [], "board_t": 1790339442.8659275}
+{"t": 1790310592.564619, "event": "localized", "colour": null, "attempt": "observe", "pose": [90, 104, 5, 6, 92, 29], "board": {"label": "unknown", "map_cm": [-3.8, 13.77], "yaw_deg": 6.8, "base_cm": [-3.73, 20.52, 1.58], "bbox": [12, 112, 135, 247], "method": "top-face", "height_cm": 3, "precision": "rough; tentative intrinsics, assumed 3 cm block and map placement", "sticker": null}, "phone": null, "problems": ["box near the image border (partial view)"], "near_cm": [-3.8, 13.77], "board_all": [["unknown", [-3.8, 13.77], "top-face"]], "board_t": 1790339476.5745842}
+{"t": 1790310600.5532658, "event": "localized", "colour": null, "attempt": "look", "pose": [99, 104, 5, 6, 92, 29], "board": null, "phone": null, "problems": ["not seen by the board camera"], "near_cm": [-3.8, 13.77], "board_all": [], "board_t": 1790339484.4912553}
+{"t": 1790310603.753394, "event": "localized", "colour": null, "attempt": "look left", "pose": [99, 104, 5, 6, 92, 29], "board": null, "phone": null, "problems": ["not seen by the board camera"], "near_cm": [-3.8, 13.77], "board_all": [], "board_t": 1790339487.6554487}
+{"t": 1790310612.005596, "event": "localized", "colour": null, "attempt": "look right", "pose": [105, 104, 5, 6, 92, 29], "board": null, "phone": null, "problems": ["not seen by the board camera"], "near_cm": [-3.8, 13.77], "board_all": [], "board_t": 1790339495.7673845}
+{"t": 1790331663.353309, "event": "scan_view", "run": "data/runs/pipeline/20260925_182029", "view": 0, "pose": [99, 126, -1, 0, 92, -5], "markers": [41, 42, 45], "official": [["Fish_bone", 0.893], ["Newspaper", 0.836]]}
+{"t": 1790331680.406495, "event": "scan_view", "run": "data/runs/pipeline/20260925_182029", "view": 1, "pose": [70, 126, -1, 0, 92, -5], "markers": [44, 48, 49], "official": [["Syringe", 0.915], ["Fish_bone", 0.885]]}
+{"t": 1790331696.493873, "event": "scan_view", "run": "data/runs/pipeline/20260925_182029", "view": 2, "pose": [109, 105, 14, 0, 92, -5], "markers": [40, 41, 42, 45], "official": [["Fish_bone", 0.676]]}
+{"t": 1790331709.209589, "event": "scan_view", "run": "data/runs/pipeline/20260925_182029", "view": 3, "pose": [80, 120, 0, 0, 92, -5], "markers": [42, 48, 49], "official": [["Syringe", 0.952], ["Fish_bone", 0.886]]}
+{"t": 1790331809.395967, "event": "scan_view", "run": "data/runs/pipeline/20260925_182310", "view": 0, "pose": [99, 125, 0, 0, 92, -5], "markers": [41, 42, 45], "official": [["Fish_bone", 0.87], ["Newspaper", 0.763]]}
+{"t": 1790331820.338428, "event": "scan_view", "run": "data/runs/pipeline/20260925_182310", "view": 1, "pose": [70, 125, 0, 0, 92, -5], "markers": [44, 48, 49], "official": [["Syringe", 0.941], ["Fish_bone", 0.897], ["Fish_bone", 0.357]]}
+{"t": 1790331833.635571, "event": "scan_view", "run": "data/runs/pipeline/20260925_182310", "view": 2, "pose": [109, 105, 14, 0, 92, -5], "markers": [40, 41, 42, 45], "official": [["Fish_bone", 0.761]]}
+{"t": 1790331844.4067562, "event": "scan_view", "run": "data/runs/pipeline/20260925_182310", "view": 3, "pose": [80, 120, 0, 0, 92, -5], "markers": [42, 48, 49], "official": [["Syringe", 0.956], ["Fish_bone", 0.838]]}
+{"t": 1790331857.449419, "event": "scan_view", "run": "data/runs/pipeline/20260925_182310", "view": 4, "pose": [40, 90, 29, 0, 92, -5], "markers": null, "official": []}
+{"t": 1790332573.312688, "event": "scan_view", "run": "data/runs/pipeline/20260925_183601", "view": 0, "pose": [99, 125, 0, 0, 92, -5], "markers": [41, 42, 45], "official": [["Fish_bone", 0.897], ["Newspaper", 0.865]]}
+{"t": 1790332580.174324, "event": "scan_view", "run": "data/runs/pipeline/20260925_183601", "view": 1, "pose": [70, 125, 0, 0, 92, -5], "markers": [44, 48, 49], "official": [["Syringe", 0.935], ["Fish_bone", 0.846]]}
+{"t": 1790332588.640666, "event": "scan_view", "run": "data/runs/pipeline/20260925_183601", "view": 2, "pose": [109, 105, 14, 0, 92, -5], "markers": [40, 41, 42, 45], "official": [["Fish_bone", 0.734], ["Newspaper", 0.533]]}
+{"t": 1790332595.702143, "event": "scan_view", "run": "data/runs/pipeline/20260925_183601", "view": 3, "pose": [80, 120, 0, 0, 92, -5], "markers": [42, 48, 49], "official": [["Syringe", 0.95], ["Fish_bone", 0.91]]}
+{"t": 1790332603.283009, "event": "scan_view", "run": "data/runs/pipeline/20260925_183601", "view": 4, "pose": [39, 90, 29, 0, 92, -5], "markers": null, "official": []}
+{"t": 1790332610.323722, "event": "refine_view", "cube": [12.3, 8.1], "pose": [51, 99, 5, 5, 92, -5]}
+{"t": 1790332644.2357728, "event": "scan_view", "run": "data/runs/pipeline/20260925_183714", "view": 0, "pose": [99, 125, 0, 1, 92, -5], "markers": [41, 42, 45], "official": [["Fish_bone", 0.925], ["Newspaper", 0.543]]}
+{"t": 1790332651.514234, "event": "scan_view", "run": "data/runs/pipeline/20260925_183714", "view": 1, "pose": [70, 125, 0, 1, 92, -5], "markers": [44, 48, 49], "official": [["Syringe", 0.894], ["Fish_bone", 0.816]]}
+{"t": 1790332659.6431732, "event": "scan_view", "run": "data/runs/pipeline/20260925_183714", "view": 2, "pose": [109, 105, 14, 1, 92, -5], "markers": [40, 41, 42, 45], "official": [["Fish_bone", 0.846], ["Newspaper", 0.662]]}
+{"t": 1790332667.0740669, "event": "scan_view", "run": "data/runs/pipeline/20260925_183714", "view": 3, "pose": [80, 120, 0, 1, 92, -5], "markers": [42, 48, 49], "official": [["Syringe", 0.94], ["Fish_bone", 0.9]]}
+{"t": 1790332674.710639, "event": "scan_view", "run": "data/runs/pipeline/20260925_183714", "view": 4, "pose": [39, 90, 29, 1, 92, -5], "markers": null, "official": []}
+{"t": 1790332681.759995, "event": "refine_view", "cube": [12.3, 8.1], "pose": [53, 105, 5, 5, 92, -5]}
+{"t": 1790332691.43622, "event": "refine_view", "cube": [-5.5, 18.1], "pose": [103, 120, 5, 5, 92, -5]}
+{"t": 1790332698.112681, "event": "hovering", "pose": [54, 74, 30, 14, 92, 29], "tip_cm": [11.4, 15.7, 3.6], "colour": "green"}
+{"t": 1790332703.3896031, "event": "gripped", "pose": [55, 74, 7, 39, 92, 29], "tip_cm": [11.6, 16.5, 0.6], "grip": {"action": "grip", "command": 133, "readback": 129, "at": 1790361587.3785746, "holding": true, "result": "holding"}}
+{"t": 1790332706.02393, "event": "lifted", "pose": [55, 74, 30, 15, 92, 129], "gripper_readback": 129}
+{"t": 1790332706.029807, "event": "put_planned", "target_map_cm": [-6.0, 13.0], "pitch": 145, "hover": [109, 65, 38, 22], "j5": 92}
+{"t": 1790332722.603301, "event": "put", "target": "41", "target_map_cm": [-6.0, 13.0], "released_at": [108, 65, 15, 45, 92, 129]}
+{"t": 1790332722.6043189, "event": "pipeline_sorted", "cube": [11.9, 7.8], "bin": "41", "category": "kitchen", "source": "official model (Fish_bone 0.94), colour agrees", "seconds": 31}
+{"t": 1790332726.207765, "event": "hovering", "pose": [92, 46, 60, 23, 92, 29], "tip_cm": [-0.9, 25.9, 3.9], "colour": "yellow"}
+{"t": 1790332730.680761, "event": "gripped", "pose": [92, 46, 33, 49, 92, 29], "tip_cm": [-0.9, 25.8, -0.1], "grip": {"action": "grip", "command": 133, "readback": 128, "at": 1790361614.6701918, "holding": true, "result": "holding"}}
+{"t": 1790332733.30905, "event": "lifted", "pose": [92, 46, 60, 23, 92, 127], "gripper_readback": 127}
+{"t": 1790332754.5211048, "event": "put_planned", "target_map_cm": [12.0, 13.0], "pitch": 140, "hover": [63, 65, 30, 35], "j5": 120}
+{"t": 1790332774.3369448, "event": "put", "target": "44", "target_map_cm": [12.0, 13.0], "released_at": [63, 63, 11, 56, 119, 127]}
+{"t": 1790332796.234394, "event": "scan_view", "run": "data/runs/pipeline/20260925_183948", "view": 0, "pose": [99, 125, 0, 1, 92, 29], "markers": [42, 45, 47], "official": [["Fish_bone", 0.835], ["Newspaper", 0.758]]}
+{"t": 1790332800.966039, "event": "scan_view", "run": "data/runs/pipeline/20260925_183948", "view": 1, "pose": [70, 125, 0, 1, 92, 29], "markers": [48], "official": [["Fish_bone", 0.893], ["Syringe", 0.847]]}
+{"t": 1790332806.8970602, "event": "scan_view", "run": "data/runs/pipeline/20260925_183948", "view": 2, "pose": [109, 105, 14, 1, 92, 29], "markers": [40, 42, 45], "official": [["Fish_bone", 0.906], ["Newspaper", 0.49]]}
+{"t": 1790332811.601384, "event": "scan_view", "run": "data/runs/pipeline/20260925_183948", "view": 3, "pose": [80, 120, 0, 1, 92, 29], "markers": [42, 47, 48, 49], "official": [["Syringe", 0.948], ["Fish_bone", 0.826]]}
+{"t": 1790332816.69206, "event": "scan_view", "run": "data/runs/pipeline/20260925_183948", "view": 4, "pose": [39, 90, 29, 1, 92, 29], "markers": null, "official": []}
+{"t": 1790332825.0726411, "event": "refine_view", "cube": [-5.5, 18.0], "pose": [101, 120, 5, 5, 92, 29]}
+{"t": 1790332828.541524, "event": "refine_view", "cube": [-6.5, 13.2], "pose": [108, 110, 5, 5, 92, 29]}
+{"t": 1790332836.6162791, "event": "hovering", "pose": [103, 30, 81, 17, 92, 29], "tip_cm": [-6.0, 26.2, 2.6], "colour": "blue"}
+{"t": 1790332841.797091, "event": "gripped", "pose": [103, 36, 50, 42, 92, 29], "tip_cm": [-6.0, 26.2, -0.2], "grip": {"action": "grip", "command": 133, "readback": 128, "at": 1790361725.7867332, "holding": true, "result": "holding"}}
+{"t": 1790332845.239908, "event": "lifted", "pose": [103, 32, 81, 18, 92, 127], "gripper_readback": 127}
+{"t": 1790332845.2457979, "event": "put_planned", "target_map_cm": [-12.0, 13.0], "pitch": 140, "hover": [122, 58, 41, 30], "j5": 92}
+{"t": 1790332865.831908, "event": "put", "target": "40", "target_map_cm": [-12.0, 13.0], "released_at": [121, 58, 20, 52, 92, 127]}
+{"t": 1790332865.8327522, "event": "pipeline_sorted", "cube": [-5.5, 18.1], "bin": "40", "category": "recyclable", "source": "official model (Newspaper 0.76), colour agrees", "seconds": 37}
+{"t": 1790332895.1083698, "event": "scan_view", "run": "data/runs/pipeline/20260925_184132", "view": 0, "pose": [99, 125, 0, 1, 92, 29], "markers": [42, 45, 47], "official": [["Fish_bone", 0.63]]}
+{"t": 1790332899.859124, "event": "scan_view", "run": "data/runs/pipeline/20260925_184132", "view": 1, "pose": [70, 125, 0, 1, 92, 29], "markers": [48, 49], "official": [["Syringe", 0.916], ["Fish_bone", 0.77]]}
+{"t": 1790332905.360848, "event": "scan_view", "run": "data/runs/pipeline/20260925_184132", "view": 2, "pose": [109, 105, 14, 1, 92, 29], "markers": [42, 45, 46], "official": [["Fish_bone", 0.895], ["Newspaper", 0.578], ["Syringe", 0.404], ["Syringe", 0.33]]}
+{"t": 1790332910.094055, "event": "scan_view", "run": "data/runs/pipeline/20260925_184132", "view": 3, "pose": [80, 120, 0, 1, 92, 29], "markers": [42, 47, 48, 49], "official": [["Syringe", 0.908], ["Fish_bone", 0.805]]}
+{"t": 1790332915.1961238, "event": "scan_view", "run": "data/runs/pipeline/20260925_184132", "view": 4, "pose": [39, 90, 29, 1, 92, 29], "markers": null, "official": []}
+{"t": 1790333004.3807528, "event": "scan_view", "run": "data/runs/pipeline/20260925_184317", "view": 0, "pose": [99, 125, 0, 1, 92, 29], "markers": [41, 42, 45, 47], "official": [["Syringe", 0.845], ["Fish_bone", 0.483]]}
+{"t": 1790333009.0580108, "event": "scan_view", "run": "data/runs/pipeline/20260925_184317", "view": 1, "pose": [70, 125, 0, 1, 92, 29], "markers": [43, 44, 49], "official": [["Newspaper", 0.932], ["Fish_bone", 0.902]]}
+{"t": 1790333014.633677, "event": "scan_view", "run": "data/runs/pipeline/20260925_184317", "view": 2, "pose": [109, 105, 14, 1, 92, 29], "markers": [40, 41, 42, 45], "official": [["Syringe", 0.875]]}
+{"t": 1790333019.3634, "event": "scan_view", "run": "data/runs/pipeline/20260925_184317", "view": 3, "pose": [80, 120, 0, 1, 92, 29], "markers": [42, 43, 47, 49], "official": [["Newspaper", 0.928], ["Fish_bone", 0.905]]}
+{"t": 1790333024.124668, "event": "scan_view", "run": "data/runs/pipeline/20260925_184317", "view": 4, "pose": [39, 90, 29, 1, 92, 29], "markers": null, "official": []}
+{"t": 1790333030.025595, "event": "refine_view", "cube": [5.8, 8.6], "pose": [72, 94, 5, 5, 92, 29]}
+{"t": 1790333036.702708, "event": "refine_view", "cube": [-6.6, 18.1], "pose": [105, 125, 5, 5, 92, 29]}
+{"t": 1790333045.666633, "event": "hovering", "pose": [80, 35, 71, 22, 98, 29], "tip_cm": [4.6, 26.3, 2.5], "colour": "yellow"}
+{"t": 1790333050.972812, "event": "gripped", "pose": [80, 38, 55, 40, 98, 29], "tip_cm": [4.9, 27.6, 2.1], "grip": {"action": "grip", "command": 133, "readback": 128, "at": 1790361934.961365, "holding": true, "result": "holding"}}
+{"t": 1790333052.774684, "event": "lifted", "pose": [80, 35, 71, 22, 98, 128], "gripper_readback": 128}
+{"t": 1790333052.781494, "event": "put_planned", "target_map_cm": [12.0, 13.0], "pitch": 140, "hover": [63, 64, 33, 33], "j5": 120}
+{"t": 1790333073.629827, "event": "put", "target": "44", "target_map_cm": [12.0, 13.0], "released_at": [63, 63, 13, 55, 119, 127]}
+{"t": 1790333073.6305652, "event": "pipeline_sorted", "cube": [5.5, 18.0], "bin": "44", "category": "other", "source": "colour; official model disagreed (Fish_bone 0.91 -> kitchen)", "seconds": 37}
+{"t": 1790333078.8807878, "event": "hovering", "pose": [105, 45, 54, 35, 92, 29], "tip_cm": [-7.1, 26.6, 4.0], "colour": "red"}
+{"t": 1790333084.280009, "event": "gripped", "pose": [106, 44, 33, 59, 92, 29], "tip_cm": [-7.7, 26.9, 1.2], "grip": {"action": "grip", "command": 133, "readback": 128, "at": 1790361968.2696579, "holding": true, "result": "holding"}}
+{"t": 1790333086.901601, "event": "lifted", "pose": [106, 42, 54, 36, 92, 126], "gripper_readback": 126}
+{"t": 1790333124.0862231, "event": "put_planned", "target_map_cm": [6.0, 13.0], "pitch": 145, "hover": [77, 69, 33, 23], "j5": 106}
+{"t": 1790333143.765579, "event": "put", "target": "43", "target_map_cm": [6.0, 13.0], "released_at": [77, 69, 11, 44, 105, 126]}
+{"t": 1790333167.9537148, "event": "scan_view", "run": "data/runs/pipeline/20260925_184600", "view": 0, "pose": [99, 125, 0, 1, 92, 29], "markers": [41, 42, 45, 46, 47], "official": [["Syringe", 0.436]]}
+{"t": 1790333172.693439, "event": "scan_view", "run": "data/runs/pipeline/20260925_184600", "view": 1, "pose": [70, 125, 0, 1, 92, 29], "markers": [48, 49], "official": [["Fish_bone", 0.93], ["Newspaper", 0.465]]}
+{"t": 1790333178.201174, "event": "scan_view", "run": "data/runs/pipeline/20260925_184600", "view": 2, "pose": [109, 105, 14, 1, 92, 29], "markers": [40, 41, 42, 45, 46], "official": []}
+{"t": 1790333182.898561, "event": "scan_view", "run": "data/runs/pipeline/20260925_184600", "view": 3, "pose": [80, 120, 0, 1, 92, 29], "markers": [42, 47, 48, 49], "official": [["Newspaper", 0.912], ["Syringe", 0.891], ["Fish_bone", 0.89]]}
+{"t": 1790333187.978146, "event": "scan_view", "run": "data/runs/pipeline/20260925_184600", "view": 4, "pose": [39, 90, 29, 1, 92, 29], "markers": null, "official": []}
+{"t": 1790333193.0262861, "event": "refine_view", "cube": [5.9, 8.6], "pose": [71, 94, 5, 5, 92, 29]}
+{"t": 1790333198.1013088, "event": "hovering", "pose": [73, 78, 33, 3, 102, 29], "tip_cm": [5.1, 16.6, 4.1], "colour": "blue"}
+{"t": 1790333202.406026, "event": "gripped", "pose": [72, 81, 5, 28, 102, 29], "tip_cm": [5.4, 16.6, 0.7], "grip": {"action": "grip", "command": 133, "readback": 29, "at": 1790362086.395224, "holding": false, "result": "not_closed"}}
+{"t": 1790333401.38549, "event": "scan_view", "run": "data/runs/pipeline/20260925_184954", "view": 0, "pose": [99, 125, 0, 1, 92, 29], "markers": [41, 42, 45, 46, 47], "official": [["Syringe", 0.527], ["Fish_bone", 0.303]]}
+{"t": 1790333406.0864, "event": "scan_view", "run": "data/runs/pipeline/20260925_184954", "view": 1, "pose": [70, 125, 0, 1, 92, 29], "markers": [48, 49], "official": [["Fish_bone", 0.927], ["Newspaper", 0.791], ["Syringe", 0.743]]}
+{"t": 1790333411.5747101, "event": "scan_view", "run": "data/runs/pipeline/20260925_184954", "view": 2, "pose": [109, 105, 14, 1, 92, 29], "markers": [40, 41, 42, 45, 46], "official": []}
+{"t": 1790333416.247641, "event": "scan_view", "run": "data/runs/pipeline/20260925_184954", "view": 3, "pose": [80, 120, 0, 1, 92, 29], "markers": [42, 47, 48, 49], "official": [["Syringe", 0.944], ["Newspaper", 0.907], ["Fish_bone", 0.846]]}
+{"t": 1790333421.334344, "event": "scan_view", "run": "data/runs/pipeline/20260925_184954", "view": 4, "pose": [39, 90, 29, 1, 92, 29], "markers": null, "official": []}
+{"t": 1790333426.37257, "event": "refine_view", "cube": [5.9, 8.6], "pose": [71, 94, 5, 5, 92, 29]}
+{"t": 1790333431.34484, "event": "hovering", "pose": [73, 77, 33, 3, 105, 29], "tip_cm": [5.0, 16.5, 3.8], "colour": "blue"}
+{"t": 1790333437.5721998, "event": "gripped", "pose": [73, 80, 5, 29, 105, 29], "tip_cm": [5.1, 16.8, 0.5], "grip": {"action": "grip", "command": 133, "readback": 128, "at": 1790362321.5628726, "holding": true, "result": "holding"}}
+{"t": 1790333440.342464, "event": "lifted", "pose": [73, 77, 33, 3, 105, 128], "gripper_readback": 128}
+{"t": 1790333440.347374, "event": "put_planned", "target_map_cm": [-12.0, 13.0], "pitch": 140, "hover": [122, 55, 46, 29], "j5": 92}
+{"t": 1790333455.304269, "event": "put", "target": "40", "target_map_cm": [-12.0, 13.0], "released_at": [121, 55, 25, 49, 92, 127]}
+{"t": 1790333455.304727, "event": "pipeline_sorted", "cube": [5.7, 8.3], "bin": "40", "category": "recyclable", "source": "official model (Newspaper 0.91), colour agrees", "seconds": 29}
+{"t": 1790334881.691628, "event": "scan_view", "run": "data/runs/pipeline/20260925_191437", "view": 0, "pose": [99, 125, 0, 1, 92, 6], "markers": [41, 42, 45, 46, 47], "official": [["Syringe", 0.675], ["Fish_bone", 0.472]]}
+{"t": 1790334886.571702, "event": "scan_view", "run": "data/runs/pipeline/20260925_191437", "view": 1, "pose": [70, 125, 0, 1, 92, 6], "markers": [48, 49], "official": [["Fish_bone", 0.937], ["Syringe", 0.934]]}
+{"t": 1790334892.3842099, "event": "scan_view", "run": "data/runs/pipeline/20260925_191437", "view": 2, "pose": [109, 105, 14, 1, 92, 6], "markers": [41, 42, 45, 46], "official": [["Syringe", 0.637]]}
+{"t": 1790334897.3135161, "event": "scan_view", "run": "data/runs/pipeline/20260925_191437", "view": 3, "pose": [80, 120, 0, 1, 92, 6], "markers": [42, 47, 48, 49], "official": [["Syringe", 0.929], ["Fish_bone", 0.742]]}
+{"t": 1790334902.236181, "event": "scan_view", "run": "data/runs/pipeline/20260925_191437", "view": 4, "pose": [39, 90, 29, 1, 92, 6], "markers": null, "official": []}
+{"t": 1790334907.5124822, "event": "scan_view", "run": "data/runs/pipeline/20260925_191437", "view": 5, "pose": [49, 105, 5, 1, 92, 6], "markers": null, "official": []}
+{"t": 1790334913.270317, "event": "scan_view", "run": "data/runs/pipeline/20260925_191437", "view": 6, "pose": [89, 105, 5, 1, 92, 6], "markers": [37, 38, 42], "official": [["Syringe", 0.944]]}
+{"t": 1790334919.493818, "event": "scan_view", "run": "data/runs/pipeline/20260925_191437", "view": 7, "pose": [124, 105, 5, 1, 92, 6], "markers": [30, 35], "official": []}
+{"t": 1790334961.157124, "event": "refine_view", "cube": [-12.8, 13.4], "pose": [123, 120, 5, 5, 92, 6]}
+{"t": 1790334967.2446861, "event": "hovering", "pose": [114, 73, 39, 3, 92, 29], "tip_cm": [-7.4, 16.7, 4.2], "colour": "green"}
+{"t": 1790334972.633766, "event": "gripper_wake_refused", "reason": "遇到阻力或偏差，已停在当前读回位置：servo 6: expected 35, read 29"}
+{"t": 1790335052.68997, "event": "hovering", "pose": [114, 73, 39, 3, 92, 29], "tip_cm": [-7.4, 16.7, 4.2], "colour": "green"}
+{"t": 1790335058.0849001, "event": "gripper_wake_refused", "reason": "遇到阻力或偏差，已停在当前读回位置：servo 6: expected 35, read 29"}
+{"t": 1790335096.819201, "event": "hovering", "pose": [114, 73, 39, 3, 92, 29], "tip_cm": [-7.4, 16.7, 4.2], "colour": "green"}
+{"t": 1790335101.193856, "event": "gripper_wake_refused", "reason": "只接受 1–6 号关节、±1/2/5/10° 点动"}
+{"t": 1790335101.203253, "event": "gripper_wake_refused", "reason": "只接受 1–6 号关节、±1/2/5/10° 点动"}
+{"t": 1790335101.210894, "event": "gripper_wake_refused", "reason": "只接受 1–6 号关节、±1/2/5/10° 点动"}
+{"t": 1790335101.218848, "event": "gripper_wake_refused", "reason": "只接受 1–6 号关节、±1/2/5/10° 点动"}
+{"t": 1790335101.226154, "event": "gripper_wake_refused", "reason": "只接受 1–6 号关节、±1/2/5/10° 点动"}
+{"t": 1790335101.235882, "event": "gripper_wake_refused", "reason": "只接受 1–6 号关节、±1/2/5/10° 点动"}
+{"t": 1790335102.244472, "event": "gripper_not_closed", "attempt": 1, "readback": 29}
+{"t": 1790335102.249011, "event": "gripper_wake_refused", "reason": "只接受 1–6 号关节、±1/2/5/10° 点动"}
+{"t": 1790335102.25788, "event": "gripper_wake_refused", "reason": "只接受 1–6 号关节、±1/2/5/10° 点动"}
+{"t": 1790335102.2661839, "event": "gripper_wake_refused", "reason": "只接受 1–6 号关节、±1/2/5/10° 点动"}
+{"t": 1790335102.275448, "event": "gripper_wake_refused", "reason": "只接受 1–6 号关节、±1/2/5/10° 点动"}
+{"t": 1790335102.284014, "event": "gripper_wake_refused", "reason": "只接受 1–6 号关节、±1/2/5/10° 点动"}
+{"t": 1790335102.291044, "event": "gripper_wake_refused", "reason": "只接受 1–6 号关节、±1/2/5/10° 点动"}
+{"t": 1790335103.3089778, "event": "gripper_not_closed", "attempt": 2, "readback": 29}
+{"t": 1790335103.309769, "event": "gripped", "pose": [114, 77, 9, 28, 92, 29], "tip_cm": [-7.3, 16.5, 0.5], "grip": {"action": "grip", "command": 133, "readback": 29, "at": 1790363987.2991893, "holding": false, "result": "not_closed"}}
+{"t": 1790335134.011568, "event": "hovering", "pose": [114, 73, 39, 3, 92, 30], "tip_cm": [-7.4, 16.7, 4.2], "colour": "green"}
+{"t": 1790335140.65094, "event": "gripped", "pose": [114, 77, 9, 28, 92, 30], "tip_cm": [-7.3, 16.5, 0.5], "grip": {"action": "grip", "command": 133, "readback": 129, "at": 1790364024.640366, "holding": true, "result": "holding"}}
+{"t": 1790335144.341148, "event": "lifted", "pose": [114, 74, 39, 3, 92, 129], "gripper_readback": 129}
+{"t": 1790335144.3541849, "event": "put_planned", "target_map_cm": [-6.0, 13.0], "pitch": 145, "hover": [108, 65, 39, 21], "j5": 92}
+{"t": 1790335156.755244, "event": "put", "target": "41", "target_map_cm": [-6.0, 13.0], "released_at": [108, 65, 17, 42, 92, 129]}
+{"t": 1790335156.7559628, "event": "pipeline_sorted", "cube": [-6.3, 8.1], "bin": "41", "category": "kitchen", "source": "colour fallback (official model silent)", "seconds": 24}
+{"t": 1790335176.77901, "event": "scan_view", "run": "data/runs/pipeline/20260925_191932", "view": 0, "pose": [99, 125, 0, 1, 92, 29], "markers": [42, 45, 46, 47], "official": [["Syringe", 0.746], ["Fish_bone", 0.74]]}
+{"t": 1790335181.639284, "event": "scan_view", "run": "data/runs/pipeline/20260925_191932", "view": 1, "pose": [70, 125, 0, 1, 92, 29], "markers": [48, 49], "official": [["Syringe", 0.945], ["Fish_bone", 0.92]]}
+{"t": 1790335187.376529, "event": "scan_view", "run": "data/runs/pipeline/20260925_191932", "view": 2, "pose": [109, 105, 14, 1, 92, 29], "markers": [42, 45, 46], "official": [["Fish_bone", 0.582], ["Syringe", 0.528], ["Syringe", 0.467]]}
+{"t": 1790335192.2442172, "event": "scan_view", "run": "data/runs/pipeline/20260925_191932", "view": 3, "pose": [80, 120, 0, 1, 92, 29], "markers": [42, 47, 48, 49], "official": [["Syringe", 0.944], ["Fish_bone", 0.852]]}
+{"t": 1790335197.579909, "event": "scan_view", "run": "data/runs/pipeline/20260925_191932", "view": 4, "pose": [40, 90, 29, 1, 92, 29], "markers": null, "official": []}
+{"t": 1790335202.427815, "event": "scan_view", "run": "data/runs/pipeline/20260925_191932", "view": 5, "pose": [49, 105, 5, 1, 92, 29], "markers": null, "official": [["Fish_bone", 0.469]]}
+{"t": 1790335208.60064, "event": "scan_view", "run": "data/runs/pipeline/20260925_191932", "view": 6, "pose": [89, 105, 5, 1, 92, 29], "markers": [37, 38, 42], "official": [["Syringe", 0.932], ["Syringe", 0.374]]}
+{"t": 1790335213.928962, "event": "scan_view", "run": "data/runs/pipeline/20260925_191932", "view": 7, "pose": [124, 105, 5, 1, 92, 29], "markers": [30, 35], "official": []}
+{"t": 1790335692.642323, "event": "scan_view", "run": "data/runs/pipeline/20260925_192807", "view": 0, "pose": [99, 125, 0, 0, 92, 29], "markers": [41, 45], "official": [["Newspaper", 0.868], ["Fish_bone", 0.692], ["Syringe", 0.59]]}
+{"t": 1790335697.094697, "event": "scan_view", "run": "data/runs/pipeline/20260925_192807", "view": 1, "pose": [70, 125, 0, 0, 92, 29], "markers": [44, 49], "official": [["Fish_bone", 0.855]]}
+{"t": 1790335703.247704, "event": "scan_view", "run": "data/runs/pipeline/20260925_192807", "view": 2, "pose": [109, 105, 14, 0, 92, 29], "markers": [40, 41, 45], "official": [["Newspaper", 0.852], ["Syringe", 0.653]]}
+{"t": 1790335708.114109, "event": "scan_view", "run": "data/runs/pipeline/20260925_192807", "view": 3, "pose": [80, 120, 0, 0, 92, 29], "markers": [49], "official": [["Newspaper", 0.924], ["Fish_bone", 0.867], ["Syringe", 0.771]]}
+{"t": 1790335713.091619, "event": "scan_view", "run": "data/runs/pipeline/20260925_192807", "view": 4, "pose": [39, 90, 29, 0, 92, 29], "markers": null, "official": []}
+{"t": 1790335717.542397, "event": "scan_view", "run": "data/runs/pipeline/20260925_192807", "view": 5, "pose": [49, 105, 5, 0, 92, 29], "markers": [39, 44], "official": []}
+{"t": 1790335723.3291972, "event": "scan_view", "run": "data/runs/pipeline/20260925_192807", "view": 6, "pose": [89, 105, 5, 0, 92, 29], "markers": [37, 38], "official": [["Newspaper", 0.865]]}
+{"t": 1790335728.7034938, "event": "scan_view", "run": "data/runs/pipeline/20260925_192807", "view": 7, "pose": [124, 105, 5, 0, 92, 29], "markers": [30, 35, 36, 40, 41], "official": []}
+{"t": 1790335735.3039, "event": "refine_view", "cube": [-0.6, 13.2], "pose": [91, 104, 5, 5, 92, 29]}
+{"t": 1790335743.302527, "event": "hovering", "pose": [77, 38, 74, 16, 108, 29], "tip_cm": [5.9, 25.5, 3.7], "colour": "yellow"}
+{"t": 1790335751.734427, "event": "gripped", "pose": [77, 42, 45, 44, 108, 29], "tip_cm": [6.1, 26.5, 1.2], "grip": {"action": "grip", "command": 133, "readback": 127, "at": 1790364635.7209516, "holding": true, "result": "holding"}}
+{"t": 1790335754.5400589, "event": "lifted", "pose": [77, 40, 74, 16, 108, 126], "gripper_readback": 126}
+{"t": 1790335754.552853, "event": "put_planned", "target_map_cm": [12.0, 13.0], "pitch": 140, "hover": [61, 65, 32, 33], "j5": 122}
+{"t": 1790335775.520333, "event": "put", "target": "44", "target_map_cm": [12.0, 13.0], "released_at": [61, 65, 12, 55, 121, 125]}
+{"t": 1790335775.520942, "event": "pipeline_sorted", "cube": [6.3, 17.7], "bin": "44", "category": "other", "source": "colour; official model disagreed (Fish_bone 0.87 -> kitchen)", "seconds": 40}
+{"t": 1790335780.2208698, "event": "hovering", "pose": [90, 42, 68, 20, 91, 29], "tip_cm": [-0.0, 26.4, 4.3], "colour": "red"}
+{"t": 1790335787.6155891, "event": "gripped", "pose": [90, 45, 36, 47, 91, 29], "tip_cm": [-0.0, 26.0, 0.0], "grip": {"action": "grip", "command": 133, "readback": 129, "at": 1790364671.6015637, "holding": true, "result": "holding"}}
+{"t": 1790335791.3138611, "event": "lifted", "pose": [90, 41, 68, 19, 91, 129], "gripper_readback": 129}
+{"t": 1790335791.327446, "event": "put_planned", "target_map_cm": [6.0, 13.0], "pitch": 145, "hover": [75, 71, 31, 23], "j5": 108}
+{"t": 1790335811.0050912, "event": "put", "target": "43", "target_map_cm": [6.0, 13.0], "released_at": [75, 71, 9, 45, 107, 129]}
+{"t": 1790335811.00581, "event": "pipeline_sorted", "cube": [0.0, 18.2], "bin": "43", "category": "hazardous", "source": "official model (Syringe 0.77), colour agrees", "seconds": 35}
+{"t": 1790335814.1199691, "event": "hovering", "pose": [91, 62, 50, 9, 92, 29], "tip_cm": [-0.4, 21.6, 4.5], "colour": "blue"}
+{"t": 1790335822.6019368, "event": "gripper_wake_refused", "reason": "遇到阻力或偏差，已停在当前读回位置：servo 6: expected 34, read 29"}
+{"t": 1790335825.029669, "event": "gripper_not_closed", "attempt": 1, "readback": 29}
+{"t": 1790335828.044937, "event": "gripper_not_closed", "attempt": 2, "readback": 29}
+{"t": 1790335828.0456262, "event": "gripped", "pose": [92, 64, 23, 33, 92, 29], "tip_cm": [-0.8, 21.6, 1.0], "grip": {"action": "grip", "command": 133, "readback": 29, "at": 1790364712.0310857, "holding": false, "result": "not_closed"}}
+{"t": 1790335961.906836, "event": "scan_view", "run": "data/runs/pipeline/20260925_193233", "view": 0, "pose": [99, 125, 0, 1, 92, 29], "markers": [41, 47], "official": [["Newspaper", 0.951], ["Fish_bone", 0.647]]}
+{"t": 1790335966.790091, "event": "scan_view", "run": "data/runs/pipeline/20260925_193233", "view": 1, "pose": [70, 125, 0, 1, 92, 29], "markers": [48], "official": [["Syringe", 0.949], ["Fish_bone", 0.894]]}
+{"t": 1790335972.59482, "event": "scan_view", "run": "data/runs/pipeline/20260925_193233", "view": 2, "pose": [109, 105, 14, 1, 92, 29], "markers": [40, 41, 45, 47], "official": [["Newspaper", 0.921]]}
+{"t": 1790335977.881776, "event": "scan_view", "run": "data/runs/pipeline/20260925_193233", "view": 3, "pose": [80, 120, 0, 1, 92, 29], "markers": [47, 48], "official": [["Syringe", 0.95], ["Newspaper", 0.883], ["Fish_bone", 0.682]]}
+{"t": 1790335983.209055, "event": "scan_view", "run": "data/runs/pipeline/20260925_193233", "view": 4, "pose": [39, 90, 29, 1, 92, 29], "markers": null, "official": []}
+{"t": 1790335987.242582, "event": "scan_view", "run": "data/runs/pipeline/20260925_193233", "view": 5, "pose": [49, 105, 5, 1, 92, 29], "markers": [39], "official": []}
+{"t": 1790335993.5515862, "event": "scan_view", "run": "data/runs/pipeline/20260925_193233", "view": 6, "pose": [89, 105, 5, 1, 92, 29], "markers": [37, 38], "official": [["Newspaper", 0.914], ["Syringe", 0.888]]}
+{"t": 1790335998.88297, "event": "scan_view", "run": "data/runs/pipeline/20260925_193233", "view": 7, "pose": [124, 105, 5, 1, 92, 29], "markers": [30, 35, 36, 40, 41], "official": []}
+{"t": 1790336003.294174, "event": "refine_view", "cube": [-6.4, 17.9], "pose": [105, 120, 5, 5, 92, 30]}
+{"t": 1790336011.1046422, "event": "hovering", "pose": [93, 59, 54, 6, 92, 29], "tip_cm": [-1.1, 21.3, 4.1], "colour": "blue"}
+{"t": 1790336018.8350239, "event": "gripper_wake_refused", "reason": "遇到阻力或偏差，已停在当前读回位置：servo 6: expected 34, read 29"}
+{"t": 1790336023.240633, "event": "gripper_wake_refused", "reason": "遇到阻力或偏差，已停在当前读回位置：servo 6: expected 35, read 29"}
+{"t": 1790336027.7257211, "event": "gripper_wake_refused", "reason": "遇到阻力或偏差，已停在当前读回位置：servo 6: expected 35, read 29"}
+{"t": 1790336031.172673, "event": "gripper_still_asleep", "start": 29, "readback": 30}
+{"t": 1790336032.21228, "event": "gripper_not_closed", "attempt": 1, "readback": 29}
+{"t": 1790336034.833718, "event": "gripper_awake", "start": 29, "readback": 32}
+{"t": 1790336035.838047, "event": "gripped", "pose": [93, 62, 27, 32, 92, 29], "tip_cm": [-1.2, 22.1, 1.3], "grip": {"action": "grip", "command": 133, "readback": 129, "at": 1790364919.8252068, "holding": true, "result": "holding"}}
+{"t": 1790336038.635044, "event": "lifted", "pose": [93, 60, 54, 7, 92, 129], "gripper_readback": 129}
+{"t": 1790336038.6487098, "event": "put_planned", "target_map_cm": [-12.0, 13.0], "pitch": 140, "hover": [121, 58, 43, 29], "j5": 92}
+{"t": 1790336056.649438, "event": "put", "target": "40", "target_map_cm": [-12.0, 13.0], "released_at": [121, 57, 24, 50, 92, 129]}
+{"t": 1790336056.650362, "event": "pipeline_sorted", "cube": [-0.5, 13.0], "bin": "40", "category": "recyclable", "source": "official model (Newspaper 0.95), colour agrees", "seconds": 53}
+{"t": 1790336060.4646451, "event": "hovering", "pose": [105, 34, 71, 24, 92, 29], "tip_cm": [-7.0, 26.2, 2.5], "colour": "green"}
+{"t": 1790336068.6089249, "event": "gripper_awake", "start": 29, "readback": 33}
+{"t": 1790336069.620723, "event": "gripped", "pose": [105, 32, 61, 37, 92, 29], "tip_cm": [-7.2, 26.8, 0.7], "grip": {"action": "grip", "command": 133, "readback": 128, "at": 1790364953.6067479, "holding": true, "result": "holding"}}
+{"t": 1790336071.5548, "event": "lifted", "pose": [105, 32, 71, 24, 92, 128], "gripper_readback": 128}
+{"t": 1790336071.568474, "event": "put_planned", "target_map_cm": [-6.0, 13.0], "pitch": 145, "hover": [108, 67, 36, 21], "j5": 92}
+{"t": 1790336091.987317, "event": "put", "target": "41", "target_map_cm": [-6.0, 13.0], "released_at": [108, 67, 14, 43, 92, 127]}
+{"t": 1790336091.988108, "event": "pipeline_sorted", "cube": [-6.5, 17.9], "bin": "41", "category": "kitchen", "source": "official model (Fish_bone 0.65), colour agrees", "seconds": 35}
+{"t": 1790336112.4565592, "event": "scan_view", "run": "data/runs/pipeline/20260925_193508", "view": 0, "pose": [99, 125, 0, 1, 92, 29], "markers": [42, 46, 47], "official": [["Fish_bone", 0.465], ["Syringe", 0.371]]}
+{"t": 1790336117.343734, "event": "scan_view", "run": "data/runs/pipeline/20260925_193508", "view": 1, "pose": [70, 125, 0, 1, 92, 29], "markers": [48], "official": [["Syringe", 0.946], ["Fish_bone", 0.909]]}
+{"t": 1790336123.100659, "event": "scan_view", "run": "data/runs/pipeline/20260925_193508", "view": 2, "pose": [109, 105, 14, 1, 92, 29], "markers": [42, 45, 46, 47], "official": [["Syringe", 0.679], ["Syringe", 0.655], ["Fish_bone", 0.531], ["Newspaper", 0.52]]}
+{"t": 1790336127.9686139, "event": "scan_view", "run": "data/runs/pipeline/20260925_193508", "view": 3, "pose": [80, 120, 0, 1, 92, 29], "markers": [42, 47, 48], "official": [["Syringe", 0.95], ["Fish_bone", 0.579], ["Syringe", 0.345]]}
+{"t": 1790336133.3072262, "event": "scan_view", "run": "data/runs/pipeline/20260925_193508", "view": 4, "pose": [40, 90, 29, 1, 92, 29], "markers": null, "official": []}
+{"t": 1790336137.751534, "event": "scan_view", "run": "data/runs/pipeline/20260925_193508", "view": 5, "pose": [49, 105, 5, 1, 92, 29], "markers": [39], "official": []}
+{"t": 1790336143.504639, "event": "scan_view", "run": "data/runs/pipeline/20260925_193508", "view": 6, "pose": [89, 105, 5, 1, 92, 29], "markers": [37, 38, 42], "official": [["Syringe", 0.728], ["Syringe", 0.441]]}
+{"t": 1790336149.237091, "event": "scan_view", "run": "data/runs/pipeline/20260925_193508", "view": 7, "pose": [124, 105, 5, 1, 92, 29], "markers": [30, 35, 36], "official": []}
+{"t": 1790337086.875676, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_000", "view": 0, "pose": [99, 125, 0, 0, 92, 29], "markers": [41, 45, 46], "official": [["Syringe", 0.869]]}
+{"t": 1790337091.4080079, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_000", "view": 1, "pose": [70, 125, 0, 0, 92, 29], "markers": [39, 44, 48, 49], "official": [["Fish_bone", 0.948]]}
+{"t": 1790337097.192385, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_000", "view": 2, "pose": [109, 105, 14, 0, 92, 29], "markers": [40, 41, 45, 46], "official": [["Syringe", 0.91]]}
+{"t": 1790337102.072723, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_000", "view": 3, "pose": [80, 120, 0, 0, 92, 30], "markers": [48, 49], "official": [["Fish_bone", 0.901], ["Syringe", 0.787], ["Fish_bone", 0.505]]}
+{"t": 1790337106.9962938, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_000", "view": 4, "pose": [39, 90, 29, 0, 92, 29], "markers": null, "official": []}
+{"t": 1790337111.4715142, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_000", "view": 5, "pose": [49, 105, 5, 0, 92, 29], "markers": [39, 44], "official": []}
+{"t": 1790337117.71713, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_000", "view": 6, "pose": [89, 105, 5, 0, 92, 29], "markers": [38], "official": [["Fish_bone", 0.9], ["Syringe", 0.83], ["Fish_bone", 0.395], ["Newspaper", 0.364]]}
+{"t": 1790337123.583071, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_000", "view": 7, "pose": [124, 105, 5, 1, 92, 29], "markers": [30, 35, 40], "official": [["Newspaper", 0.73]]}
+{"t": 1790337129.6922429, "event": "hovering", "pose": [76, 70, 29, 26, 96, 29], "tip_cm": [5.4, 21.5, 4.0], "colour": "yellow"}
+{"t": 1790337135.740145, "event": "gripper_wake_refused", "reason": "遇到阻力或偏差，已停在当前读回位置：servo 6: expected 34, read 29"}
+{"t": 1790337140.1025321, "event": "gripper_wake_refused", "reason": "遇到阻力或偏差，已停在当前读回位置：servo 6: expected 35, read 29"}
+{"t": 1790337144.565974, "event": "gripper_wake_refused", "reason": "遇到阻力或偏差，已停在当前读回位置：servo 6: expected 35, read 29"}
+{"t": 1790337148.041902, "event": "gripper_still_asleep", "start": 29, "readback": 29}
+{"t": 1790337149.054955, "event": "gripper_not_closed", "attempt": 1, "readback": 29}
+{"t": 1790337152.991159, "event": "gripper_awake", "start": 29, "readback": 34}
+{"t": 1790337154.017492, "event": "gripped", "pose": [76, 69, 7, 50, 96, 29], "tip_cm": [5.4, 21.7, 0.8], "grip": {"action": "grip", "command": 133, "readback": 130, "at": 1790366038.000872, "holding": true, "result": "holding"}}
+{"t": 1790337156.8112829, "event": "lifted", "pose": [76, 69, 29, 27, 96, 130], "gripper_readback": 130}
+{"t": 1790337176.663004, "event": "tumbled", "target_cm": [11, 10], "pitch": 140, "j5": 180, "tilt_deg": 48.2}
+{"t": 1790337187.256702, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_001", "view": 0, "pose": [99, 125, 1, 1, 92, 29], "markers": [41, 45, 46], "official": [["Syringe", 0.881]]}
+{"t": 1790337191.393596, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_001", "view": 1, "pose": [70, 125, 1, 1, 92, 29], "markers": [43, 44, 48, 49], "official": [["Fish_bone", 0.826], ["Syringe", 0.625]]}
+{"t": 1790337197.273636, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_001", "view": 2, "pose": [109, 105, 14, 1, 92, 29], "markers": [40, 41, 45, 46], "official": [["Syringe", 0.915]]}
+{"t": 1790337201.727776, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_001", "view": 3, "pose": [80, 120, 0, 1, 92, 29], "markers": [43, 47, 48, 49], "official": [["Syringe", 0.925]]}
+{"t": 1790337206.657557, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_001", "view": 4, "pose": [40, 90, 29, 1, 92, 29], "markers": null, "official": []}
+{"t": 1790337211.1013901, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_001", "view": 5, "pose": [49, 105, 5, 1, 92, 29], "markers": [44], "official": [["Fish_bone", 0.925]]}
+{"t": 1790337216.8535838, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_001", "view": 6, "pose": [89, 105, 5, 1, 92, 29], "markers": [38, 43], "official": [["Syringe", 0.918], ["Fish_bone", 0.736]]}
+{"t": 1790337222.610618, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_001", "view": 7, "pose": [124, 105, 5, 1, 92, 29], "markers": [30, 35, 40], "official": [["Newspaper", 0.742]]}
+{"t": 1790337227.872853, "event": "hovering", "pose": [113, 71, 38, 5, 92, 29], "tip_cm": [-7.2, 17.0, 3.6], "colour": "blue"}
+{"t": 1790337234.1389592, "event": "gripper_awake", "start": 29, "readback": 33}
+{"t": 1790337235.142454, "event": "gripped", "pose": [113, 74, 10, 30, 92, 29], "tip_cm": [-7.2, 16.9, 0.1], "grip": {"action": "grip", "command": 133, "readback": 128, "at": 1790366119.125883, "holding": true, "result": "holding"}}
+{"t": 1790337237.934973, "event": "lifted", "pose": [113, 71, 38, 6, 92, 127], "gripper_readback": 127}
+{"t": 1790337238.003038, "event": "put_planned", "target_map_cm": [-6.1, 8.2], "pitch": 155, "hover": [113, 71, 39, 5], "j5": 92}
+{"t": 1790337249.456529, "event": "put", "target": "-6.1,8.2", "target_map_cm": [-6.1, 8.2], "released_at": [113, 73, 12, 28, 92, 127]}
+{"t": 1790337257.473747, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_002", "view": 0, "pose": [100, 125, 0, 1, 92, 29], "markers": [41, 45, 46], "official": [["Syringe", 0.922], ["Newspaper", 0.543]]}
+{"t": 1790337261.919745, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_002", "view": 1, "pose": [70, 125, 0, 1, 92, 29], "markers": [43, 44, 48, 49], "official": [["Fish_bone", 0.689]]}
+{"t": 1790337267.3219368, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_002", "view": 2, "pose": [109, 105, 14, 1, 92, 29], "markers": [40, 41, 45, 46], "official": [["Syringe", 0.882]]}
+{"t": 1790337271.834104, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_002", "view": 3, "pose": [80, 120, 0, 1, 92, 29], "markers": [43, 48, 49], "official": [["Syringe", 0.929]]}
+{"t": 1790337277.2615092, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_002", "view": 4, "pose": [39, 90, 29, 1, 92, 29], "markers": null, "official": []}
+{"t": 1790337281.3406332, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_002", "view": 5, "pose": [49, 105, 5, 1, 92, 29], "markers": [44], "official": [["Fish_bone", 0.881]]}
+{"t": 1790337287.239033, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_002", "view": 6, "pose": [89, 105, 5, 1, 92, 29], "markers": [38, 43], "official": [["Syringe", 0.863], ["Fish_bone", 0.491]]}
+{"t": 1790337292.972424, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_002", "view": 7, "pose": [124, 105, 5, 1, 92, 29], "markers": [30, 35, 40], "official": [["Newspaper", 0.496]]}
+{"t": 1790337375.862324, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_003", "view": 0, "pose": [99, 125, 0, 1, 92, 29], "markers": [41, 46], "official": [["Syringe", 0.872]]}
+{"t": 1790337380.315094, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_003", "view": 1, "pose": [70, 125, 0, 1, 92, 29], "markers": [43, 44, 48, 49], "official": [["Fish_bone", 0.714]]}
+{"t": 1790337385.721832, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_003", "view": 2, "pose": [109, 105, 14, 1, 92, 29], "markers": [40, 41, 45, 46], "official": [["Syringe", 0.905]]}
+{"t": 1790337390.2238662, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_003", "view": 3, "pose": [80, 120, 0, 1, 92, 29], "markers": [43, 48, 49], "official": [["Syringe", 0.904], ["Fish_bone", 0.44]]}
+{"t": 1790337395.570247, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_003", "view": 4, "pose": [39, 90, 29, 1, 92, 29], "markers": null, "official": []}
+{"t": 1790337400.017899, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_003", "view": 5, "pose": [49, 105, 5, 1, 92, 29], "markers": [44], "official": [["Fish_bone", 0.868]]}
+{"t": 1790337405.774088, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_003", "view": 6, "pose": [89, 105, 5, 1, 92, 29], "markers": [38, 43], "official": [["Syringe", 0.825], ["Fish_bone", 0.34]]}
+{"t": 1790337411.529063, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_003", "view": 7, "pose": [124, 105, 5, 1, 92, 29], "markers": [30, 35, 40], "official": [["Newspaper", 0.373]]}
+{"t": 1790337420.375534, "event": "hovering", "pose": [51, 67, 44, 2, 92, 29], "tip_cm": [11.7, 14.4, 3.5], "colour": "yellow"}
+{"t": 1790337426.619215, "event": "gripper_awake", "start": 29, "readback": 33}
+{"t": 1790337427.6583009, "event": "gripped", "pose": [51, 70, 15, 29, 92, 29], "tip_cm": [11.9, 14.7, 0.1], "grip": {"action": "grip", "command": 133, "readback": 129, "at": 1790366311.6395059, "holding": true, "result": "holding"}}
+{"t": 1790337430.493876, "event": "lifted", "pose": [51, 67, 44, 3, 92, 129], "gripper_readback": 129}
+{"t": 1790337430.513985, "event": "put_planned", "target_map_cm": [11.0, 15.0], "pitch": 140, "hover": [67, 48, 55, 27], "j5": 116}
+{"t": 1790337447.477205, "event": "put", "target": "11,15", "target_map_cm": [11.0, 15.0], "released_at": [66, 48, 33, 48, 115, 129]}
+{"t": 1790337447.478113, "event": "relocated", "category": "other", "to_cm": [11, 15]}
+{"t": 1790337457.2017589, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_004", "view": 0, "pose": [99, 125, 0, 1, 92, 29], "markers": [41, 46], "official": [["Syringe", 0.843], ["Newspaper", 0.481]]}
+{"t": 1790337461.739671, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_004", "view": 1, "pose": [70, 125, 0, 1, 92, 29], "markers": [39, 43, 48], "official": [["Fish_bone", 0.922], ["Syringe", 0.335]]}
+{"t": 1790337467.468805, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_004", "view": 2, "pose": [109, 105, 14, 1, 92, 29], "markers": [40, 41, 45, 46], "official": [["Syringe", 0.877]]}
+{"t": 1790337472.397241, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_004", "view": 3, "pose": [80, 120, 0, 1, 92, 29], "markers": [43, 48], "official": [["Syringe", 0.925], ["Fish_bone", 0.901]]}
+{"t": 1790337477.329762, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_004", "view": 4, "pose": [39, 90, 29, 1, 92, 29], "markers": null, "official": []}
+{"t": 1790337481.370858, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_004", "view": 5, "pose": [49, 105, 5, 1, 92, 29], "markers": [39, 44], "official": []}
+{"t": 1790337487.140844, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_004", "view": 6, "pose": [89, 104, 5, 1, 92, 29], "markers": [38, 43], "official": [["Syringe", 0.869], ["Fish_bone", 0.388]]}
+{"t": 1790337492.872446, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_004", "view": 7, "pose": [124, 105, 5, 1, 92, 29], "markers": [30, 35, 40], "official": []}
+{"t": 1790337499.756792, "event": "hovering", "pose": [65, 61, 28, 45, 92, 29], "tip_cm": [10.9, 23.4, 3.9], "colour": "yellow"}
+{"t": 1790337506.9083352, "event": "gripper_awake", "start": 29, "readback": 33}
+{"t": 1790337507.916069, "event": "gripped", "pose": [66, 56, 11, 68, 92, 29], "tip_cm": [10.6, 23.7, 0.7], "grip": {"action": "grip", "command": 133, "readback": 128, "at": 1790366391.8972032, "holding": true, "result": "holding"}}
+{"t": 1790337510.9256132, "event": "lifted", "pose": [66, 59, 27, 45, 92, 127], "gripper_readback": 127}
+{"t": 1790337542.297237, "event": "tumbled", "target_cm": [-9, 17], "pitch": 125, "j5": 180, "tilt_deg": 64.8}
+{"t": 1790337552.007754, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_005", "view": 0, "pose": [100, 125, 1, 1, 92, 30], "markers": [41, 46], "official": [["Syringe", 0.93], ["Fish_bone", 0.81]]}
+{"t": 1790337556.0511181, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_005", "view": 1, "pose": [70, 125, 1, 1, 92, 30], "markers": [43, 44, 48, 49], "official": [["Syringe", 0.348]]}
+{"t": 1790337562.20173, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_005", "view": 2, "pose": [109, 105, 14, 1, 92, 30], "markers": [40, 41, 46], "official": [["Fish_bone", 0.932], ["Syringe", 0.873]]}
+{"t": 1790337566.710448, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_005", "view": 3, "pose": [80, 120, 0, 1, 92, 30], "markers": [43, 48, 49], "official": [["Syringe", 0.932], ["Fish_bone", 0.451]]}
+{"t": 1790337571.6568599, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_005", "view": 4, "pose": [40, 90, 29, 1, 92, 30], "markers": null, "official": []}
+{"t": 1790337575.690826, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_005", "view": 5, "pose": [49, 105, 5, 1, 92, 30], "markers": [39, 44], "official": []}
+{"t": 1790337581.6027699, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_005", "view": 6, "pose": [89, 105, 5, 1, 92, 30], "markers": [38, 43], "official": [["Syringe", 0.811], ["Fish_bone", 0.509]]}
+{"t": 1790337587.3454158, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_005", "view": 7, "pose": [124, 105, 5, 1, 92, 30], "markers": [30, 35, 40], "official": [["Newspaper", 0.684]]}
+{"t": 1790337592.558603, "event": "hovering", "pose": [114, 76, 35, 4, 92, 30], "tip_cm": [-7.3, 16.4, 4.2], "colour": "blue"}
+{"t": 1790337598.8546581, "event": "gripper_awake", "start": 30, "readback": 33}
+{"t": 1790337599.862001, "event": "gripped", "pose": [114, 79, 6, 29, 92, 30], "tip_cm": [-7.2, 16.2, 0.4], "grip": {"action": "grip", "command": 133, "readback": 128, "at": 1790366483.8435123, "holding": true, "result": "holding"}}
+{"t": 1790337602.651734, "event": "lifted", "pose": [114, 76, 35, 5, 92, 127], "gripper_readback": 127}
+{"t": 1790337666.225718, "event": "put_planned", "target_map_cm": [-6.0, 7.7], "pitch": 160, "hover": [112, 74, 38, -2], "j5": 92}
+{"t": 1790337678.323178, "event": "put", "target": "-6.0,7.7", "target_map_cm": [-6.0, 7.7], "released_at": [112, 77, 11, 21, 92, 127]}
+{"t": 1790340913.0995882, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_005", "view": 0, "pose": [100, 125, 0, 0, 92, 30], "markers": [47], "official": [["Newspaper", 0.849]]}
+{"t": 1790340917.530887, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_005", "view": 1, "pose": [70, 125, 0, 0, 92, 30], "markers": [43, 44, 48, 49], "official": []}
+{"t": 1790340923.3627079, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_005", "view": 2, "pose": [109, 105, 14, 0, 92, 30], "markers": [45], "official": []}
+{"t": 1790340927.816174, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_005", "view": 3, "pose": [80, 120, 0, 0, 92, 30], "markers": [43, 47, 48, 49], "official": []}
+{"t": 1790340932.8335738, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_005", "view": 4, "pose": [39, 90, 29, 0, 92, 30], "markers": null, "official": []}
+{"t": 1790340936.875079, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_005", "view": 5, "pose": [49, 105, 5, 0, 92, 29], "markers": [39, 44], "official": []}
+{"t": 1790340943.183381, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_005", "view": 6, "pose": [89, 105, 5, 0, 92, 29], "markers": [37, 38, 43], "official": [["Newspaper", 0.625]]}
+{"t": 1790340948.9832342, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_005", "view": 7, "pose": [124, 105, 5, 0, 92, 30], "markers": [35, 36], "official": []}
+{"t": 1790340949.398411, "event": "collect_unlabelled", "round": "round_005", "why": "recyclable not found within 3.0 cm of [-6.0, 7.8]"}
+{"t": 1790341560.204473, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_006", "view": 0, "pose": [99, 125, 0, 0, 92, 30], "markers": [41, 42, 45, 47], "official": [["Syringe", 0.482]]}
+{"t": 1790341564.714331, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_006", "view": 1, "pose": [70, 125, 0, 0, 92, 30], "markers": [43, 44, 48], "official": []}
+{"t": 1790341570.120088, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_006", "view": 2, "pose": [109, 105, 14, 0, 92, 30], "markers": [40, 41, 42, 45], "official": []}
+{"t": 1790341574.577489, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_006", "view": 3, "pose": [80, 120, 0, 0, 92, 30], "markers": [42, 43, 47, 48], "official": [["Fish_bone", 0.342]]}
+{"t": 1790341579.964001, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_006", "view": 4, "pose": [39, 90, 29, 0, 92, 30], "markers": null, "official": []}
+{"t": 1790341584.407681, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_006", "view": 5, "pose": [49, 105, 5, 0, 92, 30], "markers": [44], "official": []}
+{"t": 1790341589.828653, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_006", "view": 6, "pose": [89, 105, 5, 0, 92, 29], "markers": [38, 42, 43], "official": []}
+{"t": 1790341595.164053, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_006", "view": 7, "pose": [124, 105, 5, 0, 92, 29], "markers": [35, 36, 40, 41], "official": []}
+{"t": 1790341701.243489, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_007", "view": 0, "pose": [99, 125, 0, 1, 92, 30], "markers": [41, 42, 46, 47], "official": [["Fish_bone", 0.67]]}
+{"t": 1790341705.75943, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_007", "view": 1, "pose": [70, 125, 0, 1, 92, 30], "markers": [43, 48, 49], "official": []}
+{"t": 1790341711.530174, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_007", "view": 2, "pose": [109, 105, 14, 1, 92, 30], "markers": [40, 41, 46], "official": [["Fish_bone", 0.92]]}
+{"t": 1790341715.969305, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_007", "view": 3, "pose": [80, 120, 0, 1, 92, 30], "markers": [42, 43, 47, 48, 49], "official": []}
+{"t": 1790341720.878509, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_007", "view": 4, "pose": [39, 90, 29, 1, 92, 29], "markers": null, "official": []}
+{"t": 1790341725.763581, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_007", "view": 5, "pose": [49, 105, 5, 1, 92, 30], "markers": [39], "official": []}
+{"t": 1790341731.115814, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_007", "view": 6, "pose": [89, 105, 5, 1, 92, 29], "markers": [42, 43], "official": []}
+{"t": 1790341736.525237, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_007", "view": 7, "pose": [124, 105, 5, 1, 92, 30], "markers": [35, 40, 41], "official": []}
+{"t": 1790341937.7428522, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_008", "view": 0, "pose": [99, 125, 0, 1, 92, 30], "markers": [41, 46, 47], "official": []}
+{"t": 1790341942.6038852, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_008", "view": 1, "pose": [70, 125, 0, 1, 92, 30], "markers": [43, 48, 49], "official": [["Newspaper", 0.33]]}
+{"t": 1790341948.076569, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_008", "view": 2, "pose": [109, 105, 14, 1, 92, 29], "markers": [41, 45, 46, 47], "official": []}
+{"t": 1790341952.5617049, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_008", "view": 3, "pose": [80, 120, 0, 1, 92, 30], "markers": [43, 47, 48, 49], "official": [["Newspaper", 0.92], ["Fish_bone", 0.359]]}
+{"t": 1790341957.8957891, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_008", "view": 4, "pose": [40, 90, 29, 1, 92, 30], "markers": null, "official": []}
+{"t": 1790341962.338516, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_008", "view": 5, "pose": [49, 105, 5, 1, 92, 30], "markers": [39], "official": [["Newspaper", 0.715]]}
+{"t": 1790341968.0977569, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_008", "view": 6, "pose": [89, 105, 5, 1, 92, 30], "markers": [43], "official": [["Newspaper", 0.648]]}
+{"t": 1790341973.4359272, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_008", "view": 7, "pose": [124, 105, 5, 1, 91, 29], "markers": [35, 36, 41], "official": []}
+{"t": 1790342077.8272781, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_009", "view": 0, "pose": [99, 125, 0, 1, 92, 29], "markers": [41, 42, 46], "official": [["Syringe", 0.51]]}
+{"t": 1790342082.7153852, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_009", "view": 1, "pose": [70, 125, 0, 1, 92, 30], "markers": [48], "official": [["Syringe", 0.433]]}
+{"t": 1790342088.4349298, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_009", "view": 2, "pose": [109, 105, 14, 1, 92, 29], "markers": [40, 41, 45, 46], "official": []}
+{"t": 1790342093.292328, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_009", "view": 3, "pose": [80, 120, 0, 1, 92, 30], "markers": [42, 48], "official": [["Syringe", 0.547]]}
+{"t": 1790342098.6244411, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_009", "view": 4, "pose": [39, 90, 29, 1, 92, 30], "markers": null, "official": []}
+{"t": 1790342102.65364, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_009", "view": 5, "pose": [49, 105, 5, 1, 92, 29], "markers": [39], "official": [["Syringe", 0.429]]}
+{"t": 1790342108.4606879, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_009", "view": 6, "pose": [89, 105, 5, 1, 92, 30], "markers": [42], "official": [["Syringe", 0.916]]}
+{"t": 1790342113.863332, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_009", "view": 7, "pose": [124, 105, 5, 1, 92, 30], "markers": [35, 36, 40, 41], "official": [["Syringe", 0.317]]}
+{"t": 1790342194.332098, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_010", "view": 0, "pose": [99, 125, 0, 1, 92, 30], "markers": [41, 46, 47], "official": [["Newspaper", 0.808], ["Fish_bone", 0.705]]}
+{"t": 1790342198.79724, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_010", "view": 1, "pose": [70, 125, 0, 1, 92, 30], "markers": [43, 44, 49], "official": []}
+{"t": 1790342204.5357199, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_010", "view": 2, "pose": [109, 105, 14, 1, 92, 30], "markers": [40, 41, 46], "official": [["Syringe", 0.344]]}
+{"t": 1790342209.455717, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_010", "view": 3, "pose": [80, 120, 0, 1, 92, 29], "markers": [43, 47, 49], "official": [["Fish_bone", 0.846], ["Syringe", 0.425]]}
+{"t": 1790342214.532112, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_010", "view": 4, "pose": [40, 90, 29, 1, 92, 30], "markers": null, "official": []}
+{"t": 1790342219.104596, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_010", "view": 5, "pose": [49, 105, 5, 1, 91, 30], "markers": [44], "official": []}
+{"t": 1790342225.0138319, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_010", "view": 6, "pose": [89, 105, 5, 1, 92, 30], "markers": [43], "official": [["Fish_bone", 0.889]]}
+{"t": 1790342230.3453481, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_010", "view": 7, "pose": [124, 105, 5, 1, 92, 30], "markers": [35, 36, 40, 41], "official": []}
+{"t": 1790342294.108046, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_011", "view": 0, "pose": [99, 125, 0, 1, 92, 30], "markers": [41, 46, 47], "official": [["Syringe", 0.417]]}
+{"t": 1790342298.5591838, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_011", "view": 1, "pose": [70, 125, 0, 1, 92, 30], "markers": [44, 49], "official": [["Newspaper", 0.758], ["Syringe", 0.308]]}
+{"t": 1790342304.3000572, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_011", "view": 2, "pose": [109, 105, 14, 1, 92, 30], "markers": [40, 41, 46], "official": [["Syringe", 0.389]]}
+{"t": 1790342309.149942, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_011", "view": 3, "pose": [80, 120, 0, 1, 92, 29], "markers": [47, 49], "official": [["Newspaper", 0.628], ["Syringe", 0.347]]}
+{"t": 1790342314.0996978, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_011", "view": 4, "pose": [40, 90, 29, 1, 92, 30], "markers": null, "official": []}
+{"t": 1790342318.551643, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_011", "view": 5, "pose": [49, 105, 5, 1, 92, 29], "markers": [44], "official": []}
+{"t": 1790342323.496014, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_011", "view": 6, "pose": [89, 105, 5, 1, 92, 30], "markers": null, "official": []}
+{"t": 1790342329.236801, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_011", "view": 7, "pose": [124, 105, 5, 1, 92, 30], "markers": [35, 36, 40, 41], "official": []}
+{"t": 1790342426.315279, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_012", "view": 0, "pose": [99, 125, 0, 1, 92, 30], "markers": [42, 46, 47], "official": []}
+{"t": 1790342430.7564402, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_012", "view": 1, "pose": [70, 125, 0, 1, 92, 30], "markers": [44, 48, 49], "official": [["Newspaper", 0.935]]}
+{"t": 1790342436.494116, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_012", "view": 2, "pose": [109, 105, 14, 1, 92, 29], "markers": [40, 46], "official": [["Syringe", 0.853]]}
+{"t": 1790342440.940301, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_012", "view": 3, "pose": [80, 120, 0, 1, 92, 30], "markers": [42, 47, 48, 49], "official": [["Newspaper", 0.936], ["Syringe", 0.32]]}
+{"t": 1790342446.287364, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_012", "view": 4, "pose": [39, 90, 29, 1, 92, 30], "markers": null, "official": []}
+{"t": 1790342450.3135118, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_012", "view": 5, "pose": [49, 105, 5, 1, 92, 30], "markers": [39, 44], "official": []}
+{"t": 1790342456.220837, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_012", "view": 6, "pose": [90, 105, 5, 1, 92, 30], "markers": [42], "official": [["Newspaper", 0.658], ["Syringe", 0.429]]}
+{"t": 1790342461.983239, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_012", "view": 7, "pose": [124, 105, 5, 1, 92, 30], "markers": [40], "official": []}
+{"t": 1790342605.323793, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_013", "view": 0, "pose": [99, 125, 0, 1, 92, 30], "markers": [41, 46, 47], "official": [["Fish_bone", 0.896]]}
+{"t": 1790342609.405489, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_013", "view": 1, "pose": [70, 125, 0, 1, 92, 30], "markers": [43, 48, 49], "official": [["Fish_bone", 0.704], ["Newspaper", 0.403]]}
+{"t": 1790342615.282521, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_013", "view": 2, "pose": [109, 105, 14, 1, 92, 29], "markers": [41, 45, 46], "official": [["Fish_bone", 0.86]]}
+{"t": 1790342620.1432629, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_013", "view": 3, "pose": [80, 120, 0, 1, 92, 30], "markers": [43, 47, 48, 49], "official": [["Fish_bone", 0.931], ["Fish_bone", 0.393]]}
+{"t": 1790342625.047254, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_013", "view": 4, "pose": [40, 90, 29, 1, 92, 29], "markers": null, "official": []}
+{"t": 1790342630.310515, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_013", "view": 5, "pose": [49, 105, 5, 1, 92, 30], "markers": null, "official": []}
+{"t": 1790342636.0584488, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_013", "view": 6, "pose": [90, 105, 5, 1, 92, 29], "markers": [43], "official": [["Fish_bone", 0.914]]}
+{"t": 1790342641.468222, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_013", "view": 7, "pose": [124, 105, 5, 1, 91, 30], "markers": [35, 36, 41], "official": []}
+{"t": 1790342742.7147672, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_014", "view": 0, "pose": [99, 125, 0, 1, 92, 30], "markers": [45], "official": [["Newspaper", 0.456]]}
+{"t": 1790342746.815371, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_014", "view": 1, "pose": [70, 125, 0, 1, 92, 30], "markers": [43, 44, 48, 49], "official": []}
+{"t": 1790342752.570894, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_014", "view": 2, "pose": [109, 105, 14, 1, 92, 30], "markers": [41, 45, 46], "official": []}
+{"t": 1790342757.0128052, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_014", "view": 3, "pose": [80, 120, 0, 1, 92, 30], "markers": [43, 47, 48, 49], "official": [["Newspaper", 0.41], ["Syringe", 0.341]]}
+{"t": 1790342761.9238431, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_014", "view": 4, "pose": [40, 90, 29, 1, 92, 29], "markers": null, "official": []}
+{"t": 1790342766.365462, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_014", "view": 5, "pose": [49, 105, 5, 1, 92, 30], "markers": [39, 44], "official": []}
+{"t": 1790342772.173528, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_014", "view": 6, "pose": [89, 105, 5, 1, 92, 30], "markers": [43], "official": [["Newspaper", 0.546], ["Syringe", 0.327], ["Syringe", 0.307]]}
+{"t": 1790342777.594634, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_014", "view": 7, "pose": [124, 105, 5, 1, 92, 30], "markers": [35, 41], "official": []}
+{"t": 1790343402.425395, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_015", "view": 0, "pose": [99, 125, 0, 1, 92, 30], "markers": [41, 42, 46, 47], "official": []}
+{"t": 1790343406.854333, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_015", "view": 1, "pose": [70, 125, 0, 1, 92, 30], "markers": [43, 44, 49], "official": []}
+{"t": 1790343412.6105542, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_015", "view": 2, "pose": [109, 105, 14, 1, 92, 30], "markers": [41, 45, 46], "official": []}
+{"t": 1790343417.050591, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_015", "view": 3, "pose": [80, 120, 0, 1, 92, 30], "markers": [42, 47, 49], "official": []}
+{"t": 1790343421.965464, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_015", "view": 4, "pose": [39, 90, 29, 1, 92, 30], "markers": null, "official": []}
+{"t": 1790343426.410471, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_015", "view": 5, "pose": [49, 105, 5, 1, 92, 29], "markers": [39, 44], "official": []}
+{"t": 1790343432.135628, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_015", "view": 6, "pose": [89, 105, 5, 1, 92, 30], "markers": [42, 43], "official": []}
+{"t": 1790343437.8598359, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_015", "view": 7, "pose": [124, 105, 5, 1, 92, 30], "markers": [35, 41], "official": [["Newspaper", 0.539]]}
+{"t": 1790343556.753966, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_016", "view": 0, "pose": [99, 125, 0, 1, 92, 30], "markers": [41, 42, 46], "official": []}
+{"t": 1790343561.617663, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_016", "view": 1, "pose": [70, 125, 0, 1, 92, 30], "markers": [44, 48], "official": [["Newspaper", 0.865]]}
+{"t": 1790343567.363858, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_016", "view": 2, "pose": [109, 105, 14, 1, 92, 30], "markers": [40, 41, 45, 46], "official": []}
+{"t": 1790343572.206454, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_016", "view": 3, "pose": [80, 120, 0, 1, 92, 30], "markers": [42, 48], "official": [["Newspaper", 0.924]]}
+{"t": 1790343577.108124, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_016", "view": 4, "pose": [39, 90, 29, 1, 92, 30], "markers": null, "official": []}
+{"t": 1790343581.5359218, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_016", "view": 5, "pose": [49, 105, 5, 1, 92, 29], "markers": [39, 44], "official": []}
+{"t": 1790343587.294076, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_016", "view": 6, "pose": [89, 105, 5, 1, 92, 30], "markers": [42, 48], "official": [["Newspaper", 0.878]]}
+{"t": 1790343593.034129, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_016", "view": 7, "pose": [124, 105, 5, 1, 92, 30], "markers": [36, 40, 41], "official": [["Syringe", 0.702]]}
+{"t": 1790343686.172213, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_017", "view": 0, "pose": [99, 125, 0, 1, 92, 30], "markers": [41, 46, 47], "official": [["Syringe", 0.488]]}
+{"t": 1790343690.621431, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_017", "view": 1, "pose": [70, 125, 0, 1, 92, 30], "markers": [43, 44, 48, 49], "official": []}
+{"t": 1790343696.4719958, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_017", "view": 2, "pose": [109, 105, 14, 1, 92, 30], "markers": [41, 45, 46, 47], "official": [["Newspaper", 0.439]]}
+{"t": 1790343700.902949, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_017", "view": 3, "pose": [80, 120, 0, 1, 92, 30], "markers": [43, 47, 48, 49], "official": []}
+{"t": 1790343705.8266299, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_017", "view": 4, "pose": [40, 90, 29, 1, 92, 30], "markers": null, "official": []}
+{"t": 1790343710.2690141, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_017", "view": 5, "pose": [49, 105, 5, 1, 92, 30], "markers": [44], "official": []}
+{"t": 1790343716.06253, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_017", "view": 6, "pose": [89, 105, 5, 1, 92, 30], "markers": [43], "official": [["Syringe", 0.337]]}
+{"t": 1790343721.435335, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_017", "view": 7, "pose": [124, 105, 5, 1, 92, 30], "markers": [35, 41], "official": []}
+{"t": 1790343859.2153118, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_018", "view": 0, "pose": [99, 125, 0, 1, 92, 29], "markers": [46], "official": []}
+{"t": 1790343863.241497, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_018", "view": 1, "pose": [70, 125, 0, 1, 92, 30], "markers": [43, 44, 48, 49], "official": []}
+{"t": 1790343869.146487, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_018", "view": 2, "pose": [109, 105, 14, 1, 92, 30], "markers": [40, 45, 46], "official": [["Syringe", 0.516], ["Fish_bone", 0.506]]}
+{"t": 1790343873.5934, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_018", "view": 3, "pose": [80, 120, 0, 1, 92, 30], "markers": [43, 48, 49], "official": [["Newspaper", 0.471]]}
+{"t": 1790343878.530429, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_018", "view": 4, "pose": [39, 90, 29, 1, 92, 30], "markers": null, "official": []}
+{"t": 1790343882.981725, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_018", "view": 5, "pose": [49, 105, 5, 1, 92, 30], "markers": [39, 44], "official": []}
+{"t": 1790343888.362635, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_018", "view": 6, "pose": [90, 105, 5, 1, 92, 30], "markers": [43], "official": []}
+{"t": 1790343894.2282088, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_018", "view": 7, "pose": [124, 105, 5, 1, 92, 30], "markers": [36, 40], "official": [["Fish_bone", 0.821]]}
+{"t": 1790344052.275489, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_019", "view": 0, "pose": [99, 125, 0, 1, 92, 30], "markers": [41, 42, 47], "official": []}
+{"t": 1790344056.816677, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_019", "view": 1, "pose": [70, 125, 0, 1, 92, 29], "markers": [43, 49], "official": [["Syringe", 0.889], ["Fish_bone", 0.8]]}
+{"t": 1790344062.630153, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_019", "view": 2, "pose": [109, 105, 14, 1, 92, 30], "markers": [40, 41, 45], "official": []}
+{"t": 1790344067.188262, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_019", "view": 3, "pose": [80, 120, 0, 1, 92, 30], "markers": [42, 43, 47, 49], "official": [["Fish_bone", 0.818], ["Syringe", 0.657], ["Newspaper", 0.383]]}
+{"t": 1790344072.1829991, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_019", "view": 4, "pose": [39, 90, 29, 1, 92, 30], "markers": null, "official": []}
+{"t": 1790344077.041321, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_019", "view": 5, "pose": [49, 105, 5, 1, 92, 30], "markers": null, "official": [["Syringe", 0.818]]}
+{"t": 1790344082.912189, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_019", "view": 6, "pose": [90, 105, 5, 1, 92, 30], "markers": [38, 42, 43], "official": []}
+{"t": 1790344088.6892679, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_019", "view": 7, "pose": [124, 105, 5, 1, 92, 30], "markers": [35, 40, 41], "official": [["Newspaper", 0.63]]}
+{"t": 1790350182.536292, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_021", "view": 0, "pose": [99, 125, 0, 1, 92, 30], "markers": [42, 46, 47], "official": []}
+{"t": 1790350187.4640121, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_021", "view": 1, "pose": [70, 125, 0, 1, 92, 30], "markers": [44, 48], "official": [["Syringe", 0.585]]}
+{"t": 1790350192.8162591, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_021", "view": 2, "pose": [109, 105, 14, 1, 92, 30], "markers": [40, 45, 46], "official": []}
+{"t": 1790350197.29715, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_021", "view": 3, "pose": [80, 120, 0, 1, 92, 30], "markers": [42, 47, 48], "official": []}
+{"t": 1790350202.634322, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_021", "view": 4, "pose": [40, 90, 29, 1, 92, 30], "markers": null, "official": []}
+{"t": 1790350207.078623, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_021", "view": 5, "pose": [49, 105, 5, 1, 92, 30], "markers": [44], "official": [["Newspaper", 0.71]]}
+{"t": 1790350212.5143082, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_021", "view": 6, "pose": [89, 105, 5, 1, 92, 30], "markers": [42], "official": [["Syringe", 0.542]]}
+{"t": 1790350218.3108962, "event": "scan_view", "run": "data/datasets/blocks4/20260925_195121/round_021", "view": 7, "pose": [124, 105, 5, 1, 92, 30], "markers": [35, 36, 40], "official": []}
+{"t": 1790429747.530077, "event": "scan_view", "run": "data/runs/pipeline/20260926_213543", "view": 0, "pose": [99, 125, 0, 1, 92, 30], "markers": [42, 46, 47], "official": []}
+{"t": 1790429752.4076748, "event": "scan_view", "run": "data/runs/pipeline/20260926_213543", "view": 1, "pose": [70, 125, 0, 1, 92, 30], "markers": [44, 48], "official": [["Syringe", 0.663]]}
+{"t": 1790429757.805682, "event": "scan_view", "run": "data/runs/pipeline/20260926_213543", "view": 2, "pose": [109, 105, 14, 1, 92, 30], "markers": [40, 45, 46], "official": []}
+{"t": 1790429762.685208, "event": "scan_view", "run": "data/runs/pipeline/20260926_213543", "view": 3, "pose": [80, 120, 0, 1, 92, 30], "markers": [42, 47, 48], "official": [["Syringe", 0.526]]}
+{"t": 1790429767.695481, "event": "scan_view", "run": "data/runs/pipeline/20260926_213543", "view": 4, "pose": [40, 90, 29, 1, 92, 30], "markers": null, "official": []}
+{"t": 1790429772.1688561, "event": "scan_view", "run": "data/runs/pipeline/20260926_213543", "view": 5, "pose": [49, 105, 5, 1, 92, 30], "markers": [44], "official": [["Newspaper", 0.598]]}
+{"t": 1790429777.917922, "event": "scan_view", "run": "data/runs/pipeline/20260926_213543", "view": 6, "pose": [89, 105, 5, 1, 92, 30], "markers": [42], "official": []}
+{"t": 1790429783.648293, "event": "scan_view", "run": "data/runs/pipeline/20260926_213543", "view": 7, "pose": [124, 105, 5, 1, 92, 30], "markers": [35, 36, 40], "official": []}
+{"t": 1790429812.688111, "event": "refine_view", "cube": [11.3, 8.6], "pose": [55, 100, 5, 5, 92, 30]}
+{"t": 1790429819.8049018, "event": "refine_view", "cube": [-6.0, 13.0], "pose": [105, 109, 5, 5, 92, 30]}
+{"t": 1790429825.9716449, "event": "refine_view", "cube": [5.7, 12.9], "pose": [75, 105, 5, 5, 92, 30]}
+{"t": 1790429835.3160949, "event": "hovering", "pose": [65, 30, 77, 26, 92, 30], "tip_cm": [12.0, 25.7, 3.1], "colour": null}
+{"t": 1790429841.558016, "event": "gripper_awake", "start": 29, "readback": 33}
+{"t": 1790429842.563684, "event": "gripped", "pose": [65, 33, 48, 52, 92, 29], "tip_cm": [12.0, 25.7, -0.2], "grip": {"action": "grip", "command": 133, "readback": 129, "at": 1790458727.2533383, "holding": true, "result": "holding"}}
+{"t": 1790429845.3534138, "event": "lifted", "pose": [65, 31, 77, 26, 92, 129], "gripper_readback": 129}
+{"t": 1790429845.367027, "event": "put_planned", "target_map_cm": [-12.0, 13.0], "pitch": 140, "hover": [122, 64, 34, 33], "j5": 92}
+{"t": 1790429869.868833, "event": "put", "target": "40", "target_map_cm": [-12.0, 13.0], "released_at": [121, 63, 14, 54, 92, 129]}
+{"t": 1790429869.869665, "event": "pipeline_sorted", "cube": [12.2, 18.3], "bin": "40", "category": "recyclable", "source": "detector {'recyclable': 2.83} over 3 views", "seconds": 43}
+{"t": 1790429875.430486, "event": "hovering", "pose": [75, 58, 55, 7, 92, 29], "tip_cm": [5.6, 21.0, 4.2], "colour": null}
+{"t": 1790429882.53427, "event": "gripper_awake", "start": 29, "readback": 33}
+{"t": 1790429883.56935, "event": "gripped", "pose": [75, 63, 22, 34, 92, 29], "tip_cm": [5.5, 20.7, 0.5], "grip": {"action": "grip", "command": 133, "readback": 114, "at": 1790458768.2588377, "holding": true, "result": "holding"}}
+{"t": 1790429887.248748, "event": "lifted", "pose": [75, 58, 55, 7, 92, 111], "gripper_readback": 111}
+{"t": 1790429887.262561, "event": "put_planned", "target_map_cm": [12.0, 13.0], "pitch": 145, "hover": [61, 52, 60, 14], "j5": 122}
+{"t": 1790429905.015935, "event": "put", "target": "44", "target_map_cm": [12.0, 13.0], "released_at": [61, 55, 30, 38, 121, 111]}
+{"t": 1790429905.016556, "event": "pipeline_sorted", "cube": [5.8, 12.9], "bin": "44", "category": "other", "source": "detector {'other': 5.35} over 6 views", "seconds": 35}
+{"t": 1790429931.129798, "event": "scan_view", "run": "data/runs/pipeline/20260926_213846", "view": 0, "pose": [99, 125, 0, 1, 92, 30], "markers": [42, 46, 47], "official": []}
+{"t": 1790429935.5902169, "event": "scan_view", "run": "data/runs/pipeline/20260926_213846", "view": 1, "pose": [70, 125, 0, 1, 92, 30], "markers": [43, 48, 49], "official": [["Syringe", 0.532]]}
+{"t": 1790429941.333058, "event": "scan_view", "run": "data/runs/pipeline/20260926_213846", "view": 2, "pose": [109, 105, 14, 1, 92, 30], "markers": [46], "official": []}
+{"t": 1790429945.798344, "event": "scan_view", "run": "data/runs/pipeline/20260926_213846", "view": 3, "pose": [80, 120, 0, 1, 92, 30], "markers": [42, 43, 47, 48, 49], "official": []}
+{"t": 1790429950.6955452, "event": "scan_view", "run": "data/runs/pipeline/20260926_213846", "view": 4, "pose": [40, 90, 29, 1, 92, 30], "markers": null, "official": []}
+{"t": 1790429954.7422159, "event": "scan_view", "run": "data/runs/pipeline/20260926_213846", "view": 5, "pose": [49, 105, 5, 1, 92, 30], "markers": null, "official": [["Newspaper", 0.521]]}
+{"t": 1790429960.090395, "event": "scan_view", "run": "data/runs/pipeline/20260926_213846", "view": 6, "pose": [89, 105, 5, 1, 92, 30], "markers": [38, 42, 43], "official": []}
+{"t": 1790429965.82213, "event": "scan_view", "run": "data/runs/pipeline/20260926_213846", "view": 7, "pose": [124, 105, 5, 1, 92, 30], "markers": [35, 36], "official": []}
+{"t": 1790429970.6572149, "event": "refine_view", "cube": [-6.1, 13.0], "pose": [107, 110, 5, 5, 92, 30]}
+{"t": 1790429977.892996, "event": "hovering", "pose": [55, 71, 34, 13, 92, 30], "tip_cm": [11.4, 16.2, 3.6], "colour": null}
+{"t": 1790429985.0842361, "event": "gripper_awake", "start": 30, "readback": 33}
+{"t": 1790429986.092373, "event": "gripped", "pose": [55, 72, 11, 38, 92, 30], "tip_cm": [11.9, 17.0, 1.0], "grip": {"action": "grip", "command": 133, "readback": 130, "at": 1790458870.7814162, "holding": true, "result": "holding"}}
+{"t": 1790429988.9013271, "event": "lifted", "pose": [55, 70, 34, 14, 92, 130], "gripper_readback": 130}
+{"t": 1790429988.912607, "event": "put_planned", "target_map_cm": [6.0, 13.0], "pitch": 150, "hover": [76, 57, 57, 7], "j5": 107}
+{"t": 1790430006.472251, "event": "put", "target": "43", "target_map_cm": [6.0, 13.0], "released_at": [75, 60, 26, 32, 106, 130]}
+{"t": 1790430006.473026, "event": "pipeline_sorted", "cube": [11.6, 8.7], "bin": "43", "category": "hazardous", "source": "detector {'hazardous': 3.15} over 4 views", "seconds": 35}
+{"t": 1790430027.888177, "event": "scan_view", "run": "data/runs/pipeline/20260926_214023", "view": 0, "pose": [99, 125, 0, 1, 92, 29], "markers": [42, 46, 47], "official": []}
+{"t": 1790430032.413768, "event": "scan_view", "run": "data/runs/pipeline/20260926_214023", "view": 1, "pose": [70, 125, 0, 1, 92, 29], "markers": [48, 49], "official": [["Newspaper", 0.757], ["Syringe", 0.631], ["Syringe", 0.444]]}
+{"t": 1790430038.3096871, "event": "scan_view", "run": "data/runs/pipeline/20260926_214023", "view": 2, "pose": [109, 105, 14, 1, 92, 30], "markers": [46], "official": [["Syringe", 0.331]]}
+{"t": 1790430042.8192651, "event": "scan_view", "run": "data/runs/pipeline/20260926_214023", "view": 3, "pose": [80, 120, 0, 1, 92, 29], "markers": [42, 47, 48, 49], "official": [["Newspaper", 0.318]]}
+{"t": 1790430047.766581, "event": "scan_view", "run": "data/runs/pipeline/20260926_214023", "view": 4, "pose": [40, 90, 29, 1, 92, 29], "markers": null, "official": []}
+{"t": 1790430052.224214, "event": "scan_view", "run": "data/runs/pipeline/20260926_214023", "view": 5, "pose": [49, 105, 5, 1, 92, 29], "markers": [39], "official": []}
+{"t": 1790430058.013918, "event": "scan_view", "run": "data/runs/pipeline/20260926_214023", "view": 6, "pose": [89, 105, 5, 1, 92, 30], "markers": [38, 42], "official": []}
+{"t": 1790430063.8205109, "event": "scan_view", "run": "data/runs/pipeline/20260926_214023", "view": 7, "pose": [124, 105, 5, 1, 92, 29], "markers": [35, 36], "official": []}
+{"t": 1790430159.313186, "event": "scan_view", "run": "data/runs/pipeline/20260926_214234", "view": 0, "pose": [99, 125, 0, 1, 92, 30], "markers": [42, 46, 47], "official": []}
+{"t": 1790430163.765951, "event": "scan_view", "run": "data/runs/pipeline/20260926_214234", "view": 1, "pose": [70, 125, 0, 1, 92, 29], "markers": [48, 49], "official": [["Newspaper", 0.751], ["Syringe", 0.532]]}
+{"t": 1790430169.5391831, "event": "scan_view", "run": "data/runs/pipeline/20260926_214234", "view": 2, "pose": [109, 105, 14, 1, 92, 30], "markers": [46], "official": []}
+{"t": 1790430174.4192362, "event": "scan_view", "run": "data/runs/pipeline/20260926_214234", "view": 3, "pose": [80, 120, 0, 1, 92, 29], "markers": [42, 47, 48, 49], "official": [["Newspaper", 0.484]]}
+{"t": 1790430179.457099, "event": "scan_view", "run": "data/runs/pipeline/20260926_214234", "view": 4, "pose": [40, 90, 29, 1, 92, 29], "markers": null, "official": []}
+{"t": 1790430183.9127, "event": "scan_view", "run": "data/runs/pipeline/20260926_214234", "view": 5, "pose": [49, 105, 5, 1, 92, 29], "markers": [39], "official": []}
+{"t": 1790430189.423123, "event": "scan_view", "run": "data/runs/pipeline/20260926_214234", "view": 6, "pose": [89, 105, 5, 1, 92, 29], "markers": [38, 42], "official": [["Newspaper", 0.562]]}
+{"t": 1790430195.592166, "event": "scan_view", "run": "data/runs/pipeline/20260926_214234", "view": 7, "pose": [124, 105, 5, 1, 92, 30], "markers": [35, 36], "official": []}
+{"t": 1790430202.688263, "event": "refine_view", "cube": [5.1, 12.8], "pose": [77, 105, 5, 5, 92, 29]}
+{"t": 1790430208.606894, "event": "refine_view", "cube": [-6.1, 13.0], "pose": [107, 109, 5, 5, 92, 29]}
+{"t": 1790430211.772753, "event": "refine_view", "cube": [-9.9, 13.3], "pose": [116, 115, 5, 5, 92, 29]}
+{"t": 1790430220.082591, "event": "hovering", "pose": [116, 49, 63, 12, 92, 29], "tip_cm": [-10.5, 21.5, 4.0], "colour": null}
+{"t": 1790430227.8250299, "event": "gripper_wake_refused", "reason": "遇到阻力或偏差，已停在当前读回位置：servo 6: expected 34, read 29"}
+{"t": 1790430232.248099, "event": "gripper_wake_refused", "reason": "遇到阻力或偏差，已停在当前读回位置：servo 6: expected 35, read 30"}
+{"t": 1790430235.699127, "event": "gripper_awake", "start": 30, "readback": 33}
+{"t": 1790430236.733069, "event": "gripped", "pose": [117, 52, 32, 40, 92, 30], "tip_cm": [-11.0, 21.5, 0.3], "grip": {"action": "grip", "command": 133, "readback": 128, "at": 1790459121.4219162, "holding": true, "result": "holding"}}
+{"t": 1790430240.4122958, "event": "lifted", "pose": [117, 50, 63, 13, 92, 127], "gripper_readback": 127}
+{"t": 1790430240.424333, "event": "put_planned", "target_map_cm": [-12.0, 13.0], "pitch": 145, "hover": [122, 40, 80, 5], "j5": 92}
+{"t": 1790430264.444004, "event": "put", "target": "40", "target_map_cm": [-12.0, 13.0], "released_at": [122, 49, 41, 35, 92, 127]}
+{"t": 1790430264.444814, "event": "pipeline_sorted", "cube": [-9.9, 13.7], "bin": "40", "category": "recyclable", "source": "detector {'recyclable': 4.62, 'hazardous': 0.6} over 5 views", "seconds": 52}
+{"t": 1790430291.61394, "event": "scan_view", "run": "data/runs/pipeline/20260926_214447", "view": 0, "pose": [99, 125, 0, 1, 92, 29], "markers": [42, 46, 47], "official": []}
+{"t": 1790430296.0955288, "event": "scan_view", "run": "data/runs/pipeline/20260926_214447", "view": 1, "pose": [70, 125, 0, 1, 92, 29], "markers": [48, 49], "official": [["Newspaper", 0.709], ["Syringe", 0.566], ["Syringe", 0.508]]}
+{"t": 1790430301.854903, "event": "scan_view", "run": "data/runs/pipeline/20260926_214447", "view": 2, "pose": [109, 105, 14, 1, 92, 29], "markers": [42, 45, 46], "official": []}
+{"t": 1790430306.727017, "event": "scan_view", "run": "data/runs/pipeline/20260926_214447", "view": 3, "pose": [80, 120, 0, 1, 92, 29], "markers": [42, 47, 48, 49], "official": [["Newspaper", 0.422], ["Syringe", 0.353]]}
+{"t": 1790430311.660197, "event": "scan_view", "run": "data/runs/pipeline/20260926_214447", "view": 4, "pose": [40, 90, 29, 1, 92, 29], "markers": null, "official": []}
+{"t": 1790430316.10995, "event": "scan_view", "run": "data/runs/pipeline/20260926_214447", "view": 5, "pose": [49, 105, 5, 1, 92, 30], "markers": [39], "official": []}
+{"t": 1790430321.596436, "event": "scan_view", "run": "data/runs/pipeline/20260926_214447", "view": 6, "pose": [89, 105, 5, 1, 92, 29], "markers": [42], "official": [["Newspaper", 0.338]]}
+{"t": 1790430327.483372, "event": "scan_view", "run": "data/runs/pipeline/20260926_214447", "view": 7, "pose": [124, 105, 5, 1, 92, 29], "markers": [35, 36], "official": []}
+{"t": 1791527739.610226, "event": "scan_view", "run": "data/runs/pipeline/20261009_143536", "view": 0, "pose": [99, 125, 0, 1, 91, 0], "markers": [32, 34, 37, 38], "official": [["Newspaper", 0.427]]}
+{"t": 1791527743.39901, "event": "scan_view", "run": "data/runs/pipeline/20261009_143536", "view": 1, "pose": [70, 125, 0, 1, 91, 0], "markers": null, "official": [["Newspaper", 0.941], ["Syringe", 0.347]]}
+{"t": 1791527747.872382, "event": "scan_view", "run": "data/runs/pipeline/20261009_143536", "view": 2, "pose": [109, 105, 14, 1, 91, 0], "markers": [34, 38, 39], "official": [["Fish_bone", 0.352]]}
+{"t": 1791527751.666935, "event": "scan_view", "run": "data/runs/pipeline/20261009_143536", "view": 3, "pose": [80, 120, 0, 1, 91, 0], "markers": null, "official": [["Newspaper", 0.661], ["Fish_bone", 0.321]]}
+{"t": 1791527755.748728, "event": "scan_view", "run": "data/runs/pipeline/20261009_143536", "view": 4, "pose": [40, 90, 30, 0, 91, 0], "markers": null, "official": [["Newspaper", 0.42]]}
+{"t": 1791527928.5307388, "event": "scan_view", "run": "data/runs/pipeline/20261009_143843", "view": 0, "pose": [99, 125, 0, 1, 91, 0], "markers": null, "official": [["Syringe", 0.373], ["Newspaper", 0.35]]}
+{"t": 1791527931.5625741, "event": "scan_view", "run": "data/runs/pipeline/20261009_143843", "view": 1, "pose": [70, 125, 0, 1, 91, 0], "markers": [31, 35, 36, 40], "official": [["Newspaper", 0.951]]}
+{"t": 1791527936.030281, "event": "scan_view", "run": "data/runs/pipeline/20261009_143843", "view": 2, "pose": [109, 105, 14, 1, 91, 0], "markers": [32, 34, 37, 38, 39], "official": [["Syringe", 0.395]]}
+{"t": 1791527939.7811468, "event": "scan_view", "run": "data/runs/pipeline/20261009_143843", "view": 3, "pose": [80, 120, 0, 1, 91, 0], "markers": null, "official": [["Newspaper", 0.846], ["Fish_bone", 0.727]]}
+{"t": 1791527942.3476028, "event": "scan_view", "run": "data/runs/pipeline/20261009_143843", "view": 4, "pose": [89, 105, 4, 1, 91, 0], "markers": null, "official": [["Syringe", 0.868], ["Fish_bone", 0.83]]}
+{"t": 1791527947.2726662, "event": "scan_view", "run": "data/runs/pipeline/20261009_143843", "view": 5, "pose": [124, 105, 4, 1, 91, 0], "markers": [38, 39, 43], "official": [["Syringe", 0.908], ["Fish_bone", 0.585]]}
+{"t": 1791528029.2079518, "event": "scan_view", "run": "data/runs/pipeline/20261009_144025", "view": 0, "pose": [99, 125, 0, 1, 91, 0], "markers": [41, 46, 47], "official": [["Fish_bone", 0.879], ["Syringe", 0.697]]}
+{"t": 1791528032.553229, "event": "scan_view", "run": "data/runs/pipeline/20261009_144025", "view": 1, "pose": [70, 125, 0, 1, 91, 0], "markers": [43, 44, 49], "official": [["Syringe", 0.585]]}
+{"t": 1791528037.0898728, "event": "scan_view", "run": "data/runs/pipeline/20261009_144025", "view": 2, "pose": [109, 105, 14, 1, 91, 0], "markers": [40, 41, 46], "official": [["Fish_bone", 0.45], ["Newspaper", 0.444]]}
+{"t": 1791528040.4160588, "event": "scan_view", "run": "data/runs/pipeline/20261009_144025", "view": 3, "pose": [80, 120, 0, 1, 91, 0], "markers": [43, 47, 49], "official": [["Syringe", 0.603]]}
+{"t": 1791528043.817708, "event": "scan_view", "run": "data/runs/pipeline/20261009_144025", "view": 4, "pose": [90, 105, 4, 1, 91, 0], "markers": [41], "official": [["Newspaper", 0.911], ["Syringe", 0.691]]}
+{"t": 1791528048.384759, "event": "scan_view", "run": "data/runs/pipeline/20261009_144025", "view": 5, "pose": [124, 105, 4, 1, 91, 0], "markers": [35, 40], "official": [["Syringe", 0.877], ["Syringe", 0.305]]}
+{"t": 1791528109.425771, "event": "refine_view", "cube": [-6.4, 8.3], "pose": [110, 95, 4, 5, 91, 0]}
+{"t": 1791528113.850689, "event": "refine_view", "cube": [-0.7, 11.5], "pose": [91, 100, 5, 5, 91, 0]}
+{"t": 1791528117.2024791, "event": "refine_view", "cube": [6.2, 17.1], "pose": [75, 115, 5, 5, 91, 0]}
+{"t": 1791528117.9029381, "event": "pipeline_start", "run": "data/runs/pipeline/20261009_144025", "cubes": [[-6.4, 8.2], [-11.9, 18.3], [-0.7, 11.7], [14.4, 15.7], [6.2, 17.1], [0.5, 26.1]], "registration": {"views": 6, "map_origin_base_cm": [0.2, 6.72, -0.89], "yaw_deg": 0.23, "spread_cm": [0.27, 0.22, 0.24]}}
+{"t": 1791528117.903022, "event": "pipeline_skip", "cube": [14.4, 15.7], "category": null, "reason": "no evidence: sticker not one of the model's 3 kinds and no coloured face on top"}
+{"t": 1791528117.903069, "event": "pipeline_skip", "cube": [0.5, 26.1], "category": null, "reason": "no evidence: sticker not one of the model's 3 kinds and no coloured face on top"}
+{"t": 1791528121.326554, "event": "hovering", "pose": [112, 70, 38, 2, 91, 30], "tip_cm": [-6.5, 16.1, 2.9], "colour": "red", "aligned": false, "block_yaw_deg": -33.0}
+{"t": 1791528124.696918, "event": "gripped", "pose": [112, 73, 12, 25, 91, 30], "tip_cm": [-6.5, 16.1, -0.3], "grip": {"action": "grip", "command": 133, "readback": 128, "at": 1791557011.0123398, "holding": true, "result": "holding"}}
+{"t": 1791528126.47526, "event": "lifted", "pose": [112, 71, 38, 2, 91, 132], "gripper_readback": 132, "gripper_at_grip": 128}
+{"t": 1791528127.370246, "event": "pipeline_missed", "cube": [-6.4, 8.2], "category": "hazardous", "reason": "块在抬起过程中滑脱（夹取读回 128 -> 抬起后 132）", "seconds": 9}
+{"t": 1791528130.6612742, "event": "hovering", "pose": [114, 36, 62, 34, 91, 29], "tip_cm": [-11.3, 25.5, 2.4], "colour": "green", "aligned": false, "block_yaw_deg": -15.0}
+{"t": 1791528134.805954, "event": "gripped", "pose": [115, 35, 43, 59, 91, 29], "tip_cm": [-12.3, 26.3, 0.6], "grip": {"action": "grip", "command": 133, "readback": 115, "at": 1791557021.1212192, "holding": true, "result": "holding"}}
+{"t": 1791528136.468311, "event": "lifted", "pose": [115, 34, 61, 35, 91, 116], "gripper_readback": 116, "gripper_at_grip": 115}
+{"t": 1791528136.492061, "event": "put_planned", "target_map_cm": [-6.0, 13.0], "pitch": 145, "hover": [106, 76, 19, 30], "j5": 92}
+{"t": 1791528148.1383018, "event": "put", "target": "41", "target_map_cm": [-6.0, 13.0], "released_at": [106, 74, 0, 50, 91, 112]}
+{"t": 1791528148.1392598, "event": "pipeline_sorted", "cube": [-11.9, 18.3], "bin": "41", "category": "kitchen", "source": "colour, detector agrees", "seconds": 21}
+{"t": 1791528150.6832378, "event": "hovering", "pose": [91, 65, 45, 5, 90, 29], "tip_cm": [-0.3, 19.5, 3.5], "colour": "yellow", "aligned": true, "block_yaw_deg": 0.0}
+{"t": 1791528155.750748, "event": "gripped", "pose": [91, 67, 14, 33, 90, 29], "tip_cm": [-0.3, 19.3, -0.6], "grip": {"action": "grip", "command": 133, "readback": 131, "at": 1791557042.0634506, "holding": false, "result": "empty"}}
+{"t": 1791528159.040307, "event": "pipeline_missed", "cube": [-0.7, 11.7], "category": "other", "reason": "grip missed (readback 131); opened and lifted", "seconds": 11}
+{"t": 1791528161.680091, "event": "hovering", "pose": [74, 35, 73, 15, 94, 29], "tip_cm": [7.0, 24.2, 1.8], "colour": null, "aligned": true, "block_yaw_deg": -12.0}
+{"t": 1791528164.946777, "event": "gripped", "pose": [75, 39, 45, 39, 94, 29], "tip_cm": [6.5, 24.4, -1.2], "grip": {"action": "grip", "command": 133, "readback": 129, "at": 1791557051.2624018, "holding": true, "result": "holding"}}
+{"t": 1791528166.6304262, "event": "lifted", "pose": [75, 36, 73, 16, 94, 129], "gripper_readback": 129, "gripper_at_grip": 129}
+{"t": 1791528166.6442099, "event": "put_planned", "target_map_cm": [-12.0, 13.0], "pitch": 145, "hover": [121, 55, 48, 22], "j5": 92}

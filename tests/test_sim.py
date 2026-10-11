@@ -118,6 +118,15 @@ class WorldTest(unittest.TestCase):
             with self.assertRaises(ValueError):
                 self.world.set_map(bad)
 
+    def test_an_injected_miss_closes_on_nothing(self):
+        bid = self.world.place('other', [0, 10])
+        c = self.world.blocks[bid]['pose'][:3, 3]
+        self.world.set_faults(1.0)
+        self.arm.write6(reach((c[0], c[1], self.world.table_z + 0.012)), 500)
+        self.arm.write6(reach((c[0], c[1], self.world.table_z + 0.012), 133), 500)
+        self.assertIsNone(self.world.held)
+        self.assertEqual(self.arm.read()[5], W.EMPTY_READBACK)
+
     def test_bad_requests_are_refused(self):
         for bad in (dict(category='metal', map_cm=[0, 10]), dict(category='other', map_cm=[0]),
                     dict(category='other', map_cm=[0, 10], up='syringe'), dict(category='other', map_cm=[900, 10])):
@@ -268,6 +277,36 @@ class ServiceTest(unittest.TestCase):
         world = self.post('/api/sim/prop/remove', id=pid)
         self.assertNotIn(pid, [p['id'] for p in world['props']])
         self.post('/api/sim/map', name='map_a4_v2')
+
+    def test_the_log_is_served_by_line_number_as_records_and_as_a_stream(self):
+        log = Path(self.tmp.name) / 'log.jsonl'
+        log.write_text((ROOT / 'docs/samples/log_sim_8rounds.jsonl').read_text())
+        self.app.log_path = log
+        total = len(log.read_text().splitlines())
+        page = json.loads(self.get('/api/log?after=0&limit=10').read())
+        self.assertEqual((page['total'], page['next'], [e['seq'] for e in page['events']]), (total, 10, list(range(1, 11))))
+        tail = json.loads(self.get(f'/api/log?after={total - 2}').read())
+        self.assertEqual([e['seq'] for e in tail['events']], [total - 1, total])
+        self.assertEqual(json.loads(self.get(f'/api/log?after={total}').read())['events'], [])
+        records = json.loads(self.get('/api/log/records').read())['records']
+        summary = json.loads(self.get('/api/log/summary').read())
+        self.assertEqual(len(records), summary['records'])
+        self.assertEqual(summary['rounds_finished'], 8)
+        stream = self.get(f'/api/log/stream?after={total - 1}')
+        self.assertEqual(stream.headers['Content-Type'], 'text/event-stream; charset=utf-8')
+        self.assertEqual(stream.readline(), f'id: {total}\n'.encode())
+        self.assertEqual(json.loads(stream.readline()[6:])['event'], 'pipeline_end')
+        stream.readline()
+        with log.open('a') as f:                       # a line written later arrives on the open stream
+            f.write('{"t": 1.0, "event": "stopped", "reason": "test"}\n')
+        self.assertEqual(stream.readline(), f'id: {total + 1}\n'.encode())
+        stream.close()
+
+    def test_grips_can_be_made_to_miss(self):
+        self.assertEqual(self.post('/api/sim/faults', grip_miss=1)['faults'], dict(grip_miss=1.0))
+        with self.assertRaises(urllib.error.HTTPError):
+            self.post('/api/sim/faults', grip_miss=3)
+        self.post('/api/sim/faults', grip_miss=0)
 
     def test_the_shell_page_and_the_old_page_are_both_served(self):
         self.assertIn('机械臂仿真工作台', self.get('/sim/').read().decode())

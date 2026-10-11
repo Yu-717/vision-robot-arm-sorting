@@ -1,0 +1,277 @@
+{"t": 1791701238.450937, "event": "scan_view", "run": "data/sim/pipeline/20261011_144716", "view": 0, "pose": [100, 125, 0, 0, 92, 30], "markers": [47], "official": []}
+{"t": 1791701240.390568, "event": "scan_view", "run": "data/sim/pipeline/20261011_144716", "view": 1, "pose": [70, 125, 0, 0, 92, 30], "markers": [43, 44, 48], "official": []}
+{"t": 1791701242.869424, "event": "scan_view", "run": "data/sim/pipeline/20261011_144716", "view": 2, "pose": [110, 105, 15, 0, 92, 30], "markers": [40, 41, 45], "official": []}
+{"t": 1791701244.7951229, "event": "scan_view", "run": "data/sim/pipeline/20261011_144716", "view": 3, "pose": [80, 120, 0, 0, 92, 30], "markers": [43, 47, 48], "official": []}
+{"t": 1791701246.858489, "event": "scan_view", "run": "data/sim/pipeline/20261011_144716", "view": 4, "pose": [40, 90, 30, 0, 92, 30], "markers": null, "official": []}
+{"t": 1791701247.95839, "event": "scan_view", "run": "data/sim/pipeline/20261011_144716", "view": 5, "pose": [50, 105, 5, 0, 92, 30], "markers": [34, 38, 39, 44], "official": []}
+{"t": 1791701250.433504, "event": "scan_view", "run": "data/sim/pipeline/20261011_144716", "view": 6, "pose": [90, 105, 5, 0, 92, 30], "markers": [41], "official": []}
+{"t": 1791701252.515581, "event": "scan_view", "run": "data/sim/pipeline/20261011_144716", "view": 7, "pose": [125, 105, 5, 0, 92, 30], "markers": [35, 40], "official": []}
+{"t": 1791701254.815988, "event": "refine_view", "cube": [-8.3, 16.5], "pose": [109, 115, 5, 5, 92, 30]}
+{"t": 1791701256.9262028, "event": "refine_view", "cube": [11.6, 17.1], "pose": [64, 120, 5, 5, 92, 30]}
+{"t": 1791701259.022728, "event": "refine_view", "cube": [-5.9, 9.3], "pose": [108, 95, 5, 5, 92, 30]}
+{"t": 1791701259.9039779, "event": "pipeline_start", "run": "data/sim/pipeline/20261011_144716", "cubes": [[0.0, 11.0], [-8.3, 16.5], [10.3, 16.2], [-5.9, 9.4]], "registration": {"views": 4, "map_origin_base_cm": [0.07, 6.76, -1.42], "yaw_deg": 0.02, "spread_cm": [0.0, 0.0, 0.01]}}
+{"t": 1791701260.4712079, "event": "hovering", "pose": [91, 71, 37, 7, 113, 30], "tip_cm": [-0.3, 18.8, 3.6], "colour": "blue", "aligned": true, "block_yaw_deg": 21.0}
+{"t": 1791701261.6248, "event": "gripped", "pose": [91, 73, 7, 34, 113, 30], "tip_cm": [-0.3, 18.5, -0.5], "grip": {"action": "grip", "command": 133, "readback": 129, "at": 1791701261.620768, "holding": true, "result": "holding"}}
+{"t": 1791701261.934828, "event": "lifted", "pose": [91, 71, 37, 7, 113, 129], "gripper_readback": 129, "gripper_at_grip": 129}
+{"t": 1791701261.941844, "event": "put_planned", "target_map_cm": [-12.0, 13.0], "pitch": 145, "hover": [121, 53, 52, 20], "j5": 92}
+{"t": 1791701264.1334898, "event": "put", "target": "40", "target_map_cm": [-12.0, 13.0], "released_at": [121, 55, 28, 42, 92, 129]}
+{"t": 1791701264.133997, "event": "pipeline_sorted", "cube": [0.0, 11.0], "bin": "40", "category": "recyclable", "source": "colour, detector agrees", "seconds": 4}
+{"t": 1791701264.577632, "event": "hovering", "pose": [110, 36, 75, 15, 92, 30], "tip_cm": [-8.8, 24.3, 2.9], "colour": null, "aligned": false, "block_yaw_deg": -36.0}
+{"t": 1791701265.7424011, "event": "gripped", "pose": [110, 41, 45, 39, 92, 30], "tip_cm": [-8.8, 24.1, -0.3], "grip": {"action": "grip", "command": 133, "readback": 129, "at": 1791701265.7408, "holding": true, "result": "holding"}}
+{"t": 1791701266.0285351, "event": "lifted", "pose": [110, 36, 75, 15, 92, 129], "gripper_readback": 129, "gripper_at_grip": 129}
+{"t": 1791701266.031915, "event": "put_planned", "target_map_cm": [6.0, 13.0], "pitch": 145, "hover": [74, 75, 20, 30], "j5": 109}
+{"t": 1791701268.945688, "event": "put", "target": "43", "target_map_cm": [6.0, 13.0], "released_at": [74, 72, 1, 52, 109, 129]}
+{"t": 1791701268.9463758, "event": "pipeline_sorted", "cube": [-8.3, 16.5], "bin": "43", "category": "hazardous", "source": "detector {'hazardous': 5.35} over 6 views", "seconds": 5}
+{"t": 1791701269.806046, "event": "hovering", "pose": [67, 29, 84, 12, 122, 30], "tip_cm": [10.2, 23.9, 2.1], "colour": "yellow", "aligned": true, "block_yaw_deg": 6.0}
+{"t": 1791701271.120206, "event": "gripped", "pose": [67, 37, 52, 36, 122, 30], "tip_cm": [10.2, 23.9, -0.3], "grip": {"action": "grip", "command": 133, "readback": 129, "at": 1791701271.118679, "holding": true, "result": "holding"}}
+{"t": 1791701271.547359, "event": "lifted", "pose": [67, 29, 84, 12, 122, 129], "gripper_readback": 129, "gripper_at_grip": 129}
+{"t": 1791701271.5506508, "event": "put_planned", "target_map_cm": [12.0, 13.0], "pitch": 145, "hover": [60, 55, 49, 21], "j5": 123}
+{"t": 1791701274.582263, "event": "put", "target": "44", "target_map_cm": [12.0, 13.0], "released_at": [60, 56, 25, 44, 123, 129]}
+{"t": 1791701274.5825222, "event": "pipeline_sorted", "cube": [10.3, 16.2], "bin": "44", "category": "other", "source": "colour, detector agrees", "seconds": 6}
+{"t": 1791701275.2982662, "event": "hovering", "pose": [110, 75, 31, 8, 92, 30], "tip_cm": [-6.2, 16.9, 3.3], "colour": null, "aligned": false, "block_yaw_deg": -45.0}
+{"t": 1791701276.4500601, "event": "gripped", "pose": [110, 77, 3, 35, 92, 30], "tip_cm": [-6.2, 17.1, -0.2], "grip": {"action": "grip", "command": 133, "readback": 129, "at": 1791701276.4485471, "holding": true, "result": "holding"}}
+{"t": 1791701276.734901, "event": "lifted", "pose": [110, 75, 31, 8, 92, 129], "gripper_readback": 129, "gripper_at_grip": 129}
+{"t": 1791701276.740418, "event": "put_planned", "target_map_cm": [-6.0, 13.0], "pitch": 150, "hover": [107, 61, 46, 13], "j5": 92}
+{"t": 1791701278.7475, "event": "put", "target": "41", "target_map_cm": [-6.0, 13.0], "released_at": [107, 63, 21, 36, 92, 129]}
+{"t": 1791701278.74801, "event": "pipeline_sorted", "cube": [-5.9, 9.4], "bin": "41", "category": "kitchen", "source": "detector {'kitchen': 5.07} over 6 views", "seconds": 4}
+{"t": 1791701280.7546911, "event": "pipeline_end", "run": "data/sim/pipeline/20261011_144716", "sorted": 4, "skipped": 0, "missed": 0, "cleared": 0, "seconds": 21}
+{"t": 1791701282.8656352, "event": "scan_view", "run": "data/sim/pipeline/20261011_144801", "view": 0, "pose": [100, 125, 0, 0, 92, 30], "markers": [41, 42, 45, 47], "official": []}
+{"t": 1791701285.2034419, "event": "scan_view", "run": "data/sim/pipeline/20261011_144801", "view": 1, "pose": [70, 125, 0, 0, 92, 30], "markers": [42, 43, 44, 48, 49], "official": []}
+{"t": 1791701287.27075, "event": "scan_view", "run": "data/sim/pipeline/20261011_144801", "view": 2, "pose": [110, 105, 15, 0, 92, 30], "markers": [40, 41, 45], "official": []}
+{"t": 1791701288.372427, "event": "scan_view", "run": "data/sim/pipeline/20261011_144801", "view": 3, "pose": [80, 120, 0, 0, 92, 30], "markers": [42, 43, 47, 48], "official": []}
+{"t": 1791701290.4378948, "event": "scan_view", "run": "data/sim/pipeline/20261011_144801", "view": 4, "pose": [40, 90, 30, 0, 92, 30], "markers": null, "official": []}
+{"t": 1791701291.5513542, "event": "scan_view", "run": "data/sim/pipeline/20261011_144801", "view": 5, "pose": [50, 105, 5, 0, 92, 30], "markers": [34, 38, 39, 44], "official": []}
+{"t": 1791701293.623638, "event": "scan_view", "run": "data/sim/pipeline/20261011_144801", "view": 6, "pose": [90, 105, 5, 0, 92, 30], "markers": [36, 41, 42], "official": []}
+{"t": 1791701296.086228, "event": "scan_view", "run": "data/sim/pipeline/20261011_144801", "view": 7, "pose": [125, 105, 5, 0, 92, 30], "markers": [35, 36, 40], "official": []}
+{"t": 1791701297.9708748, "event": "refine_view", "cube": [-6.6, 16.5], "pose": [104, 115, 5, 5, 92, 30]}
+{"t": 1791701299.083616, "event": "refine_view", "cube": [2.4, 13.5], "pose": [83, 105, 5, 5, 92, 30]}
+{"t": 1791701301.5714052, "event": "refine_view", "cube": [-8.7, 9.5], "pose": [116, 100, 5, 5, 92, 30]}
+{"t": 1791701303.507612, "event": "refine_view", "cube": [-2.6, 9.2], "pose": [97, 95, 5, 5, 92, 30]}
+{"t": 1791701304.4675698, "event": "pipeline_start", "run": "data/sim/pipeline/20261011_144801", "cubes": [[-6.6, 16.5], [2.4, 13.5], [-8.7, 9.5], [-2.5, 9.2]], "registration": {"views": 11, "map_origin_base_cm": [0.07, 6.76, -1.42], "yaw_deg": 0.0, "spread_cm": [0.0, 0.0, 0.02]}}
+{"t": 1791701305.3182971, "event": "hovering", "pose": [106, 38, 77, 10, 103, 30], "tip_cm": [-6.9, 24.2, 3.5], "colour": null, "aligned": true, "block_yaw_deg": 27.0}
+{"t": 1791701306.63695, "event": "gripped", "pose": [106, 46, 37, 42, 103, 30], "tip_cm": [-6.9, 24.1, -0.2], "grip": {"action": "grip", "command": 133, "readback": 129, "at": 1791701306.63241, "holding": true, "result": "holding"}}
+{"t": 1791701307.088196, "event": "lifted", "pose": [106, 38, 77, 10, 103, 129], "gripper_readback": 129, "gripper_at_grip": 129}
+{"t": 1791701307.092237, "event": "put_planned", "target_map_cm": [-12.0, 13.0], "pitch": 145, "hover": [121, 54, 50, 21], "j5": 92}
+{"t": 1791701309.997432, "event": "put", "target": "40", "target_map_cm": [-12.0, 13.0], "released_at": [121, 55, 26, 44, 92, 129]}
+{"t": 1791701309.997824, "event": "pipeline_sorted", "cube": [-6.6, 16.5], "bin": "40", "category": "recyclable", "source": "detector {'recyclable': 5.72} over 7 views", "seconds": 6}
+{"t": 1791701310.5726771, "event": "hovering", "pose": [84, 64, 42, 15, 114, 30], "tip_cm": [2.3, 21.5, 3.9], "colour": null, "aligned": true, "block_yaw_deg": 15.0}
+{"t": 1791701311.742073, "event": "gripped", "pose": [84, 65, 14, 42, 114, 30], "tip_cm": [2.3, 21.5, 0.1], "grip": {"action": "grip", "command": 133, "readback": 129, "at": 1791701311.738224, "holding": true, "result": "holding"}}
+{"t": 1791701312.0484962, "event": "lifted", "pose": [84, 64, 42, 15, 114, 129], "gripper_readback": 129, "gripper_at_grip": 129}
+{"t": 1791701312.0548851, "event": "put_planned", "target_map_cm": [6.0, 13.0], "pitch": 150, "hover": [74, 61, 45, 14], "j5": 109}
+{"t": 1791701314.3701591, "event": "put", "target": "43", "target_map_cm": [6.0, 13.0], "released_at": [74, 63, 20, 37, 109, 129]}
+{"t": 1791701314.370295, "event": "pipeline_sorted", "cube": [2.4, 13.5], "bin": "43", "category": "hazardous", "source": "detector {'hazardous': 6.61} over 7 views", "seconds": 4}
+{"t": 1791701314.954255, "event": "hovering", "pose": [118, 65, 45, 5, 92, 30], "tip_cm": [-9.1, 17.2, 3.5], "colour": null, "aligned": false, "block_yaw_deg": -6.0}
+{"t": 1791701316.2522209, "event": "gripped", "pose": [118, 68, 14, 33, 92, 30], "tip_cm": [-9.2, 17.2, -0.3], "grip": {"action": "grip", "command": 133, "readback": 129, "at": 1791701316.250782, "holding": true, "result": "holding"}}
+{"t": 1791701316.6711528, "event": "lifted", "pose": [118, 65, 45, 5, 92, 129], "gripper_readback": 129, "gripper_at_grip": 129}
+{"t": 1791701316.6742861, "event": "put_planned", "target_map_cm": [12.0, 13.0], "pitch": 145, "hover": [60, 54, 50, 21], "j5": 123}
+{"t": 1791701319.2535949, "event": "put", "target": "44", "target_map_cm": [12.0, 13.0], "released_at": [60, 55, 27, 42, 123, 129]}
+{"t": 1791701319.2537699, "event": "pipeline_sorted", "cube": [-8.7, 9.5], "bin": "44", "category": "other", "source": "detector {'other': 5.59} over 6 views", "seconds": 5}
+{"t": 1791701319.8384829, "event": "hovering", "pose": [99, 70, 39, 1, 92, 30], "tip_cm": [-2.7, 17.1, 3.0], "colour": null, "aligned": false, "block_yaw_deg": -9.0}
+{"t": 1791701320.996737, "event": "gripped", "pose": [99, 74, 12, 25, 92, 30], "tip_cm": [-2.7, 17.3, 0.0], "grip": {"action": "grip", "command": 133, "readback": 129, "at": 1791701320.992181, "holding": true, "result": "holding"}}
+{"t": 1791701321.29938, "event": "lifted", "pose": [99, 70, 39, 1, 92, 129], "gripper_readback": 129, "gripper_at_grip": 129}
+{"t": 1791701321.307229, "event": "put_planned", "target_map_cm": [-6.0, 13.0], "pitch": 150, "hover": [107, 60, 47, 13], "j5": 92}
+{"t": 1791701323.484746, "event": "put", "target": "41", "target_map_cm": [-6.0, 13.0], "released_at": [107, 63, 22, 35, 92, 129]}
+{"t": 1791701323.4849951, "event": "pipeline_sorted", "cube": [-2.5, 9.2], "bin": "41", "category": "kitchen", "source": "detector {'kitchen': 6.02} over 7 views", "seconds": 4}
+{"t": 1791701325.156957, "event": "pipeline_end", "run": "data/sim/pipeline/20261011_144801", "sorted": 4, "skipped": 0, "missed": 0, "cleared": 0, "seconds": 21}
+{"t": 1791701327.692736, "event": "scan_view", "run": "data/sim/pipeline/20261011_144846", "view": 0, "pose": [100, 125, 0, 0, 92, 30], "markers": [41, 42, 46, 47], "official": []}
+{"t": 1791701329.6141179, "event": "scan_view", "run": "data/sim/pipeline/20261011_144846", "view": 1, "pose": [70, 125, 0, 0, 92, 30], "markers": [42, 43, 44, 48], "official": []}
+{"t": 1791701330.8523679, "event": "scan_view", "run": "data/sim/pipeline/20261011_144846", "view": 2, "pose": [110, 105, 15, 0, 92, 30], "markers": [40, 41, 46], "official": []}
+{"t": 1791701333.191741, "event": "scan_view", "run": "data/sim/pipeline/20261011_144846", "view": 3, "pose": [80, 120, 0, 0, 92, 30], "markers": [42, 43, 47, 48], "official": []}
+{"t": 1791701335.2723489, "event": "scan_view", "run": "data/sim/pipeline/20261011_144846", "view": 4, "pose": [40, 90, 30, 0, 92, 30], "markers": null, "official": []}
+{"t": 1791701337.199714, "event": "scan_view", "run": "data/sim/pipeline/20261011_144846", "view": 5, "pose": [50, 105, 5, 0, 92, 30], "markers": [34, 38, 39, 44], "official": []}
+{"t": 1791701339.694479, "event": "scan_view", "run": "data/sim/pipeline/20261011_144846", "view": 6, "pose": [90, 105, 5, 0, 92, 30], "markers": [41, 42], "official": []}
+{"t": 1791701341.794809, "event": "scan_view", "run": "data/sim/pipeline/20261011_144846", "view": 7, "pose": [125, 105, 5, 0, 92, 30], "markers": [35, 36, 40], "official": []}
+{"t": 1791701344.0322618, "event": "refine_view", "cube": [-2.5, 10.4], "pose": [96, 95, 5, 5, 92, 30]}
+{"t": 1791701346.1247969, "event": "refine_view", "cube": [8.3, 10.4], "pose": [64, 100, 5, 5, 92, 30]}
+{"t": 1791701346.950109, "event": "pipeline_start", "run": "data/sim/pipeline/20261011_144846", "cubes": [[-9.6, 15.4], [8.8, 17.0], [-2.7, 11.1], [8.3, 10.4]], "registration": {"views": 8, "map_origin_base_cm": [0.07, 6.76, -1.42], "yaw_deg": 0.01, "spread_cm": [0.01, 0.0, 0.01]}}
+{"t": 1791701347.7972171, "event": "hovering", "pose": [114, 40, 74, 11, 108, 30], "tip_cm": [-10.2, 22.9, 3.6], "colour": "red", "aligned": true, "block_yaw_deg": 39.0}
+{"t": 1791701349.11283, "event": "gripped", "pose": [114, 46, 36, 43, 108, 30], "tip_cm": [-10.2, 22.9, -0.3], "grip": {"action": "grip", "command": 133, "readback": 129, "at": 1791701349.108462, "holding": true, "result": "holding"}}
+{"t": 1791701349.561889, "event": "lifted", "pose": [114, 40, 74, 11, 108, 129], "gripper_readback": 129, "gripper_at_grip": 129}
+{"t": 1791701349.565932, "event": "put_planned", "target_map_cm": [6.0, 13.0], "pitch": 145, "hover": [74, 75, 20, 30], "j5": 109}
+{"t": 1791701352.470465, "event": "put", "target": "43", "target_map_cm": [6.0, 13.0], "released_at": [74, 72, 1, 52, 109, 129]}
+{"t": 1791701352.470711, "event": "pipeline_sorted", "cube": [-9.6, 15.4], "bin": "43", "category": "hazardous", "source": "colour, detector agrees", "seconds": 6}
+{"t": 1791701353.197854, "event": "hovering", "pose": [71, 33, 76, 16, 148, 30], "tip_cm": [8.4, 24.5, 2.1], "colour": "yellow", "aligned": true, "block_yaw_deg": 36.0}
+{"t": 1791701354.375753, "event": "gripped", "pose": [71, 38, 50, 37, 148, 30], "tip_cm": [8.4, 24.5, -0.3], "grip": {"action": "grip", "command": 133, "readback": 129, "at": 1791701354.371737, "holding": true, "result": "holding"}}
+{"t": 1791701354.682395, "event": "lifted", "pose": [71, 33, 76, 16, 148, 129], "gripper_readback": 129, "gripper_at_grip": 129}
+{"t": 1791701354.68911, "event": "put_planned", "target_map_cm": [12.0, 13.0], "pitch": 145, "hover": [60, 55, 49, 21], "j5": 123}
+{"t": 1791701357.720819, "event": "put", "target": "44", "target_map_cm": [12.0, 13.0], "released_at": [60, 56, 25, 44, 123, 129]}
+{"t": 1791701357.721142, "event": "pipeline_sorted", "cube": [8.8, 17.0], "bin": "44", "category": "other", "source": "colour, detector agrees", "seconds": 5}
+{"t": 1791701358.309054, "event": "hovering", "pose": [99, 68, 41, 6, 105, 30], "tip_cm": [-3.0, 18.9, 3.6], "colour": null, "aligned": true, "block_yaw_deg": 21.0}
+{"t": 1791701359.6262772, "event": "gripped", "pose": [99, 71, 10, 34, 105, 30], "tip_cm": [-3.0, 18.8, -0.3], "grip": {"action": "grip", "command": 133, "readback": 129, "at": 1791701359.6246028, "holding": true, "result": "holding"}}
+{"t": 1791701360.059875, "event": "lifted", "pose": [99, 68, 41, 6, 105, 129], "gripper_readback": 129, "gripper_at_grip": 129}
+{"t": 1791701360.06362, "event": "put_planned", "target_map_cm": [-12.0, 13.0], "pitch": 145, "hover": [121, 53, 52, 20], "j5": 92}
+{"t": 1791701362.281954, "event": "put", "target": "40", "target_map_cm": [-12.0, 13.0], "released_at": [121, 55, 28, 42, 92, 129]}
+{"t": 1791701362.282227, "event": "pipeline_sorted", "cube": [-2.7, 11.1], "bin": "40", "category": "recyclable", "source": "detector {'recyclable': 4.71} over 5 views", "seconds": 5}
+{"t": 1791701363.0038779, "event": "hovering", "pose": [64, 74, 28, 18, 92, 30], "tip_cm": [8.8, 18.1, 3.6], "colour": null, "aligned": false, "block_yaw_deg": -45.0}
+{"t": 1791701364.158609, "event": "gripped", "pose": [64, 73, 2, 45, 92, 30], "tip_cm": [8.8, 18.1, -0.3], "grip": {"action": "grip", "command": 133, "readback": 129, "at": 1791701364.157227, "holding": true, "result": "holding"}}
+{"t": 1791701364.446531, "event": "lifted", "pose": [64, 74, 28, 18, 92, 129], "gripper_readback": 129, "gripper_at_grip": 129}
+{"t": 1791701364.449868, "event": "put_planned", "target_map_cm": [-6.0, 13.0], "pitch": 150, "hover": [107, 61, 45, 13], "j5": 92}
+{"t": 1791701367.025779, "event": "put", "target": "41", "target_map_cm": [-6.0, 13.0], "released_at": [107, 63, 20, 37, 92, 129]}
+{"t": 1791701367.025942, "event": "pipeline_sorted", "cube": [8.3, 10.4], "bin": "41", "category": "kitchen", "source": "detector {'kitchen': 3.79} over 4 views", "seconds": 5}
+{"t": 1791701368.700361, "event": "pipeline_end", "run": "data/sim/pipeline/20261011_144846", "sorted": 4, "skipped": 0, "missed": 0, "cleared": 0, "seconds": 22}
+{"t": 1791701372.19892, "event": "scan_view", "run": "data/sim/pipeline/20261011_144929", "view": 0, "pose": [100, 125, 0, 0, 92, 30], "markers": [41, 42, 46, 47], "official": []}
+{"t": 1791701373.306957, "event": "scan_view", "run": "data/sim/pipeline/20261011_144929", "view": 1, "pose": [70, 125, 0, 0, 92, 30], "markers": [42, 43, 48, 49], "official": []}
+{"t": 1791701375.389421, "event": "scan_view", "run": "data/sim/pipeline/20261011_144929", "view": 2, "pose": [110, 105, 15, 0, 92, 30], "markers": [40, 41, 46], "official": []}
+{"t": 1791701377.7164679, "event": "scan_view", "run": "data/sim/pipeline/20261011_144929", "view": 3, "pose": [80, 120, 0, 0, 92, 30], "markers": [42, 43, 48], "official": []}
+{"t": 1791701379.80311, "event": "scan_view", "run": "data/sim/pipeline/20261011_144929", "view": 4, "pose": [40, 90, 30, 0, 92, 30], "markers": null, "official": []}
+{"t": 1791701382.150262, "event": "scan_view", "run": "data/sim/pipeline/20261011_144929", "view": 5, "pose": [50, 105, 5, 0, 92, 30], "markers": [34, 39], "official": []}
+{"t": 1791701384.2332768, "event": "scan_view", "run": "data/sim/pipeline/20261011_144929", "view": 6, "pose": [90, 105, 5, 0, 92, 30], "markers": [41, 42], "official": []}
+{"t": 1791701386.3152719, "event": "scan_view", "run": "data/sim/pipeline/20261011_144929", "view": 7, "pose": [125, 105, 5, 0, 92, 30], "markers": [35, 36, 40], "official": []}
+{"t": 1791701388.401102, "event": "refine_view", "cube": [4.5, 9.4], "pose": [74, 95, 5, 5, 92, 30]}
+{"t": 1791701390.7515829, "event": "refine_view", "cube": [2.2, 16.6], "pose": [84, 115, 5, 5, 92, 30]}
+{"t": 1791701392.6840599, "event": "refine_view", "cube": [-10.6, 17.1], "pose": [114, 120, 5, 5, 92, 30]}
+{"t": 1791701393.49198, "event": "pipeline_start", "run": "data/sim/pipeline/20261011_144929", "cubes": [[4.5, 9.4], [10.1, 10.2], [2.2, 16.6], [-10.6, 17.1]], "registration": {"views": 6, "map_origin_base_cm": [0.07, 6.77, -1.42], "yaw_deg": 0.0, "spread_cm": [0.0, 0.0, 0.01]}}
+{"t": 1791701394.070305, "event": "hovering", "pose": [76, 79, 27, 9, 114, 30], "tip_cm": [4.3, 17.2, 3.6], "colour": "yellow", "aligned": true, "block_yaw_deg": 6.0}
+{"t": 1791701395.2306519, "event": "gripped", "pose": [76, 80, -1, 36, 114, 30], "tip_cm": [4.3, 17.2, -0.2], "grip": {"action": "grip", "command": 133, "readback": 132, "at": 1791701395.229277, "holding": false, "result": "empty"}}
+{"t": 1791701395.660639, "event": "pipeline_missed", "cube": [4.5, 9.4], "category": "other", "reason": "grip missed (readback 132); opened and lifted", "seconds": 2}
+{"t": 1791701396.221502, "event": "hovering", "pose": [62, 73, 28, 18, 159, 30], "tip_cm": [9.4, 17.6, 3.3], "colour": "blue", "aligned": true, "block_yaw_deg": 36.0}
+{"t": 1791701397.388175, "event": "gripped", "pose": [62, 72, 3, 45, 159, 30], "tip_cm": [9.5, 17.9, -0.3], "grip": {"action": "grip", "command": 133, "readback": 129, "at": 1791701397.383782, "holding": true, "result": "holding"}}
+{"t": 1791701397.690401, "event": "lifted", "pose": [62, 73, 28, 18, 159, 129], "gripper_readback": 129, "gripper_at_grip": 129}
+{"t": 1791701397.69842, "event": "put_planned", "target_map_cm": [-12.0, 13.0], "pitch": 145, "hover": [121, 53, 51, 21], "j5": 92}
+{"t": 1791701400.6010098, "event": "put", "target": "40", "target_map_cm": [-12.0, 13.0], "released_at": [121, 55, 27, 43, 92, 129]}
+{"t": 1791701400.60204, "event": "pipeline_sorted", "cube": [10.1, 10.2], "bin": "40", "category": "recyclable", "source": "colour, detector agrees", "seconds": 5}
+{"t": 1791701401.191812, "event": "hovering", "pose": [84, 50, 57, 18, 92, 30], "tip_cm": [2.5, 24.2, 3.6], "colour": null, "aligned": false, "block_yaw_deg": -33.0}
+{"t": 1791701402.349334, "event": "gripped", "pose": [84, 51, 28, 46, 92, 30], "tip_cm": [2.6, 24.3, -0.3], "grip": {"action": "grip", "command": 133, "readback": 129, "at": 1791701402.347774, "holding": true, "result": "holding"}}
+{"t": 1791701402.6469471, "event": "lifted", "pose": [84, 50, 57, 18, 92, 129], "gripper_readback": 129, "gripper_at_grip": 129}
+{"t": 1791701402.65073, "event": "put_planned", "target_map_cm": [6.0, 13.0], "pitch": 145, "hover": [74, 74, 20, 30], "j5": 109}
+{"t": 1791701405.2506502, "event": "put", "target": "43", "target_map_cm": [6.0, 13.0], "released_at": [74, 72, 1, 52, 109, 129]}
+{"t": 1791701405.25102, "event": "pipeline_sorted", "cube": [2.2, 16.6], "bin": "43", "category": "hazardous", "source": "detector {'hazardous': 5.62} over 6 views", "seconds": 5}
+{"t": 1791701405.983826, "event": "hovering", "pose": [114, 36, 75, 20, 92, 30], "tip_cm": [-11.0, 24.8, 4.0], "colour": null, "aligned": false, "block_yaw_deg": -21.0}
+{"t": 1791701407.297395, "event": "gripped", "pose": [114, 40, 40, 50, 92, 30], "tip_cm": [-11.0, 24.6, -0.2], "grip": {"action": "grip", "command": 133, "readback": 132, "at": 1791701407.295978, "holding": false, "result": "empty"}}
+{"t": 1791701407.8757792, "event": "pipeline_missed", "cube": [-10.6, 17.1], "category": "kitchen", "reason": "grip missed (readback 132); opened and lifted", "seconds": 3}
+{"t": 1791701410.146942, "event": "pipeline_end", "run": "data/sim/pipeline/20261011_144929", "sorted": 2, "skipped": 0, "missed": 2, "cleared": 0, "seconds": 17}
+{"t": 1791701412.679358, "event": "scan_view", "run": "data/sim/pipeline/20261011_145011", "view": 0, "pose": [100, 125, 0, 0, 92, 30], "markers": [42, 45, 46, 47], "official": []}
+{"t": 1791701414.625143, "event": "scan_view", "run": "data/sim/pipeline/20261011_145011", "view": 1, "pose": [70, 125, 0, 0, 92, 30], "markers": [42, 43, 48, 49], "official": []}
+{"t": 1791701417.118858, "event": "scan_view", "run": "data/sim/pipeline/20261011_145011", "view": 2, "pose": [110, 105, 15, 0, 92, 30], "markers": [40, 41, 45, 46], "official": []}
+{"t": 1791701419.059859, "event": "scan_view", "run": "data/sim/pipeline/20261011_145011", "view": 3, "pose": [80, 120, 0, 0, 92, 30], "markers": [42, 43, 47, 48], "official": []}
+{"t": 1791701421.134062, "event": "scan_view", "run": "data/sim/pipeline/20261011_145011", "view": 4, "pose": [40, 90, 30, 0, 92, 30], "markers": null, "official": []}
+{"t": 1791701422.2386749, "event": "scan_view", "run": "data/sim/pipeline/20261011_145011", "view": 5, "pose": [50, 105, 5, 0, 92, 30], "markers": [34, 38, 39, 44], "official": []}
+{"t": 1791701423.500321, "event": "scan_view", "run": "data/sim/pipeline/20261011_145011", "view": 6, "pose": [90, 105, 5, 0, 92, 30], "markers": [42], "official": []}
+{"t": 1791701425.573844, "event": "scan_view", "run": "data/sim/pipeline/20261011_145011", "view": 7, "pose": [125, 105, 5, 0, 92, 30], "markers": [35, 36, 40], "official": []}
+{"t": 1791701427.800871, "event": "refine_view", "cube": [-3.6, 10.5], "pose": [100, 95, 5, 5, 92, 30]}
+{"t": 1791701429.7574039, "event": "refine_view", "cube": [-2.4, 16.2], "pose": [96, 115, 5, 5, 92, 30]}
+{"t": 1791701430.543394, "event": "pipeline_start", "run": "data/sim/pipeline/20261011_145011", "cubes": [[8.2, 16.6], [-3.6, 10.6], [-2.5, 16.2], [9.3, 10.5]], "registration": {"views": 6, "map_origin_base_cm": [0.07, 6.76, -1.42], "yaw_deg": 0.0, "spread_cm": [0.03, 0.02, 0.1]}}
+{"t": 1791701431.54735, "event": "hovering", "pose": [72, 36, 75, 15, 120, 30], "tip_cm": [8.0, 24.6, 2.9], "colour": "red", "aligned": true, "block_yaw_deg": 9.0}
+{"t": 1791701432.7006521, "event": "gripped", "pose": [72, 41, 45, 39, 120, 30], "tip_cm": [7.9, 24.4, -0.3], "grip": {"action": "grip", "command": 133, "readback": 129, "at": 1791701432.697131, "holding": true, "result": "holding"}}
+{"t": 1791701432.997758, "event": "lifted", "pose": [72, 36, 75, 15, 120, 129], "gripper_readback": 129, "gripper_at_grip": 129}
+{"t": 1791701433.007265, "event": "put_planned", "target_map_cm": [6.0, 13.0], "pitch": 145, "hover": [74, 75, 20, 30], "j5": 109}
+{"t": 1791701435.639631, "event": "put", "target": "43", "target_map_cm": [6.0, 13.0], "released_at": [74, 72, 1, 52, 109, 129]}
+{"t": 1791701435.639762, "event": "pipeline_sorted", "cube": [8.2, 16.6], "bin": "43", "category": "hazardous", "source": "colour, detector agrees", "seconds": 5}
+{"t": 1791701436.0866282, "event": "hovering", "pose": [102, 71, 37, 7, 92, 30], "tip_cm": [-3.9, 18.4, 3.6], "colour": null, "aligned": false, "block_yaw_deg": 6.0}
+{"t": 1791701437.237321, "event": "gripped", "pose": [102, 73, 8, 34, 92, 30], "tip_cm": [-3.9, 18.4, -0.2], "grip": {"action": "grip", "command": 133, "readback": 129, "at": 1791701437.232692, "holding": true, "result": "holding"}}
+{"t": 1791701437.539371, "event": "lifted", "pose": [102, 71, 37, 7, 92, 129], "gripper_readback": 129, "gripper_at_grip": 129}
+{"t": 1791701437.544757, "event": "put_planned", "target_map_cm": [-12.0, 13.0], "pitch": 145, "hover": [121, 53, 52, 20], "j5": 92}
+{"t": 1791701439.7287529, "event": "put", "target": "40", "target_map_cm": [-12.0, 13.0], "released_at": [121, 55, 28, 42, 92, 129]}
+{"t": 1791701439.7290251, "event": "pipeline_sorted", "cube": [-3.6, 10.6], "bin": "40", "category": "recyclable", "source": "detector {'recyclable': 6.38} over 7 views", "seconds": 4}
+{"t": 1791701440.161502, "event": "hovering", "pose": [96, 34, 82, 5, 92, 30], "tip_cm": [-2.5, 24.2, 2.4], "colour": null, "aligned": true, "block_yaw_deg": 6.0}
+{"t": 1791701441.48337, "event": "gripped", "pose": [96, 42, 49, 28, 92, 30], "tip_cm": [-2.5, 23.7, -0.5], "grip": {"action": "grip", "command": 133, "readback": 129, "at": 1791701441.478961, "holding": true, "result": "holding"}}
+{"t": 1791701441.9304168, "event": "lifted", "pose": [96, 34, 82, 5, 92, 129], "gripper_readback": 129, "gripper_at_grip": 129}
+{"t": 1791701441.933399, "event": "put_planned", "target_map_cm": [-6.0, 13.0], "pitch": 150, "hover": [107, 61, 45, 13], "j5": 92}
+{"t": 1791701444.536684, "event": "put", "target": "41", "target_map_cm": [-6.0, 13.0], "released_at": [107, 63, 20, 37, 92, 129]}
+{"t": 1791701444.5370529, "event": "pipeline_sorted", "cube": [-2.5, 16.2], "bin": "41", "category": "kitchen", "source": "detector {'kitchen': 5.58} over 6 views", "seconds": 5}
+{"t": 1791701445.1044428, "event": "hovering", "pose": [63, 71, 32, 18, 123, 30], "tip_cm": [9.4, 18.5, 3.8], "colour": "yellow", "aligned": true, "block_yaw_deg": 3.0}
+{"t": 1791701446.262246, "event": "gripped", "pose": [63, 70, 6, 44, 123, 30], "tip_cm": [9.3, 18.3, -0.3], "grip": {"action": "grip", "command": 133, "readback": 129, "at": 1791701446.259884, "holding": true, "result": "holding"}}
+{"t": 1791701446.560521, "event": "lifted", "pose": [63, 71, 32, 18, 123, 129], "gripper_readback": 129, "gripper_at_grip": 129}
+{"t": 1791701446.570365, "event": "put_planned", "target_map_cm": [12.0, 13.0], "pitch": 145, "hover": [60, 54, 50, 21], "j5": 123}
+{"t": 1791701448.920023, "event": "put", "target": "44", "target_map_cm": [12.0, 13.0], "released_at": [60, 55, 26, 43, 123, 129]}
+{"t": 1791701448.920356, "event": "pipeline_sorted", "cube": [9.3, 10.5], "bin": "44", "category": "other", "source": "colour, detector agrees", "seconds": 4}
+{"t": 1791701451.68525, "event": "pipeline_end", "run": "data/sim/pipeline/20261011_145011", "sorted": 4, "skipped": 0, "missed": 0, "cleared": 0, "seconds": 21}
+{"t": 1791701454.7862341, "event": "scan_view", "run": "data/sim/pipeline/20261011_145052", "view": 0, "pose": [100, 125, 0, 0, 92, 30], "markers": [41, 42, 45, 47], "official": []}
+{"t": 1791701457.125588, "event": "scan_view", "run": "data/sim/pipeline/20261011_145052", "view": 1, "pose": [70, 125, 0, 0, 92, 30], "markers": [42, 44, 49], "official": []}
+{"t": 1791701459.1959271, "event": "scan_view", "run": "data/sim/pipeline/20261011_145052", "view": 2, "pose": [110, 105, 15, 0, 92, 30], "markers": [40, 41, 45], "official": []}
+{"t": 1791701460.304678, "event": "scan_view", "run": "data/sim/pipeline/20261011_145052", "view": 3, "pose": [80, 120, 0, 0, 92, 30], "markers": [42, 47], "official": []}
+{"t": 1791701462.3832629, "event": "scan_view", "run": "data/sim/pipeline/20261011_145052", "view": 4, "pose": [40, 90, 30, 0, 92, 30], "markers": null, "official": []}
+{"t": 1791701463.500978, "event": "scan_view", "run": "data/sim/pipeline/20261011_145052", "view": 5, "pose": [50, 105, 5, 0, 92, 30], "markers": [34, 39, 44], "official": []}
+{"t": 1791701464.74116, "event": "scan_view", "run": "data/sim/pipeline/20261011_145052", "view": 6, "pose": [90, 105, 5, 0, 92, 30], "markers": [36, 41, 42], "official": []}
+{"t": 1791701466.820896, "event": "scan_view", "run": "data/sim/pipeline/20261011_145052", "view": 7, "pose": [125, 105, 5, 0, 92, 30], "markers": [35, 36, 40], "official": []}
+{"t": 1791701469.0649831, "event": "refine_view", "cube": [-7.1, 16.3], "pose": [107, 115, 5, 5, 92, 30]}
+{"t": 1791701471.174937, "event": "refine_view", "cube": [5.5, 16.2], "pose": [76, 115, 5, 5, 92, 30]}
+{"t": 1791701473.1183171, "event": "refine_view", "cube": [6.2, 9.6], "pose": [67, 95, 5, 5, 92, 30]}
+{"t": 1791701473.984142, "event": "pipeline_start", "run": "data/sim/pipeline/20261011_145052", "cubes": [[-1.7, 9.7], [-7.1, 16.3], [5.5, 16.2], [6.1, 9.6]], "registration": {"views": 7, "map_origin_base_cm": [0.07, 6.76, -1.41], "yaw_deg": 0.01, "spread_cm": [0.01, 0.01, 0.03]}}
+{"t": 1791701474.414648, "event": "hovering", "pose": [96, 80, 26, 9, 92, 30], "tip_cm": [-1.8, 17.5, 3.6], "colour": "green", "aligned": false, "block_yaw_deg": -45.0}
+{"t": 1791701475.5837939, "event": "gripped", "pose": [96, 81, -2, 36, 92, 30], "tip_cm": [-1.8, 17.5, -0.2], "grip": {"action": "grip", "command": 133, "readback": 132, "at": 1791701475.58037, "holding": false, "result": "empty"}}
+{"t": 1791701476.0079832, "event": "pipeline_missed", "cube": [-1.7, 9.7], "category": "kitchen", "reason": "grip missed (readback 132); opened and lifted", "seconds": 2}
+{"t": 1791701476.724874, "event": "hovering", "pose": [107, 39, 75, 10, 90, 30], "tip_cm": [-7.3, 23.8, 3.3], "colour": null, "aligned": true, "block_yaw_deg": 15.0}
+{"t": 1791701478.032267, "event": "gripped", "pose": [107, 46, 36, 42, 90, 30], "tip_cm": [-7.2, 23.7, -0.5], "grip": {"action": "grip", "command": 133, "readback": 129, "at": 1791701478.026405, "holding": true, "result": "holding"}}
+{"t": 1791701478.480116, "event": "lifted", "pose": [107, 39, 75, 10, 90, 129], "gripper_readback": 129, "gripper_at_grip": 129}
+{"t": 1791701478.482871, "event": "put_planned", "target_map_cm": [12.0, 13.0], "pitch": 145, "hover": [60, 55, 49, 21], "j5": 123}
+{"t": 1791701481.817545, "event": "put", "target": "44", "target_map_cm": [12.0, 13.0], "released_at": [60, 56, 25, 44, 123, 129]}
+{"t": 1791701481.817991, "event": "pipeline_sorted", "cube": [-7.1, 16.3], "bin": "44", "category": "other", "source": "detector {'other': 4.39} over 5 views", "seconds": 6}
+{"t": 1791701482.2554948, "event": "hovering", "pose": [77, 49, 58, 18, 121, 30], "tip_cm": [5.5, 23.8, 3.5], "colour": null, "aligned": true, "block_yaw_deg": 15.0}
+{"t": 1791701483.4199219, "event": "gripped", "pose": [77, 51, 28, 46, 121, 30], "tip_cm": [5.5, 23.8, -0.3], "grip": {"action": "grip", "command": 133, "readback": 129, "at": 1791701483.416085, "holding": true, "result": "holding"}}
+{"t": 1791701483.7214131, "event": "lifted", "pose": [77, 49, 58, 18, 121, 129], "gripper_readback": 129, "gripper_at_grip": 129}
+{"t": 1791701483.725497, "event": "put_planned", "target_map_cm": [-12.0, 13.0], "pitch": 145, "hover": [121, 54, 50, 21], "j5": 92}
+{"t": 1791701486.745107, "event": "put", "target": "40", "target_map_cm": [-12.0, 13.0], "released_at": [121, 55, 26, 44, 92, 129]}
+{"t": 1791701486.745313, "event": "pipeline_sorted", "cube": [5.5, 16.2], "bin": "40", "category": "recyclable", "source": "detector {'recyclable': 4.67} over 5 views", "seconds": 5}
+{"t": 1791701487.472318, "event": "hovering", "pose": [69, 73, 34, 8, 92, 30], "tip_cm": [6.6, 17.3, 3.5], "colour": null, "aligned": false, "block_yaw_deg": -33.0}
+{"t": 1791701488.623631, "event": "gripped", "pose": [69, 75, 6, 35, 92, 30], "tip_cm": [6.8, 17.6, 0.0], "grip": {"action": "grip", "command": 133, "readback": 129, "at": 1791701488.6223302, "holding": true, "result": "holding"}}
+{"t": 1791701488.903751, "event": "lifted", "pose": [69, 73, 34, 8, 92, 129], "gripper_readback": 129, "gripper_at_grip": 129}
+{"t": 1791701488.9069262, "event": "put_planned", "target_map_cm": [6.0, 13.0], "pitch": 150, "hover": [74, 61, 46, 13], "j5": 109}
+{"t": 1791701491.090921, "event": "put", "target": "43", "target_map_cm": [6.0, 13.0], "released_at": [74, 63, 21, 36, 109, 129]}
+{"t": 1791701491.091407, "event": "pipeline_sorted", "cube": [6.1, 9.6], "bin": "43", "category": "hazardous", "source": "detector {'hazardous': 5.51, 'kitchen': 0.45} over 6 views", "seconds": 4}
+{"t": 1791701494.006759, "event": "pipeline_end", "run": "data/sim/pipeline/20261011_145052", "sorted": 3, "skipped": 0, "missed": 1, "cleared": 0, "seconds": 20}
+{"t": 1791701497.1035452, "event": "scan_view", "run": "data/sim/pipeline/20261011_145135", "view": 0, "pose": [100, 125, 0, 0, 92, 30], "markers": [41, 45, 46, 47], "official": []}
+{"t": 1791701498.209353, "event": "scan_view", "run": "data/sim/pipeline/20261011_145135", "view": 1, "pose": [70, 125, 0, 0, 92, 30], "markers": [43, 44, 48], "official": []}
+{"t": 1791701500.277911, "event": "scan_view", "run": "data/sim/pipeline/20261011_145135", "view": 2, "pose": [110, 105, 15, 0, 92, 30], "markers": [41, 45, 46], "official": []}
+{"t": 1791701501.383286, "event": "scan_view", "run": "data/sim/pipeline/20261011_145135", "view": 3, "pose": [80, 120, 0, 0, 92, 30], "markers": [43, 47, 48], "official": []}
+{"t": 1791701503.4439082, "event": "scan_view", "run": "data/sim/pipeline/20261011_145135", "view": 4, "pose": [40, 90, 30, 0, 92, 30], "markers": null, "official": []}
+{"t": 1791701504.561468, "event": "scan_view", "run": "data/sim/pipeline/20261011_145135", "view": 5, "pose": [50, 105, 5, 0, 92, 30], "markers": [34, 38, 39, 44], "official": []}
+{"t": 1791701507.042551, "event": "scan_view", "run": "data/sim/pipeline/20261011_145135", "view": 6, "pose": [90, 105, 5, 0, 92, 30], "markers": [36, 41], "official": []}
+{"t": 1791701509.1219468, "event": "scan_view", "run": "data/sim/pipeline/20261011_145135", "view": 7, "pose": [125, 105, 5, 0, 92, 30], "markers": [36], "official": []}
+{"t": 1791701511.1427069, "event": "refine_view", "cube": [2.0, 12.5], "pose": [82, 100, 5, 5, 92, 30]}
+{"t": 1791701512.2654688, "event": "refine_view", "cube": [9.3, 16.7], "pose": [68, 120, 5, 5, 92, 30]}
+{"t": 1791701514.49117, "event": "refine_view", "cube": [-10.5, 9.8], "pose": [122, 105, 5, 5, 92, 30]}
+{"t": 1791701516.715604, "event": "refine_view", "cube": [8.6, 9.7], "pose": [62, 100, 5, 5, 92, 30]}
+{"t": 1791701517.679625, "event": "pipeline_start", "run": "data/sim/pipeline/20261011_145135", "cubes": [[2.0, 12.5], [9.3, 16.7], [-10.5, 9.8], [8.5, 9.8]], "registration": {"views": 6, "map_origin_base_cm": [0.07, 6.76, -1.42], "yaw_deg": 0.01, "spread_cm": [0.0, 0.0, 0.01]}}
+{"t": 1791701518.11379, "event": "hovering", "pose": [84, 72, 30, 18, 92, 30], "tip_cm": [2.1, 20.2, 3.6], "colour": null, "aligned": false, "block_yaw_deg": -15.0}
+{"t": 1791701519.285722, "event": "gripped", "pose": [84, 71, 4, 44, 92, 30], "tip_cm": [2.1, 20.0, -0.5], "grip": {"action": "grip", "command": 133, "readback": 129, "at": 1791701519.2843158, "holding": true, "result": "holding"}}
+{"t": 1791701519.570347, "event": "lifted", "pose": [84, 72, 30, 18, 92, 129], "gripper_readback": 129, "gripper_at_grip": 129}
+{"t": 1791701519.5728588, "event": "put_planned", "target_map_cm": [6.0, 13.0], "pitch": 150, "hover": [74, 61, 45, 14], "j5": 109}
+{"t": 1791701522.035949, "event": "put", "target": "43", "target_map_cm": [6.0, 13.0], "released_at": [74, 63, 20, 37, 109, 129]}
+{"t": 1791701522.036173, "event": "pipeline_sorted", "cube": [2.0, 12.5], "bin": "43", "category": "hazardous", "source": "detector {'hazardous': 6.41, 'kitchen': 0.46} over 7 views", "seconds": 4}
+{"t": 1791701522.612073, "event": "hovering", "pose": [70, 31, 80, 14, 135, 30], "tip_cm": [8.9, 24.4, 2.1], "colour": null, "aligned": true, "block_yaw_deg": 21.0}
+{"t": 1791701523.777014, "event": "gripped", "pose": [70, 38, 51, 36, 135, 30], "tip_cm": [8.9, 24.4, -0.2], "grip": {"action": "grip", "command": 133, "readback": 129, "at": 1791701523.773154, "holding": true, "result": "holding"}}
+{"t": 1791701524.0811038, "event": "lifted", "pose": [70, 31, 80, 14, 135, 129], "gripper_readback": 129, "gripper_at_grip": 129}
+{"t": 1791701524.090111, "event": "put_planned", "target_map_cm": [-12.0, 13.0], "pitch": 145, "hover": [121, 54, 50, 21], "j5": 92}
+{"t": 1791701527.4444401, "event": "put", "target": "40", "target_map_cm": [-12.0, 13.0], "released_at": [121, 55, 26, 44, 92, 129]}
+{"t": 1791701527.444798, "event": "pipeline_sorted", "cube": [9.3, 16.7], "bin": "40", "category": "recyclable", "source": "detector {'recyclable': 5.61} over 6 views", "seconds": 5}
+{"t": 1791701527.8789802, "event": "hovering", "pose": [122, 70, 32, 17, 92, 30], "tip_cm": [-10.8, 17.2, 3.3], "colour": null, "aligned": false, "block_yaw_deg": -27.0}
+{"t": 1791701529.050406, "event": "gripped", "pose": [122, 70, 6, 44, 92, 30], "tip_cm": [-10.9, 17.4, -0.3], "grip": {"action": "grip", "command": 133, "readback": 129, "at": 1791701529.046268, "holding": true, "result": "holding"}}
+{"t": 1791701529.358062, "event": "lifted", "pose": [122, 70, 32, 17, 92, 129], "gripper_readback": 129, "gripper_at_grip": 129}
+{"t": 1791701529.3623412, "event": "put_planned", "target_map_cm": [12.0, 13.0], "pitch": 145, "hover": [60, 54, 50, 21], "j5": 123}
+{"t": 1791701532.268928, "event": "put", "target": "44", "target_map_cm": [12.0, 13.0], "released_at": [60, 55, 26, 43, 123, 129]}
+{"t": 1791701532.269082, "event": "pipeline_sorted", "cube": [-10.5, 9.8], "bin": "44", "category": "other", "source": "detector {'other': 3.79} over 4 views", "seconds": 5}
+{"t": 1791701532.8443, "event": "hovering", "pose": [63, 77, 23, 19, 92, 30], "tip_cm": [8.8, 17.3, 3.3], "colour": null, "aligned": false, "block_yaw_deg": -45.0}
+{"t": 1791701534.00388, "event": "gripped", "pose": [63, 76, -2, 46, 92, 30], "tip_cm": [8.9, 17.5, -0.3], "grip": {"action": "grip", "command": 133, "readback": 129, "at": 1791701534.002563, "holding": true, "result": "holding"}}
+{"t": 1791701534.30043, "event": "lifted", "pose": [63, 77, 23, 19, 92, 129], "gripper_readback": 129, "gripper_at_grip": 129}
+{"t": 1791701534.308766, "event": "put_planned", "target_map_cm": [-6.0, 13.0], "pitch": 150, "hover": [107, 61, 45, 13], "j5": 92}
+{"t": 1791701536.758246, "event": "put", "target": "41", "target_map_cm": [-6.0, 13.0], "released_at": [107, 63, 20, 37, 92, 129]}
+{"t": 1791701536.75838, "event": "pipeline_sorted", "cube": [8.5, 9.8], "bin": "41", "category": "kitchen", "source": "detector {'kitchen': 4.24} over 5 views", "seconds": 4}
+{"t": 1791701539.338124, "event": "pipeline_end", "run": "data/sim/pipeline/20261011_145135", "sorted": 4, "skipped": 0, "missed": 0, "cleared": 0, "seconds": 22}
+{"t": 1791701542.869573, "event": "scan_view", "run": "data/sim/pipeline/20261011_145220", "view": 0, "pose": [100, 125, 0, 0, 92, 30], "markers": [41, 46, 47], "official": []}
+{"t": 1791701544.7954922, "event": "scan_view", "run": "data/sim/pipeline/20261011_145220", "view": 1, "pose": [70, 125, 0, 0, 92, 30], "markers": [44, 48], "official": []}
+{"t": 1791701546.027775, "event": "scan_view", "run": "data/sim/pipeline/20261011_145220", "view": 2, "pose": [110, 105, 15, 0, 92, 30], "markers": [40, 41, 46], "official": []}
+{"t": 1791701548.3477418, "event": "scan_view", "run": "data/sim/pipeline/20261011_145220", "view": 3, "pose": [80, 120, 0, 0, 92, 30], "markers": [47, 48], "official": []}
+{"t": 1791701550.39746, "event": "scan_view", "run": "data/sim/pipeline/20261011_145220", "view": 4, "pose": [40, 90, 30, 0, 92, 30], "markers": null, "official": []}
+{"t": 1791701552.300353, "event": "scan_view", "run": "data/sim/pipeline/20261011_145220", "view": 5, "pose": [50, 105, 5, 0, 92, 30], "markers": [34, 38, 39, 44], "official": []}
+{"t": 1791701554.753171, "event": "scan_view", "run": "data/sim/pipeline/20261011_145220", "view": 6, "pose": [90, 105, 5, 0, 92, 30], "markers": [41], "official": []}
+{"t": 1791701556.8045251, "event": "scan_view", "run": "data/sim/pipeline/20261011_145220", "view": 7, "pose": [125, 105, 5, 0, 92, 30], "markers": [35, 36, 40], "official": []}
+{"t": 1791701558.925757, "event": "refine_view", "cube": [-9.1, 15.9], "pose": [110, 115, 5, 5, 92, 30]}
+{"t": 1791701561.3953578, "event": "refine_view", "cube": [6.0, 13.0], "pose": [73, 105, 5, 5, 92, 30]}
+{"t": 1791701563.334754, "event": "refine_view", "cube": [13.2, 18.7], "pose": [62, 125, 5, 5, 92, 30]}
+{"t": 1791701564.177036, "event": "pipeline_start", "run": "data/sim/pipeline/20261011_145220", "cubes": [[13.5, 20.1], [1.9, 11.0], [-9.1, 15.9], [5.9, 13.0]], "registration": {"views": 5, "map_origin_base_cm": [0.07, 6.76, -1.43], "yaw_deg": -0.01, "spread_cm": [0.01, 0.0, 0.01]}}
+{"t": 1791701564.177131, "event": "pipeline_skip", "cube": [13.5, 20.1], "category": "recyclable", "reason": "30.1 cm from the base: no reachable grasp at pitch 130-170"}
+{"t": 1791701564.177185, "event": "pipeline_skip", "cube": [5.9, 13.0], "category": "hazardous", "reason": "already on its bin (hazardous)"}
+{"t": 1791701564.879921, "event": "hovering", "pose": [84, 70, 38, 7, 107, 30], "tip_cm": [2.0, 18.8, 3.5], "colour": "green", "aligned": true, "block_yaw_deg": 9.0}
+{"t": 1791701566.025801, "event": "gripped", "pose": [84, 72, 9, 34, 107, 30], "tip_cm": [2.0, 18.8, -0.2], "grip": {"action": "grip", "command": 133, "readback": 129, "at": 1791701566.024214, "holding": true, "result": "holding"}}
+{"t": 1791701566.306334, "event": "lifted", "pose": [84, 70, 38, 7, 107, 129], "gripper_readback": 129, "gripper_at_grip": 129}
+{"t": 1791701566.3091042, "event": "put_planned", "target_map_cm": [-6.0, 13.0], "pitch": 150, "hover": [107, 61, 46, 13], "j5": 92}
+{"t": 1791701568.444799, "event": "put", "target": "41", "target_map_cm": [-6.0, 13.0], "released_at": [107, 63, 21, 36, 92, 129]}
+{"t": 1791701568.445066, "event": "pipeline_sorted", "cube": [1.9, 11.0], "bin": "41", "category": "kitchen", "source": "colour, detector agrees", "seconds": 4}
+{"t": 1791701568.868156, "event": "hovering", "pose": [112, 38, 74, 13, 92, 30], "tip_cm": [-9.5, 23.5, 3.1], "colour": null, "aligned": false, "block_yaw_deg": -21.0}
+{"t": 1791701570.1466181, "event": "gripped", "pose": [112, 44, 40, 41, 92, 30], "tip_cm": [-9.5, 23.5, -0.2], "grip": {"action": "grip", "command": 133, "readback": 129, "at": 1791701570.1452491, "holding": true, "result": "holding"}}
+{"t": 1791701570.5691788, "event": "lifted", "pose": [112, 38, 74, 13, 92, 129], "gripper_readback": 129, "gripper_at_grip": 129}
+{"t": 1791701570.573859, "event": "put_planned", "target_map_cm": [12.0, 13.0], "pitch": 145, "hover": [60, 55, 49, 21], "j5": 123}
+{"t": 1791701573.833798, "event": "put", "target": "44", "target_map_cm": [12.0, 13.0], "released_at": [60, 56, 25, 44, 123, 129]}
+{"t": 1791701573.834029, "event": "pipeline_sorted", "cube": [-9.1, 15.9], "bin": "44", "category": "other", "source": "detector {'other': 4.36} over 5 views", "seconds": 5}
+{"t": 1791701576.5425248, "event": "pipeline_end", "run": "data/sim/pipeline/20261011_145220", "sorted": 2, "skipped": 2, "missed": 0, "cleared": 0, "seconds": 12}

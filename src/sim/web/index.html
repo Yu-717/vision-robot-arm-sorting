@@ -93,6 +93,26 @@
   </section>
 
   <section class="panel wide">
+    <h2>分拣日志 <small>真实分拣流水线跑在仿真上，事件按日志契约经 /api/log/stream 推送</small></h2>
+    <div class="row">
+      <button id="sortStart" class="primary">开始分拣</button>
+      <button id="sortStop">停止任务</button>
+      <label>轮数 <input id="sortRounds" type="number" min="1" max="50" value="2"></label>
+      <label>夹空比例 <input id="gripMiss" type="number" min="0" max="1" step="0.05" value="0"></label>
+      <span class="chip" id="sortState">未运行</span>
+      <span class="chip" id="logCount">0 行</span>
+      <span class="chip" id="logSummary">—</span>
+    </div>
+    <div class="api">
+      <div><h3>最近事件</h3><ol id="eventFeed" reversed></ol></div>
+      <div>
+        <table id="records"><thead><tr><th>#</th><th>时间</th><th>轮</th><th>类别</th><th>来源 cm</th><th>目标位</th><th>耗时 s</th><th>结果</th><th>原因</th></tr></thead><tbody></tbody></table>
+      </div>
+      <div><h3>扫描重建</h3><img id="sceneImage" alt="最近一次扫描的重建图" style="width:100%;border-radius:4px;background:#000"></div>
+    </div>
+  </section>
+
+  <section class="panel wide">
     <h2>接口 <small>选一条，改请求体，发送；owner、token 自动带上</small></h2>
     <div class="api">
       <div id="apiList"></div>

@@ -292,6 +292,16 @@ const API = [
   ['POST', '/api/sim/bins', '{"name": "bins_acrylic_v1"}', '按桶的设计文件，在规划位置立起全部桶'],
   ['GET', '/api/sim/detect', '', '四类检测模型在当前画面上的结果与真值逐块对照；可加 ?conf=0.4'],
   ['IMG', '/api/sim/annotated', '', '对照图'],
+  ['分拣日志与任务'],
+  ['GET', '/api/log?after=0&limit=5', '', '日志事件，每条带 seq（行号）；用返回的 next 续读'],
+  ['GET', '/api/log/records', '', '逐块记录：时间、类别、来源、目标位、耗时、结果'],
+  ['GET', '/api/log/summary', '', '统计：各结果计数、各类别计数、轮数、耗时'],
+  ['GET', '/api/scene', '', '最近一次扫描的 scene.json'],
+  ['IMG', '/api/scene/image', '', '最近一次扫描的重建图'],
+  ['GET', '/api/sim/sort', '', '分拣任务状态'],
+  ['POST', '/api/sim/sort', '{"rounds": 2, "blocks": 4}', '用真实分拣流水线在仿真里跑若干轮；需先 /api/stop 释放操作权'],
+  ['POST', '/api/sim/sort/stop', '{}', '终止分拣任务'],
+  ['POST', '/api/sim/faults', '{"grip_miss": 0.3}', '注入故障：合爪夹空的比例'],
   ['记录与标定'],
   ['POST', '/api/sample', '{"kind": "note", "label": "", "note": ""}', '采样：状态 + 画面存入会话目录'],
   ['POST', '/api/record', '{"on": true, "label": "trial", "note": ""}', '开始/结束录制'],
@@ -337,6 +347,49 @@ $('apiSend').onclick = async () => {
   }
 };
 
+// ---------------------------------------------------------------- sorting log (docs/atlas-200i-dk-a2/18-日志契约.md)
+
+const RECORD = {pipeline_sorted: ['已分拣', 'ok'], pipeline_missed: ['夹空/滑脱', 'bad'], pipeline_skip: ['跳过', 'mid'],
+                pipeline_approach_failed: ['接近失败', 'bad'], pipeline_put_failed: ['投放失败', 'bad'], pipeline_cleared: ['挪开', 'mid']};
+let round = 0, lines = 0;
+function onLogEvent(e) {
+  lines = e.seq;
+  $('logCount').textContent = `${lines} 行`;
+  if (e.event === 'pipeline_start') round += 1;
+  const li = document.createElement('li');
+  li.value = e.seq;
+  li.textContent = `${new Date(e.t * 1000).toLocaleTimeString()} ${e.event}` + (e.reason ? ` · ${e.reason}` : '');
+  if (RECORD[e.event]) li.className = 'rec';
+  $('eventFeed').prepend(li);
+  while ($('eventFeed').children.length > 80) $('eventFeed').lastElementChild.remove();
+  if (RECORD[e.event]) {
+    const [text, cls] = RECORD[e.event], tr = document.createElement('tr');
+    tr.innerHTML = `<td>${e.seq}</td><td>${new Date(e.t * 1000).toLocaleTimeString()}</td><td>${round}</td><td>${NAMES[e.category] ?? '未知'}</td>
+      <td>${e.cube[0].toFixed(1)}, ${e.cube[1].toFixed(1)}</td><td>${e.bin ?? '—'}</td><td>${e.seconds ?? '—'}</td><td class="${cls}">${text}</td><td></td>`;
+    tr.lastElementChild.textContent = e.reason ?? '';
+    $('records').tBodies[0].prepend(tr);
+    while ($('records').tBodies[0].children.length > 14) $('records').tBodies[0].lastElementChild.remove();
+  }
+  if (e.event === 'pipeline_end' || e.event === 'pipeline_start') refreshSummary();
+}
+async function refreshSummary() {
+  const s = await (await fetch('/api/log/summary')).json(), r = s.by_result;
+  $('logSummary').textContent = `${s.rounds_finished} 轮 · 分拣 ${r.sorted} · 夹空 ${r.missed} · 跳过 ${r.skipped} · 失败 ${r.failed}`;
+  $('sceneImage').src = `/api/scene/image?t=${Date.now()}`;
+}
+async function refreshSort() {
+  const s = await (await fetch('/api/sim/sort')).json();
+  $('sortState').textContent = s.running ? '分拣中' : s.exit_code == null ? '未运行' : s.exit_code === 0 ? '已完成' : `已退出（${s.exit_code}）：${s.output.at(-1) ?? ''}`;
+  $('sortState').classList.toggle('on', s.running);
+}
+$('sortStart').onclick = act(async () => {
+  if (state.armed) await post('/api/stop');
+  await post('/api/sim/faults', {grip_miss: Number($('gripMiss').value)});
+  await post('/api/sim/sort', {rounds: Number($('sortRounds').value)});
+  refreshSort();
+});
+$('sortStop').onclick = act(() => post('/api/sim/sort/stop').then(refreshSort));
+
 // ---------------------------------------------------------------- start
 
 async function poll() {
@@ -361,6 +414,9 @@ async function poll() {
     setView('raw');
     pick(API[1], $('apiList').querySelector('button'));
     setInterval(refreshView, 1200);
+    setInterval(refreshSort, 1500);
+    refreshSummary();
+    new EventSource('/api/log/stream').onmessage = m => onLogEvent(JSON.parse(m.data));
     poll();
   } catch (e) { fail(e); }
 })();

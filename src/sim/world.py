@@ -138,6 +138,8 @@ class World:
         self.revision = 0
         self.next_id = 1
         self.servos = list(START_POSE)
+        self.grip_miss = 0.0        # injected fault: the share of grips that close on nothing
+        self.faults = random.Random(seed)
 
     # ------------------------------------------------------------------ the map and the props
 
@@ -156,6 +158,14 @@ class World:
             self.map_data = data if self.map_name else None
             self.map_revision += 1
             self.revision = getattr(self, "revision", 0) + 1
+
+    def set_faults(self, grip_miss) -> dict:
+        """Make the simulated gripper fail on purpose, so the failure paths have something to handle."""
+        if isinstance(grip_miss, bool) or not isinstance(grip_miss, (int, float)) or not 0 <= grip_miss <= 1:
+            raise ValueError("grip_miss 必须是 0–1 的数：合爪夹空的比例")
+        with self.lock:
+            self.grip_miss = float(grip_miss)
+            return dict(grip_miss=self.grip_miss)
 
     def matches_default_map(self) -> bool:
         """Whether every code on the table is where the default map (the one the console's localization
@@ -351,7 +361,7 @@ class World:
                     if d <= GRASP_RADIUS_M and c[2] - BLOCK / 2 - 0.005 <= tip[2] <= c[2] + BLOCK / 2 + GRASP_ABOVE_TOP_M \
                             and (best is None or d < best[0]):
                         best = (d, bid)
-                if best:
+                if best and self.faults.random() >= self.grip_miss:
                     self.held = best[1]
                     b = self.blocks[self.held]
                     b["grip"] = np.linalg.inv(np.array(kin.servo5_pose(self.servos[:5]))) @ b["pose"]
@@ -410,7 +420,7 @@ class World:
                                          for c, h in p["parts"]]))
             off = self.table.offset
             return dict(revision=self.revision, block_side_cm=BLOCK * 100, table_z_cm=round(self.table_z * 100, 2),
-                        holding=self.held, blocks=out, props=props, faces=self.items,
+                        holding=self.held, blocks=out, props=props, faces=self.items, faults=dict(grip_miss=self.grip_miss),
                         map=dict(name=self.map_name, base_from_map_cm=[round(float(v) * 100, 3) for v in off],
                                  page_cm=(self.map_data or {}).get("page_cm", [29.7, 21.0]) if self.map_name else None,
                                  markers=sorted(self.table.layout) if self.map_name else []),

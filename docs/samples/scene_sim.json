@@ -1,0 +1,149 @@
+{
+ "run": "data/sim/pipeline/20261011_145135",
+ "registration": {
+  "views": 6,
+  "map_origin_base_cm": [
+   0.07,
+   6.76,
+   -1.42
+  ],
+  "yaw_deg": 0.01,
+  "spread_cm": [
+   0.0,
+   0.0,
+   0.01
+  ]
+ },
+ "cubes": [
+  {
+   "map_cm": [
+    2.0,
+    12.5
+   ],
+   "yaw_deg": -15.0,
+   "score": 0.278,
+   "fill": null,
+   "colour": null,
+   "colour_share": 0.11,
+   "coverage": 1.0,
+   "px": [
+    180,
+    95
+   ],
+   "img_yaw": 15.0,
+   "detector": {
+    "xy": [
+     1.97,
+     12.46
+    ],
+    "votes": {
+     "hazardous": 6.41,
+     "kitchen": 0.46
+    },
+    "views": 7,
+    "approx": false
+   },
+   "found_by": "detector",
+   "sticker": null,
+   "category": "hazardous",
+   "source": "detector {'hazardous': 6.41, 'kitchen': 0.46} over 7 views"
+  },
+  {
+   "map_cm": [
+    9.3,
+    16.7
+   ],
+   "yaw_deg": 21.0,
+   "score": 0.363,
+   "fill": null,
+   "colour": null,
+   "colour_share": 0.22,
+   "coverage": 1.0,
+   "px": [
+    253,
+    53
+   ],
+   "img_yaw": 69.0,
+   "detector": {
+    "xy": [
+     9.43,
+     16.69
+    ],
+    "votes": {
+     "recyclable": 5.61
+    },
+    "views": 6,
+    "approx": false
+   },
+   "found_by": "detector",
+   "sticker": null,
+   "category": "recyclable",
+   "source": "detector {'recyclable': 5.61} over 6 views"
+  },
+  {
+   "map_cm": [
+    -10.5,
+    9.8
+   ],
+   "yaw_deg": -27.0,
+   "score": 0.397,
+   "fill": null,
+   "colour": null,
+   "colour_share": 0.19,
+   "coverage": 1.0,
+   "px": [
+    55,
+    122
+   ],
+   "img_yaw": 27.0,
+   "detector": {
+    "xy": [
+     -10.49,
+     9.8
+    ],
+    "votes": {
+     "other": 3.79
+    },
+    "views": 4,
+    "approx": false
+   },
+   "found_by": "detector",
+   "sticker": null,
+   "category": "other",
+   "source": "detector {'other': 3.79} over 4 views"
+  },
+  {
+   "map_cm": [
+    8.5,
+    9.8
+   ],
+   "yaw_deg": -45.0,
+   "score": 0.292,
+   "fill": null,
+   "colour": null,
+   "colour_share": 0.03,
+   "coverage": 1.0,
+   "px": [
+    245,
+    122
+   ],
+   "img_yaw": 45.0,
+   "detector": {
+    "xy": [
+     8.59,
+     9.82
+    ],
+    "votes": {
+     "kitchen": 4.24
+    },
+    "views": 5,
+    "approx": false
+   },
+   "found_by": "detector",
+   "sticker": null,
+   "category": "kitchen",
+   "source": "detector {'kitchen': 4.24} over 5 views"
+  }
+ ],
+ "t": 1791701517.678852
+}

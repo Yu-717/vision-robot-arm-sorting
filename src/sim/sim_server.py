@@ -13,6 +13,9 @@ here too. On top of that:
   * /api/sim/* reads and edits the scene (blocks, the printed map, bins and other props) and checks
     the block detector against it
   * /snapshot.jpg, /stream.mjpg, /health mimic the board camera service (§6)
+  * /api/log, /api/log/stream, /api/log/records, /api/log/summary and /api/scene serve the event log and
+    the last scan in the form of docs/atlas-200i-dk-a2/18-日志契约.md; POST /api/sim/sort runs the real
+    sorting pipeline against this simulation (src/sim/run_pipeline.py) to fill that log
   * any origin may call it (CORS), and --lan listens on all interfaces, so a front end on another port
     or a phone can use it directly. That is acceptable only because nothing real moves.
 
@@ -34,7 +37,7 @@ import cv2
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[2]
-for sub in ("vision", "sim", "teleop"):
+for sub in ("vision", "sim", "teleop", "tools"):
     sys.path.insert(0, str(ROOT / "src" / sub))
 
 import server as console  # noqa: E402  (src/teleop/server.py)
@@ -42,10 +45,12 @@ from camera import Camera  # noqa: E402
 from core import Controller  # noqa: E402
 from localization import Locator, annotate as annotate_location, locate_board  # noqa: E402
 import evaluate as E  # noqa: E402
+import log_contract as L  # noqa: E402
 import render as R  # noqa: E402
 import world as W  # noqa: E402
 
 
+SIM_DATA = ROOT / "data" / "sim"        # where src/sim/run_pipeline.py writes: log.jsonl, pipeline/<run>/scene.json
 WEB = Path(__file__).parent / "web"
 SHELL = {"/sim/": ("index.html", "text/html; charset=utf-8"), "/sim/app.js": ("app.js", "text/javascript"),
          "/sim/style.css": ("style.css", "text/css")}
@@ -137,7 +142,9 @@ class SimLocator(Locator):
                     self.images = dict(board=buf.tobytes() if ok else jpeg)
             except Exception as exc:
                 with self.lock:
-                    self.result = dict(board=dict(error=str(exc), t=time.time(), objects=[], simulated=True))
+                    # the pose rides along so a scan does not wait out its timeout on a view without codes
+                    self.result = dict(board=dict(error=str(exc), t=time.time(), objects=[], simulated=True,
+                                                  servos=self.control.status()["pose"]))
                     self.images = {}
             self.closed.wait(1)
 
@@ -149,6 +156,10 @@ class SimApp(console.App):
         self.detector = None
         self.detector_lock = threading.Lock()
         self.check = None                   # last detector check, cached per camera frame
+        self.log_path = SIM_DATA / "log.jsonl"
+        self.sorting = None                 # the run_pipeline.py child process, when one was started here
+        self.port = None                    # set once the HTTP server is listening
+        self.sorting_tail = []
         self.locator = SimLocator(controller, camera, controller.directory, self.detect)
         threading.Thread(target=self.locator.run, daemon=True).start()
 
@@ -193,7 +204,58 @@ class SimApp(console.App):
             self.check = result
         return result
 
+    def latest_run(self) -> Path | None:
+        runs = sorted(p for p in (SIM_DATA / "pipeline").glob("*") if (p / "scene.json").exists())
+        return runs[-1] if runs else None
+
+    def sort_state(self) -> dict:
+        p = self.sorting
+        return dict(running=bool(p and p.poll() is None), exit_code=None if p is None else p.poll(),
+                    output=self.sorting_tail[-12:], log_lines=L.read(self.log_path)[1])
+
+    def start_sort(self, body) -> dict:
+        """Run the real sorting pipeline against this simulation, as a child process (run_pipeline.py)."""
+        import subprocess
+        if self.sorting and self.sorting.poll() is None:
+            raise ValueError("分拣任务已在运行")
+        if self.control.status()["armed"]:
+            raise ValueError("有页面持有操作权；先停止（/api/stop）再启动分拣任务")
+        rounds, blocks = body.get("rounds", 1), body.get("blocks", 4)
+        if type(rounds) is not int or not 1 <= rounds <= 50 or type(blocks) is not int or not 1 <= blocks <= 6:
+            raise ValueError("rounds 须为 1–50，blocks 须为 1–6")
+        if not self.world.matches_default_map() or self.world.props:
+            raise ValueError("分拣任务按 map_a4_v2 的码位投放：先换回 v2 布局的地图并移走桌上的物体")
+        if self.port is None:
+            raise ValueError("服务端口未知，无法启动分拣任务")
+        port = self.port
+        args = [sys.executable, str(Path(__file__).with_name("run_pipeline.py")), "--base", f"http://127.0.0.1:{port}",
+                "--rounds", str(rounds), "--blocks", str(blocks)]
+        if type(body.get("seed")) is int:
+            args += ["--seed", str(body["seed"])]
+        if body.get("keep_scene") is True:
+            args.append("--keep-scene")
+        self.sorting_tail = []
+        self.sorting = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, cwd=ROOT)
+
+        def drain(p):
+            for line in p.stdout:
+                if not line.startswith('{"t"'):           # the events are in the log already
+                    self.sorting_tail.append(line.rstrip()[:300])
+                    del self.sorting_tail[:-50]
+        threading.Thread(target=drain, args=(self.sorting,), daemon=True).start()
+        return self.sort_state()
+
+    def stop_sort(self) -> dict:
+        if self.sorting and self.sorting.poll() is None:
+            self.sorting.terminate()
+            self.control.stop()
+        return self.sort_state()
+
     def action(self, path, body):
+        if path == "/api/sim/sort":
+            return self.start_sort(body)
+        if path == "/api/sim/sort/stop":
+            return self.stop_sort()
         if not path.startswith("/api/sim/"):
             return super().action(path, body)
         world, c = self.world, self.control
@@ -211,6 +273,8 @@ class SimApp(console.App):
             world.place(category, body.get("map_cm"), body.get("yaw_deg", 0), body.get("up", W.TOP), block_id)
         elif path == "/api/sim/remove":
             world.remove(body.get("id"))
+        elif path == "/api/sim/faults":
+            world.set_faults(body.get("grip_miss"))
         elif path == "/api/sim/map":
             world.set_map(body.get("name"))
         elif path == "/api/sim/prop":
@@ -278,6 +342,28 @@ def handler(app: SimApp):
                         self.send(result["image"], "image/jpeg")
                     else:
                         self.send({k: v for k, v in result.items() if k not in ("image", "key")})
+                elif path == "/api/sim/sort":
+                    self.send(app.sort_state())
+                elif path == "/api/log":
+                    after = int(query.get("after", ["0"])[0])
+                    limit = min(int(query.get("limit", ["500"])[0]), 2000)
+                    events, total = L.read(app.log_path, after, limit)
+                    self.send(dict(contract_version=L.VERSION, events=events, total=total,
+                                   next=events[-1]["seq"] if events else min(after, total)))
+                elif path == "/api/log/records":
+                    self.send(dict(contract_version=L.VERSION, records=L.records(L.read(app.log_path)[0])))
+                elif path == "/api/log/summary":
+                    self.send(L.summary(L.read(app.log_path)[0]))
+                elif path == "/api/log/stream":
+                    self.log_stream(int(query.get("after", [self.headers.get("Last-Event-ID") or "0"])[0]))
+                elif path in ("/api/scene", "/api/scene/image"):
+                    run = app.latest_run()
+                    if run is None:
+                        return self.send({"error": "还没有扫描结果"}, status=404)
+                    if path == "/api/scene":
+                        self.send((run / "scene.json").read_bytes())
+                    else:
+                        self.send((run / "scene.png").read_bytes(), "image/png")
                 elif path == "/snapshot.jpg":
                     jpeg, meta = app.camera.snapshot()
                     if not jpeg:
@@ -292,6 +378,32 @@ def handler(app: SimApp):
                     super().do_GET()
             except ValueError as exc:
                 self.send({"error": str(exc)}, status=409 if path.startswith("/api/sim/") else 400)
+
+        def log_stream(self, after: int):
+            """Server-sent events: one message per log line, id = seq, so a reconnecting EventSource
+            resumes where it stopped (Last-Event-ID)."""
+            self.send_response(200)
+            for name, value in (("Content-Type", "text/event-stream; charset=utf-8"), ("Cache-Control", "no-store"),
+                                ("X-Accel-Buffering", "no"), *self.cors()):
+                self.send_header(name, value)
+            self.end_headers()
+            quiet = time.time()
+            try:
+                while not app.closed.is_set():
+                    events, _ = L.read(app.log_path, after, 500)
+                    for e in events:
+                        self.wfile.write(f"id: {e['seq']}\ndata: {json.dumps(e, ensure_ascii=False)}\n\n".encode())
+                        after = e["seq"]
+                    if events:
+                        self.wfile.flush()
+                        quiet = time.time()
+                    elif time.time() - quiet > 10:
+                        self.wfile.write(b": keep-alive\n\n")
+                        self.wfile.flush()
+                        quiet = time.time()
+                    time.sleep(0.2)
+            except (BrokenPipeError, ConnectionResetError):
+                pass
 
         def stream(self):
             self.send_response(200)
@@ -315,7 +427,7 @@ def handler(app: SimApp):
 
 
 def build(folder: Path, blocks: int = 4, seed: int = 0, default_profile: str = "explore", model: Path | None = None,
-          map_name: str | None = W.DEFAULT_MAP.stem, bins: str | None = None):
+          map_name: str | None = W.DEFAULT_MAP.stem, bins: str | None = None, speed: float = 1.0):
     """(app, camera) ready to be served; the caller closes camera and sets app.closed / app.locator.closed."""
     world = W.World(seed, map_name)
     if bins:
@@ -323,6 +435,13 @@ def build(folder: Path, blocks: int = 4, seed: int = 0, default_profile: str = "
     world.reset(blocks)
     camera = SimCamera(world, seed)
     control = Controller(folder, arm=W.WorldArm(world), hardware=False, camera=camera, default_profile=default_profile)
+    if speed != 1.0:                    # the simulated servos arrive at once; only the waiting is shortened
+        from motion_policy import profile_config
+        for key in ("motion", "motion_explore"):
+            for name in ("segment_ms", "settle_ms"):
+                if name in control.base_cfg.get(key, {}):
+                    control.base_cfg[key][name] = control.base_cfg[key][name] / speed
+        control.cfg = profile_config(default_profile, control.base_cfg)
     return SimApp(control, camera, world, model), camera
 
 
@@ -332,6 +451,7 @@ def main():
     p.add_argument("--lan", action="store_true", help="listen on all interfaces instead of 127.0.0.1")
     p.add_argument("--blocks", type=int, default=4, help="blocks placed at random at start")
     p.add_argument("--seed", type=int, default=0)
+    p.add_argument("--speed", type=float, default=1.0, help="divide the per-segment waiting time (1 = as the real arm)")
     p.add_argument("--map", default=W.DEFAULT_MAP.stem, help="config/map_*.json name, or 'none' for a bare table")
     p.add_argument("--bins", help="config/bins_*.json name: stand its bins at their planned places")
     p.add_argument("--model", type=Path, help="ONNX block detector (default: src/vision/blocks_detector.py's own)")
@@ -339,11 +459,12 @@ def main():
     p.add_argument("--output", type=Path)
     args = p.parse_args()
     folder = args.output or ROOT / "data" / "sim" / (time.strftime("%Y%m%d_%H%M%S") + "_" + secrets.token_hex(2))
-    app, camera = build(folder, args.blocks, args.seed, args.default_profile, args.model, args.map, args.bins)
+    app, camera = build(folder, args.blocks, args.seed, args.default_profile, args.model, args.map, args.bins, args.speed)
     threading.Thread(target=app.poll, daemon=True).start()
     host = "0.0.0.0" if args.lan else "127.0.0.1"
     httpd = console.ThreadingHTTPServer((host, args.port), handler(app))
     httpd.daemon_threads = True
+    app.port = args.port
     print(f"Arm simulation [no hardware]: http://{host}:{args.port}/sim/   (old console page: /)", flush=True)
     print(f"Session: {folder}", flush=True)
     try:
@@ -351,6 +472,7 @@ def main():
     except KeyboardInterrupt:
         pass
     finally:
+        app.stop_sort()
         app.closed.set()
         app.locator.closed.set()
         app.control.stop()

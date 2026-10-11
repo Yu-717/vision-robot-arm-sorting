@@ -13,7 +13,7 @@
 | 管理看板 | **正式前端尚未开始**；接口文档、仿真后端和壳子页面已就绪 | 仿真后端 2026-10-11 在 Mac 上跑通，未接实机 |
 | 兜底机制 | 代码已实现 7 条失败路径 | 待按课程口径量化 |
 | 实体容器 | 桶的图纸与地图 v3 已出，**未切割、未到货** | 设计值，未测量 |
-| 工程基础 | — | **228 项测试通过**（2026-10-11），约 1.1 万行 Python 应用代码 |
+| 工程基础 | — | **237 项测试通过**（2026-10-11），约 1.1 万行 Python 应用代码 |
 
 离线评分（15 轮手摆 60 块）：**100% 找到、100% 类别正确**，中心误差中位 0.0 cm、p90 1.04 cm。
 
@@ -28,6 +28,7 @@
 | 看懂整个项目做什么、不做什么、怎么验收 | — | [需求规格](docs/atlas-200i-dk-a2/10-需求规格.md) | 2026-10-09 需求审查用 |
 | 知道自己该做哪几项、多少工作量 | — | [分工与任务量](docs/atlas-200i-dk-a2/17-分工与任务量.md) | 人日为估算；姓名待填 |
 | 开发前端或手机端 | `src/sim/`（仿真后端与壳子页面）；`src/teleop/web/`（旧页面，参考） | [接口文档](docs/atlas-200i-dk-a2/15-接口文档.md)、[仿真模块](docs/atlas-200i-dk-a2/16-仿真模块.md) | 仅仿真验证 |
+| 做日志页、统计页、导出 | `src/tools/log_contract.py`；`docs/samples/`（实机与仿真日志样例） | [日志契约](docs/atlas-200i-dk-a2/18-日志契约.md) | 契约 v1；实机样例 0 处不符 |
 | 遥控机械臂、采样、标定 | `src/teleop/`、`src/adapters/safe_arm.py` | [遥控与场景标定工作台](docs/atlas-200i-dk-a2/08-遥控与场景标定工作台.md) | 实机实测 |
 | 自动分拣一轮 | `src/pipeline/run.py`、`src/pipeline/loop.py`、`src/tasks/` | [探索记录](docs/atlas-200i-dk-a2/11-探索记录.md) | 实机实测，累计 18/22 块 |
 | 识别四类物块 | `src/vision/blocks_detector.py`、`train_blocks.py`、`synth_blocks.py` | [物块与贴纸类别](docs/atlas-200i-dk-a2/07-物块与贴纸类别.md)、[资产清单](docs/atlas-200i-dk-a2/09-资产清单.md) | 实机实测，板上 NPU |
@@ -45,7 +46,7 @@
 |---|---|---|---|
 | 四类检测模型 v3（`best.onnx`、`best.pt`、`blocks4_yolov8n.om`） | `data/models/blocks4/v3/` | Release `assets-v3` 的 `blocks4_v3_models.zip`（22 MB） | 自动分拣和仿真里的检测对照不可用；仿真的画面与控制不受影响 |
 | 物块 20 张贴面 | `data/reference/block_faces/` | Release `assets-v3` 的 `block_faces.zip`（0.6 MB） | **仿真后端无法启动**，`tests/test_sim.py` 全部跳过 |
-| 数据集、运行日志、采集画面 | `data/datasets/`、`data/runs/`、`data/captures/` | 另行拷贝 | 不能重训；前端没有真实 `log.jsonl` 可回放 |
+| 数据集、扫描画面、采集画面 | `data/datasets/`、`data/runs/`、`data/captures/` | 另行拷贝 | 不能重训。事件日志的样例已入库（`docs/samples/`） |
 | 官方三类模型、课程包、`Arm_Lib` 源码、上游 ROS 2 工程 | `data/models/official_arm/`、`资料/` | 约 2.7 GB | 第三方内容，按[资产清单](docs/atlas-200i-dk-a2/09-资产清单.md)里的链接自行下载 |
 
 ### 取回模型与贴面
@@ -82,7 +83,7 @@ unzip -o /tmp/arm-assets/blocks4_v3_models.zip -d . && unzip -o /tmp/arm-assets/
 ## 快速开始
 
 ```sh
-uv run --with 'opencv-python<5' --with numpy --with onnxruntime python -m unittest discover -s tests   # 228 项测试，不需要硬件
+uv run --with 'opencv-python<5' --with numpy --with onnxruntime python -m unittest discover -s tests   # 237 项测试，不需要硬件
 python3 -m unittest discover -s tests          # 没有 numpy/OpenCV 时：依赖它们的测试文件导入失败或跳过，其余照常
 python3 src/pipeline/run.py --dry-run --scan <扫描目录>   # 用已有扫描重建场景，不动机械臂
 ```
