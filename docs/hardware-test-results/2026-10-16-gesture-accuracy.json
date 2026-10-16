@@ -1,0 +1,208 @@
+{
+  "date": "2026-10-16",
+  "model": "hrnet.om (assets-v4 / gesture_hrnet_4cls.zip), Ascend310B1, 46,803,711 B",
+  "board": {
+    "host": "192.168.137.100",
+    "chip": "310B",
+    "cann": "6.2.RC1",
+    "camera": "/dev/video0 640x480 via board_camera_server :8080",
+    "python": "/root/miniconda3/bin/python 3.9.2 (ais_bench, onnxruntime 1.14.0)"
+  },
+  "scope": {
+    "imports_arm_lib": false,
+    "commands_servos": false,
+    "note": "手势由操作员在腕部相机前真实做出；机械臂未动。相机服务用 deploy_to_board.sh 恢复。"
+  },
+  "step1_label_mapping_verified_on_course_validation_set": {
+    "why": "现场 fist 被判成 idx3，需要区分“模型认错”与“课程 Notebook 的标签顺序写错”。用模型自己的训练域数据判定。",
+    "images": "课程包 200DK端侧推理/Hand_Gesture/Gesture/val/<class>/ 每类等距抽样 60 张",
+    "confusion_rows_actual_cols_idx": {
+      "fist": [
+        58,
+        1,
+        0,
+        1
+      ],
+      "like": [
+        1,
+        58,
+        1,
+        0
+      ],
+      "ok": [
+        0,
+        1,
+        59,
+        0
+      ],
+      "palm": [
+        0,
+        0,
+        0,
+        60
+      ]
+    },
+    "mean_prob_rows_actual_cols_idx": {
+      "fist": [
+        0.949,
+        0.016,
+        0.016,
+        0.019
+      ],
+      "like": [
+        0.021,
+        0.939,
+        0.03,
+        0.01
+      ],
+      "ok": [
+        0.012,
+        0.009,
+        0.97,
+        0.009
+      ],
+      "palm": [
+        0.0,
+        0.0,
+        0.007,
+        0.992
+      ]
+    },
+    "accuracy": 0.979,
+    "conclusion": "标签顺序就是 0=fist 1=like 2=ok 3=palm，课程 Notebook 正确；模型训练域准确率 97.9%。现场失败是域差异，不是标签错。"
+  },
+  "step2_live_capture_one_session_per_gesture": {
+    "method": "每类约 100 帧，2 秒 6 秒连续抓拍，逐帧 224x224 / RGB / 0-1 / CHW 后 NPU 推理",
+    "caveat": "每类只有一个会话、帧间高度相关，不能当作准确率估计；只用于看方向与失败模式。",
+    "uncropped": {
+      "fist": {
+        "frames": 101,
+        "argmax": [
+          6,
+          0,
+          0,
+          95
+        ],
+        "mean_prob": [
+          0.159,
+          0.017,
+          0.116,
+          0.708
+        ],
+        "hit_rate": 0.059
+      },
+      "like": {
+        "frames": 101,
+        "argmax": [
+          7,
+          94,
+          0,
+          0
+        ],
+        "mean_prob": [
+          0.123,
+          0.823,
+          0.034,
+          0.021
+        ],
+        "hit_rate": 0.931
+      },
+      "ok": {
+        "frames": 102,
+        "argmax": [
+          1,
+          14,
+          87,
+          0
+        ],
+        "mean_prob": [
+          0.077,
+          0.138,
+          0.755,
+          0.029
+        ],
+        "hit_rate": 0.853
+      },
+      "palm": {
+        "frames": 102,
+        "argmax": [
+          0,
+          0,
+          0,
+          102
+        ],
+        "mean_prob": [
+          0.0,
+          0.0,
+          0.003,
+          0.997
+        ],
+        "hit_rate": 1.0
+      }
+    },
+    "overall_hit_rate_uncropped": 0.712,
+    "finding": "palm 0.997 与 fist 0.708 都落在 idx3，但置信度差一个量级；结合验证集可知 idx3 确为 palm，故 fist 是真实误判。"
+  },
+  "step3_center_crop_sweep": {
+    "why": "怀疑逆光窗与走动的人构成背景干扰；用固定中心裁剪降低背景占比来检验因果。",
+    "caveat": "同上，单会话样本，仅看趋势；且固定裁剪通过缩小视野换取背景抑制，各手势对手部占位的敏感度不同。",
+    "per_class_hit_rate": {
+      "100%": {
+        "fist": 0.059,
+        "like": 0.931,
+        "ok": 0.853,
+        "palm": 1.0,
+        "total": 0.712
+      },
+      "90%": {
+        "fist": 0.634,
+        "like": 0.871,
+        "ok": 0.99,
+        "palm": 1.0,
+        "total": 0.874
+      },
+      "80%": {
+        "fist": 0.772,
+        "like": 1.0,
+        "ok": 0.99,
+        "palm": 0.922,
+        "total": 0.921
+      },
+      "70%": {
+        "fist": 0.901,
+        "like": 0.663,
+        "ok": 0.98,
+        "palm": 1.0,
+        "total": 0.887
+      },
+      "60%": {
+        "fist": 0.842,
+        "like": 0.644,
+        "ok": 0.814,
+        "palm": 1.0,
+        "total": 0.825
+      },
+      "50%": {
+        "fist": 0.881,
+        "like": 0.832,
+        "ok": 0.549,
+        "palm": 0.971,
+        "total": 0.808
+      },
+      "40%": {
+        "fist": 0.941,
+        "like": 0.02,
+        "ok": 0.02,
+        "palm": 0.961,
+        "total": 0.485
+      }
+    },
+    "conclusion": "背景是最主要干扰：裁剪到 80% 把合计从 71.2% 提到 92.1%。但没有一个固定比例对所有手势都好（like 在 ≤70% 崩、ok 在 ≤50% 崩），说明应做手部 ROI 检测而不是写死裁剪。"
+  },
+  "next_steps": [
+    "先接官方 hand_detection_Gitee（Apache-2.0）做手部 ROI，再送 224x224 分类，比固定裁剪稳",
+    "若要维持固定裁剪，80% 是当前最优，但必须在真实取景下重测",
+    "需求要求的 ≥3 类 ≥80%：uncropped 71.2% 不达标，80% 裁剪 92.1% 达标，但需多会话重测确认真值",
+    "本机没有手势图像的标注真值，上面 hit_rate 的真值来自“操作员当时比的是哪个手势”，非逐帧标注"
+  ]
+}
