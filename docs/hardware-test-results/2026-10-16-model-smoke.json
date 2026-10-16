@@ -1,0 +1,511 @@
+{
+  "date": "2026-10-16",
+  "board": {
+    "host": "192.168.137.100",
+    "hostname": "davinci-mini",
+    "os": "Ubuntu 22.04.2 LTS",
+    "architecture": "aarch64",
+    "cores": 3,
+    "memory_total_mb": 3513,
+    "memory_available_mb": 2225,
+    "swap_mb": 0,
+    "npu": {
+      "name": "310B",
+      "health": "OK",
+      "temperature_c": 43,
+      "aicore_pct": 0,
+      "memory_used_mb": 619,
+      "memory_total_mb": 3513,
+      "smi": "npu-smi 23.0.rc1.1"
+    },
+    "cann": "6.2.RC1 (/usr/local/Ascend/ascend-toolkit/6.2.RC1)",
+    "python": "/root/miniconda3/bin/python 3.9.2",
+    "libraries": {
+      "numpy": true,
+      "cv2": true,
+      "torchaudio": true,
+      "ais_bench": true,
+      "onnxruntime": "1.14.0",
+      "torch": true
+    }
+  },
+  "scope": {
+    "imports_arm_lib": false,
+    "commands_servos": false,
+    "note": "推理测试，未 import Arm_Lib，未驱动任何舵机。调试环境在 /root/model-smoke/，未改动 /root/arm-app。"
+  },
+  "assets": {
+    "source": "GitHub Release assets-v4",
+    "asr_wenet_offline_encoder.zip": {
+      "sha256": "6a659ab69cca4d05d29203e5738e1ef3580914b03f89f1636853670f749a5439",
+      "offline_encoder.om_sha256": "19c64a53117db9ccb736503771c7006b16a43a22861c4dd0bbf4dd74506c813c",
+      "offline_encoder.om_bytes": 78518659
+    },
+    "gesture_hrnet_4cls.zip": {
+      "sha256": "6538e9c4ba3ca472815a8c30e0b3fe07614957bc8eb3b69172e6c8b5cb49dad2",
+      "hrnet.om_bytes": 46803711,
+      "hrnet.onnx_bytes": 77462516
+    }
+  },
+  "asr": {
+    "model": "wenet_asr/offline_encoder.om",
+    "input_spec": {
+      "speech": [
+        1,
+        1478,
+        80
+      ],
+      "speech_dtype": "float32",
+      "speech_lengths": [
+        1
+      ],
+      "lengths_dtype": "int32"
+    },
+    "output_spec": [
+      {
+        "name": "encoder_out",
+        "shape": [
+          1,
+          368,
+          256
+        ],
+        "dtype": "float32"
+      },
+      {
+        "name": "encoder_out_lens",
+        "shape": [
+          1
+        ],
+        "dtype": "int32"
+      },
+      {
+        "name": "ctc_log_probs",
+        "shape": [
+          1,
+          368,
+          11008
+        ],
+        "dtype": "float32"
+      },
+      {
+        "name": "beam_log_probs",
+        "shape": [
+          1,
+          368,
+          10
+        ],
+        "dtype": "float32"
+      },
+      {
+        "name": "beam_log_probs_idx",
+        "shape": [
+          1,
+          368,
+          10
+        ],
+        "dtype": "int64"
+      }
+    ],
+    "sample": {
+      "file": "sample.wav",
+      "sample_rate": 48000,
+      "channels": 1,
+      "seconds": 10.24,
+      "fbank_frames": 1022,
+      "padded_frames": 1478,
+      "truncated": false
+    },
+    "runs": 10,
+    "transcript": "智能语音作为智能时代人机交互的关键接口各行各业爆发式的场景需求驱动行业发展进入黄金期",
+    "distinct_transcripts": 1,
+    "stable": true,
+    "model_load_ms": 2990.504,
+    "preprocess_ms": {
+      "runs": 10,
+      "min_ms": 74.5,
+      "median_ms": 77.578,
+      "max_ms": 136.407
+    },
+    "infer_ms": {
+      "runs": 10,
+      "min_ms": 120.645,
+      "median_ms": 121.029,
+      "max_ms": 138.883
+    },
+    "postprocess_ms": {
+      "runs": 10,
+      "min_ms": 0.798,
+      "median_ms": 0.831,
+      "max_ms": 1.025
+    },
+    "raw": {
+      "model": "wenet_asr/offline_encoder.om",
+      "model_bytes": 78518659,
+      "max_frames": 1478,
+      "max_audio_seconds": 14.78,
+      "load_ms": 2990.504,
+      "descriptors": {
+        "inputs": [
+          {
+            "name": "speech",
+            "shape": [
+              1,
+              1478,
+              80
+            ],
+            "dtype": "dtype.float32"
+          },
+          {
+            "name": "speech_lengths",
+            "shape": [
+              1
+            ],
+            "dtype": "dtype.int32"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "/encoder/after_norm/Add_1:0:encoder_out",
+            "shape": [
+              1,
+              368,
+              256
+            ],
+            "dtype": "dtype.float32"
+          },
+          {
+            "name": "/Cast_1:0:encoder_out_lens",
+            "shape": [
+              1
+            ],
+            "dtype": "dtype.int32"
+          },
+          {
+            "name": "/LogSoftmax:0:ctc_log_probs",
+            "shape": [
+              1,
+              368,
+              11008
+            ],
+            "dtype": "dtype.float32"
+          },
+          {
+            "name": "/TopK:0:beam_log_probs",
+            "shape": [
+              1,
+              368,
+              10
+            ],
+            "dtype": "dtype.float32"
+          },
+          {
+            "name": "/TopK:1:beam_log_probs_idx",
+            "shape": [
+              1,
+              368,
+              10
+            ],
+            "dtype": "dtype.int64"
+          }
+        ]
+      },
+      "wav": "wenet_asr/sample.wav",
+      "tensors": {
+        "speech": [
+          1,
+          1478,
+          80
+        ],
+        "speech_dtype": "float32",
+        "speech_lengths": [
+          1022
+        ],
+        "output_shapes": [
+          [
+            1,
+            368,
+            256
+          ],
+          [
+            1
+          ],
+          [
+            1,
+            368,
+            11008
+          ],
+          [
+            1,
+            368,
+            10
+          ],
+          [
+            1,
+            368,
+            10
+          ]
+        ],
+        "output_dtypes": [
+          "float32",
+          "int32",
+          "float32",
+          "float32",
+          "int64"
+        ]
+      },
+      "transcripts": [
+        "智能语音作为智能时代人机交互的关键接口各行各业爆发式的场景需求驱动行业发展进入黄金期",
+        "智能语音作为智能时代人机交互的关键接口各行各业爆发式的场景需求驱动行业发展进入黄金期",
+        "智能语音作为智能时代人机交互的关键接口各行各业爆发式的场景需求驱动行业发展进入黄金期",
+        "智能语音作为智能时代人机交互的关键接口各行各业爆发式的场景需求驱动行业发展进入黄金期",
+        "智能语音作为智能时代人机交互的关键接口各行各业爆发式的场景需求驱动行业发展进入黄金期",
+        "智能语音作为智能时代人机交互的关键接口各行各业爆发式的场景需求驱动行业发展进入黄金期",
+        "智能语音作为智能时代人机交互的关键接口各行各业爆发式的场景需求驱动行业发展进入黄金期",
+        "智能语音作为智能时代人机交互的关键接口各行各业爆发式的场景需求驱动行业发展进入黄金期",
+        "智能语音作为智能时代人机交互的关键接口各行各业爆发式的场景需求驱动行业发展进入黄金期",
+        "智能语音作为智能时代人机交互的关键接口各行各业爆发式的场景需求驱动行业发展进入黄金期"
+      ],
+      "stable": true,
+      "preprocess": {
+        "runs": 10,
+        "min_ms": 74.5,
+        "median_ms": 77.578,
+        "max_ms": 136.407
+      },
+      "infer": {
+        "runs": 10,
+        "min_ms": 120.645,
+        "median_ms": 121.029,
+        "max_ms": 138.883
+      },
+      "postprocess": {
+        "runs": 10,
+        "min_ms": 0.798,
+        "median_ms": 0.831,
+        "max_ms": 1.025
+      }
+    }
+  },
+  "gesture": {
+    "model": "gesture_hrnet/hrnet.om",
+    "labels": [
+      "fist",
+      "like",
+      "ok",
+      "palm"
+    ],
+    "input_spec": {
+      "input": [
+        1,
+        3,
+        224,
+        224
+      ],
+      "dtype": "float32"
+    },
+    "output_spec": {
+      "output": [
+        1,
+        4
+      ],
+      "dtype": "float32"
+    },
+    "classes_on_board": 4,
+    "cases": {
+      "synthetic": {
+        "input_shape": [
+          1,
+          3,
+          224,
+          224
+        ],
+        "output_shape": [
+          4
+        ],
+        "output_dtype": "float32",
+        "logits": [
+          -0.725586,
+          -0.353516,
+          0.064575,
+          0.427246
+        ],
+        "argmax": 3,
+        "latency": {
+          "runs": 20,
+          "min_ms": 9.049,
+          "median_ms": 9.104,
+          "max_ms": 9.793
+        },
+        "onnx_cross_check": {
+          "onnxruntime": "1.14.0",
+          "max_abs_diff": 0.00139236,
+          "argmax_match": true,
+          "onnx_logits": [
+            -0.72581,
+            -0.352215,
+            0.065074,
+            0.425854
+          ]
+        }
+      },
+      "image": {
+        "input_shape": [
+          1,
+          3,
+          224,
+          224
+        ],
+        "output_shape": [
+          4
+        ],
+        "output_dtype": "float32",
+        "logits": [
+          0.573242,
+          0.033295,
+          -0.611328,
+          -0.305176
+        ],
+        "argmax": 0,
+        "latency": {
+          "runs": 20,
+          "min_ms": 9.025,
+          "median_ms": 9.069,
+          "max_ms": 9.746
+        },
+        "onnx_cross_check": {
+          "onnxruntime": "1.14.0",
+          "max_abs_diff": 0.00094277,
+          "argmax_match": true,
+          "onnx_logits": [
+            0.573074,
+            0.032542,
+            -0.610385,
+            -0.304587
+          ]
+        },
+        "path": "/root/arm-app/captures/charuco_20260924_1915/view_04.jpg"
+      }
+    },
+    "raw": {
+      "model": "gesture_hrnet/hrnet.om",
+      "model_bytes": 46803711,
+      "descriptors": {
+        "inputs": [
+          {
+            "name": "input",
+            "shape": [
+              1,
+              3,
+              224,
+              224
+            ],
+            "dtype": "dtype.float32"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "PartitionedCall_Gemm_1145_add_348:0:output",
+            "shape": [
+              1,
+              4
+            ],
+            "dtype": "dtype.float32"
+          }
+        ]
+      },
+      "labels": [
+        "0 fist",
+        "1 like",
+        "2 ok",
+        "3 palm"
+      ],
+      "cases": {
+        "synthetic": {
+          "input_shape": [
+            1,
+            3,
+            224,
+            224
+          ],
+          "output_shape": [
+            4
+          ],
+          "output_dtype": "float32",
+          "logits": [
+            -0.725586,
+            -0.353516,
+            0.064575,
+            0.427246
+          ],
+          "argmax": 3,
+          "latency": {
+            "runs": 20,
+            "min_ms": 9.049,
+            "median_ms": 9.104,
+            "max_ms": 9.793
+          },
+          "onnx_cross_check": {
+            "onnxruntime": "1.14.0",
+            "max_abs_diff": 0.00139236,
+            "argmax_match": true,
+            "onnx_logits": [
+              -0.72581,
+              -0.352215,
+              0.065074,
+              0.425854
+            ]
+          }
+        },
+        "image": {
+          "input_shape": [
+            1,
+            3,
+            224,
+            224
+          ],
+          "output_shape": [
+            4
+          ],
+          "output_dtype": "float32",
+          "logits": [
+            0.573242,
+            0.033295,
+            -0.611328,
+            -0.305176
+          ],
+          "argmax": 0,
+          "latency": {
+            "runs": 20,
+            "min_ms": 9.025,
+            "median_ms": 9.069,
+            "max_ms": 9.746
+          },
+          "onnx_cross_check": {
+            "onnxruntime": "1.14.0",
+            "max_abs_diff": 0.00094277,
+            "argmax_match": true,
+            "onnx_logits": [
+              0.573074,
+              0.032542,
+              -0.610385,
+              -0.304587
+            ]
+          },
+          "path": "/root/arm-app/captures/charuco_20260924_1915/view_04.jpg"
+        }
+      }
+    }
+  },
+  "conclusion": {
+    "asr": "PASS - loads and runs on the NPU, transcript identical across 10 runs",
+    "gesture": "PASS - loads and runs on the NPU, output is [1,4] as predicted, OM vs ONNX argmax matches on both inputs",
+    "asr_end_to_end_ms_median": 199.438,
+    "gesture_latency_ms_median": 9.069,
+    "not_tested": [
+      "识别/分类准确率（语音只有一段官方样例，手势没有手部图像与标签真值）",
+      "连续运行下的内存与热稳定性",
+      "手势模型在腕部相机取景下的实际表现（缺手部 ROI，本机无手势图）",
+      "E7 的端到端时延（含收音与指令匹配）与 E1 的端到端响应时延"
+    ]
+  }
+}
