@@ -1,0 +1,219 @@
+{
+  "date": "2026-10-16",
+  "question": "三个模型能否同时驻留并全双工并发运行",
+  "models": {
+    "asr": {
+      "file": "wenet_asr/offline_encoder.om",
+      "bytes": 78518659,
+      "in": [
+        [
+          "speech",
+          [
+            1,
+            1478,
+            80
+          ],
+          "float32"
+        ],
+        [
+          "speech_lengths",
+          [
+            1
+          ],
+          "int32"
+        ]
+      ],
+      "out": [
+        [
+          1,
+          368,
+          256
+        ],
+        [
+          1
+        ],
+        [
+          1,
+          368,
+          11008
+        ],
+        [
+          1,
+          368,
+          10
+        ],
+        [
+          1,
+          368,
+          10
+        ]
+      ]
+    },
+    "gesture": {
+      "file": "gesture_hrnet/hrnet.om",
+      "bytes": 46803711,
+      "in": [
+        [
+          "input",
+          [
+            1,
+            3,
+            224,
+            224
+          ],
+          "float32"
+        ]
+      ],
+      "out": [
+        [
+          1,
+          4
+        ]
+      ]
+    },
+    "detector": {
+      "file": "detector/blocks4_yolov8n.om",
+      "bytes": 7109231,
+      "in": [
+        [
+          "images",
+          [
+            1,
+            3,
+            640,
+            640
+          ],
+          "float32"
+        ]
+      ],
+      "out": [
+        [
+          1,
+          8,
+          8400
+        ]
+      ]
+    }
+  },
+  "board": {
+    "host": "192.168.137.100",
+    "chip": "310B",
+    "cann": "6.2.RC1",
+    "python": "/root/miniconda3/bin/python 3.9.2",
+    "npu_memory_total_mb": 3513
+  },
+  "co_residency": {
+    "result": "PASS",
+    "loaded": [
+      "asr",
+      "detector",
+      "gesture"
+    ],
+    "failed_to_load": {},
+    "npu_memory_mb": {
+      "before_load": 1515,
+      "after_load": 1997,
+      "after_threads": 2029,
+      "after_processes": 1982
+    },
+    "note": "三个 InferSession 同时驻留 device 0 成功；显存增加约 482 MB，仍有约 1.5 GB 余量。"
+  },
+  "baseline_alone": {
+    "asr": {
+      "median_ms": 120.7,
+      "per_second": 8.33
+    },
+    "gesture": {
+      "median_ms": 9.14,
+      "per_second": 108.5
+    },
+    "detector": {
+      "median_ms": 12.799,
+      "per_second": 77.33
+    }
+  },
+  "concurrency_variants": {
+    "A_main_thread_sessions": {
+      "asr": {
+        "median_ms": 120.621,
+        "iterations": 42
+      },
+      "gesture": {
+        "median_ms": 9.238,
+        "iterations": 537
+      },
+      "detector": {
+        "median_ms": 12.834,
+        "iterations": 386
+      },
+      "note": "对照组：主线程顺序调用，正常"
+    },
+    "B_shared_sessions_across_threads": {
+      "asr": {
+        "iterations": 0,
+        "error": "RuntimeError: [-1][ACL: general failure]"
+      },
+      "gesture": {
+        "iterations": 0,
+        "error": "RuntimeError: [-1][ACL: general failure]"
+      },
+      "detector": {
+        "iterations": 0,
+        "error": "RuntimeError: [-1][ACL: general failure]"
+      },
+      "note": "在主线程创建 session，再由 3 个线程调用：三次全部立即崩溃，可复现。ACL 上下文绑定线程。"
+    },
+    "C_thread_local_sessions": {
+      "asr": {
+        "median_ms": 222.029,
+        "iterations": 23,
+        "slowdown": 1.84
+      },
+      "gesture": {
+        "median_ms": 21.817,
+        "iterations": 146,
+        "slowdown": 2.36
+      },
+      "detector": {
+        "median_ms": 32.246,
+        "iterations": 78,
+        "slowdown": 2.51
+      },
+      "note": "每个线程自己创建 InferSession：三个模型真正并发跑通，无错误。"
+    },
+    "separate_processes": {
+      "asr": {
+        "median_ms": 166.514,
+        "per_second": 6.17,
+        "slowdown": 1.38
+      },
+      "gesture": {
+        "median_ms": 63.093,
+        "per_second": 14.33,
+        "slowdown": 6.9
+      },
+      "detector": {
+        "median_ms": 24.878,
+        "per_second": 29.67,
+        "slowdown": 1.94
+      },
+      "note": "一模型一进程同时跑：也全部跑通。"
+    }
+  },
+  "conclusion": {
+    "co_resident": true,
+    "full_duplex": true,
+    "how": "同一进程内每个线程各自创建 InferSession，或一模型一进程；绝不可跨线程复用同一个 session。",
+    "real_time_headroom_under_3way_contention": {
+      "gesture": "21.8 ms -> 约 46 fps 能力，相机只有 7.6 fps，余量充足",
+      "detector": "32.2 ms -> 约 31 fps 能力",
+      "asr": "222 ms/次，且按句触发而非逐帧，可忽略"
+    },
+    "caveats": [
+      "用的是合成张量（zeros/ones）：shape 是静态的，算力开销有代表性，但不是真实画面的吞吐。",
+      "三方都在满速轮询是最坏情况；实际受 7.6 fps 相机限流，争用会低得多。",
+      "只测了三个模型；再加模型会同时吃显存与 AICore。",
+      "未测长时间运行的稳定性与温升。"
+    ]
+  }
+}
