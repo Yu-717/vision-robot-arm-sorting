@@ -44,17 +44,19 @@
 
 | 缺什么 | 放在哪 | 从哪拿 | 没有它会怎样 |
 |---|---|---|---|
-| 四类检测模型 v3（`best.onnx`、`best.pt`、`blocks4_yolov8n.om`） | `data/models/blocks4/v3/` | Release `assets-v3` 的 `blocks4_v3_models.zip`（22 MB） | 自动分拣和仿真里的检测对照不可用；仿真的画面与控制不受影响 |
-| 物块 20 张贴面 | `data/reference/block_faces/` | Release `assets-v3` 的 `block_faces.zip`（0.6 MB） | **仿真后端无法启动**，`tests/test_sim.py` 全部跳过 |
+| 四类检测模型 v3（`best.onnx`、`best.pt`、`blocks4_yolov8n.om`） | `data/models/blocks4/v3/` | Release `assets-v4` 的 `blocks4_v3_models.zip`（22 MB） | 自动分拣和仿真里的检测对照不可用；仿真的画面与控制不受影响 |
+| 物块 20 张贴面 | `data/reference/block_faces/` | Release `assets-v4` 的 `block_faces.zip`（0.6 MB） | **仿真后端无法启动**，`tests/test_sim.py` 全部跳过 |
+| 语音识别模型（WeNet 编码器，Atlas 200I DK A2） | `data/models/wenet_asr/` | Release `assets-v4` 的 `asr_wenet_offline_encoder.zip`（65 MB） | E7 语音控制不能用；其余功能不受影响 |
+| 手势识别模型（HRNet 四分类，Atlas 200I DK A2） | `data/models/gesture_hrnet/` | Release `assets-v4` 的 `gesture_hrnet_4cls.zip`（103 MB） | E1 手势交互不能用；其余功能不受影响 |
 | 数据集、扫描画面、采集画面 | `data/datasets/`、`data/runs/`、`data/captures/` | 另行拷贝 | 不能重训。事件日志的样例已入库（`docs/samples/`） |
 | 官方三类模型、课程包、`Arm_Lib` 源码、上游 ROS 2 工程 | `data/models/official_arm/`、`资料/` | 约 2.7 GB | 第三方内容，按[资产清单](docs/atlas-200i-dk-a2/09-资产清单.md)里的链接自行下载 |
 
 ### 取回模型与贴面
 
-两个压缩包里的路径都从仓库根目录算起，在仓库根目录解压即落到正确位置。[Release 页面](https://github.com/anweat/vision-robot-arm-sorting/releases/tag/assets-v3)上可以直接点下载，或者：
+压缩包里的路径都从仓库根目录算起，在仓库根目录解压即落到正确位置。[Release 页面](https://github.com/anweat/vision-robot-arm-sorting/releases/tag/assets-v4)上可以直接点下载，或者：
 
 ```sh
-gh release download assets-v3 -R anweat/vision-robot-arm-sorting -D /tmp/arm-assets
+gh release download assets-v4 -R anweat/vision-robot-arm-sorting -D /tmp/arm-assets
 ```
 
 ```sh
@@ -63,9 +65,12 @@ cd /tmp/arm-assets && shasum -a 256 -c SHA256SUMS.txt
 
 ```sh
 unzip -o /tmp/arm-assets/blocks4_v3_models.zip -d . && unzip -o /tmp/arm-assets/block_faces.zip -d .
+unzip -o /tmp/arm-assets/asr_wenet_offline_encoder.zip -d . && unzip -o /tmp/arm-assets/gesture_hrnet_4cls.zip -d .
 ```
 
-最后一条在仓库根目录执行。完成后 `tests/test_sim.py` 不再跳过，仿真后端可以启动。
+最后两条在仓库根目录执行。完成后 `tests/test_sim.py` 不再跳过，仿真后端可以启动。
+
+两个新模型是**未实测**的候选：来源与芯片核对见[语音与手势模型调研](docs/atlas-200i-dk-a2/19-语音与手势模型调研.md)，板上识别率与延迟还没有数字。`assets-v3` 仍然保留，只含前两项资产。
 
 - 只做前端联调：两个包都要（贴面必需；没有模型时“检测对照”一栏报不可用，其余正常）。
 - 上板跑分拣：用包里的 `blocks4_yolov8n.om`（`Ascend310B1`）；`best.onnx` 用于 Mac 等其他机器。
