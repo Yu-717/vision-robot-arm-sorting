@@ -13,6 +13,7 @@
     GET  /api/log/records                     逐块记录（时间/类别/来源/目标/耗时/结果）
     GET  /api/log/summary                     统计
     GET  /api/scene | /api/scene/image        最近一次扫描的 scene.json 与重建图
+    GET  /api/blocks                          桌上物块基座坐标与禁入区尺寸（三维视图用）
     GET  /api/archive | /api/archive/<name>   E6 未知物体告警列表与存档图片
     GET  /api/status                          当前模式与角度
     GET  /api/status/stream                   ≥ 2 Hz 角度推送（SSE）
@@ -54,6 +55,26 @@ MIME = {".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8",
         ".js": "text/javascript; charset=utf-8", ".json": "application/json; charset=utf-8",
         ".svg": "image/svg+xml", ".png": "image/png", ".jpg": "image/jpeg",
         ".jpeg": "image/jpeg", ".webp": "image/webp", ".ico": "image/x-icon"}
+
+
+def load_keep_out_cm() -> dict | None:
+    """标准禁入区的尺寸，米转厘米，给三维视图画平台与禁入区用。
+
+    读不到就返回 None，页面跳过这一层——不因为一个可视化的要素让整个接口挂掉。
+    单位判断靠 `_m` 后缀：只有以米计的字段才换算。
+    """
+    path = Path(__file__).resolve().parents[2] / "config" / "arm_limits.json"
+    try:
+        cfg = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    keep = cfg.get("keep_out") or {}
+    out = {}
+    for key, value in keep.items():
+        if key.startswith("_") or not isinstance(value, (int, float)):
+            continue
+        out[key[:-2] + "_cm" if key.endswith("_m") else key] = round(float(value) * (100 if key.endswith("_m") else 1), 3)
+    return out or None
 
 
 def safe_under(root: Path, name: str) -> Path | None:
@@ -148,6 +169,13 @@ class Console:
 
     def status(self) -> dict:
         return self.request("/api/status")
+
+    def world(self) -> dict:
+        """仿真世界状态：物块的基座坐标、类别、颜色。只有仿真有这个端点。
+
+        实机控制台没有它，调用方按 ValueError 降级——没有位置就显示没有，不假造。
+        """
+        return self.request("/api/sim/world")
 
     def move(self, path: str, body: dict) -> dict:
         """动作都要新鲜的 revision；过期就重读一次再试，仍不行才放弃。"""
@@ -624,6 +652,26 @@ class Handler(BaseHTTPRequestHandler):
                 return self._fail("还没有扫描结果", status=404)
             data = Path(target).read_bytes()
             return self._send(data, mime=MIME[".json"] if path == "/api/scene" else "image/png")
+
+        # 桌上物块的基座坐标：给三维视图画方块用。数据来自仿真的世界真值，不是识别结果；
+        # 实机上这一层要由视觉侧给出（scene.json）。接不上时返回空列表，页面照常画臂。
+        if path == "/api/blocks":
+            world = None
+            if self.state.console is not None:
+                try:
+                    world = self.state.console.world()
+                except Exception:
+                    world = None          # 仿真没起或实机没有这个端点：降级为空，不让接口挂掉
+            rows = []
+            for b in (world or {}).get("blocks") or []:
+                pos = b.get("base_cm")
+                if not pos or len(pos) != 3:
+                    continue
+                rows.append(dict(id=b.get("id"), category=b.get("category"), colour=b.get("colour"),
+                                 held=bool(b.get("held")),
+                                 centre_cm=[round(float(v), 2) for v in pos]))
+            return self._send(dict(count=len(rows), block_side_cm=(world or {}).get("block_side_cm"),
+                                   blocks=rows, keep_out=load_keep_out_cm()))
 
         # E6 未知物体存档。判定与图片由 H1-6 的视觉侧写进 --archive 目录并记 unknown_object
         # 事件；这里只负责把图片安全地取出来给页面看，自己不做任何识别。

@@ -2,7 +2,7 @@
 // 指令一律经 POST /api/cmd 下发，字段按需求规格 ④；运动由控制台执行，本页不直接碰硬件。
 
 import { MODES, MODE_NAMES, JOINT_LIMITS, NAMED_POSES } from "./contract.js";
-import { sendCmd } from "./api.js";
+import { sendCmd, fetchBlocks } from "./api.js";
 import { toast } from "./format.js";
 import { createSceneView } from "./scene3d.js";
 
@@ -55,6 +55,9 @@ export function createControlView(root) {
           <button id="poseUpright">直立</button>
           <button id="poseObserve">观察位</button>
         </div>
+        <h3>腕部相机 <small>与实时状态页同一路画面，拖滑块时可对照着看</small></h3>
+        <img id="ctrlCam" class="cam" alt="腕部相机画面">
+        <p class="hint" id="ctrlCamHint">等待画面…</p>
       </section>
       <section class="panel">
         <h2>三维状态视图 <small>骨架点取自服务端正运动学回读，拖动旋转、滚轮缩放</small></h2>
@@ -134,6 +137,28 @@ export function createControlView(root) {
 
   const scene = createSceneView($("armCanvas"));
 
+  // 物块位置只有仿真/视觉侧才有：1 s 拉一次就够（比角度回读慢一拍不影响），
+  // 拉不到就当没有，页面照常画臂，不假造位置
+  let sceneData = null;
+  const pullBlocks = async () => {
+    try { sceneData = await fetchBlocks(); } catch { sceneData = null; }
+  };
+  setInterval(() => { if (!root.hidden) pullBlocks(); }, 1000);
+  pullBlocks();
+
+  // 腕部相机只在控制面板可见时拉：切到别的页签就停，不去占渲染线程
+  const cam = $("ctrlCam");
+  const camHint = $("ctrlCamHint");
+  const tickCam = () => { if (!root.hidden) cam.src = `/api/frame?t=${Date.now()}`; };
+  cam.addEventListener("load", () => {
+    camHint.textContent = `${cam.naturalWidth}×${cam.naturalHeight} · 每 0.6 s 一帧`;
+  });
+  cam.addEventListener("error", () => {
+    camHint.textContent = "没有画面：未接控制台（--console）或相机还没出图";
+  });
+  setInterval(tickCam, 600);
+  tickCam();
+
   return {
     update(store) {
       const mode = store.status.mode ?? "manual";
@@ -189,7 +214,7 @@ export function createControlView(root) {
           : `限位档：${arm.profile ?? "标准"}——课程范围向内收 5° 安全余量（J1/J5 因走线短收得更多）。`)
           + " J6 是夹爪不是普通关节：空载完全闭合的读数约 132°，指令再大也会触发阻力保护停在原地（实机相同），不是故障。"
           + " 运动按每段 ≤15° 分段执行、六轴同段同动，段间回读校验、遇阻力立即停——所以大角度要几秒，且一次只执行一条。";
-      scene.set(arm.chain_cm ?? null);
+      scene.set(arm.chain_cm ?? null, sceneData);
     },
   };
 }

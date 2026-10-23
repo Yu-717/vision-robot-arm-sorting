@@ -119,6 +119,7 @@ python3 tests/test_w2_acceptance.py --out w2.txt
 | `GET /api/status` `/api/status/stream` | 模式、六轴角度与 `arm` 段（接了控制台才有）；SSE 2.5 Hz（≥ 2 Hz 达标） |
 | `GET /api/frame` | 腕部相机 JPEG，转自控制台；未接控制台时 404 |
 | `GET/POST /api/timers` | W4 定时任务列表 / 新增 / 取消（需 `--timers`） |
+| `GET /api/blocks` | 桌上物块的基座坐标、类别、颜色，外加禁入区尺寸（厘米）；执行侧没有这一层时 `blocks` 为空数组 |
 | `GET /api/archive` | E6 未知物体告警列表（从日志里筛 `unknown_object`） |
 | `GET /api/archive/<name>` | 存档图片。名字来自事件的 `image` 字段，按目录边界校验后才读 |
 | `POST /api/cmd` | 需求规格 ④：`start` `stop` `set_mode` `run_preset` `set_joints` `move_to` `unlock_bin`，另加 `enable` `gripper` |

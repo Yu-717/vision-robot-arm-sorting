@@ -28,6 +28,12 @@ export const fetchTimers = () => json("/api/timers");
 /** E6 未知物体告警列表与存档目录 */
 export const fetchArchive = () => json("/api/archive");
 
+/**
+ * 桌上物块的基座坐标与禁入区尺寸，给三维视图画方块用。
+ * 执行侧没有这一层时返回 404，调用方降级成"不画物块"，不假造位置。
+ */
+export const fetchBlocks = () => json("/api/blocks");
+
 /** 存档图片。<name> 来自 unknown_object 事件的 image 字段 */
 export const archiveUrl = (name) => `/api/archive/${encodeURIComponent(name ?? "")}`;
 
