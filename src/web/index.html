@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>机械臂垃圾分拣 · 作业台</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header>
+  <h1>机械臂垃圾分拣 · 作业台</h1>
+  <nav id="tabs"></nav>
+  <div class="chips">
+    <span class="chip" id="chipConn">连接中</span>
+    <span class="chip" id="chipMode">模式 —</span>
+    <span class="chip" id="chipLatency">延迟 —</span>
+    <span class="chip" id="chipTotal">0 事件</span>
+    <span class="chip" id="chipArm">控制台 —</span>
+    <a class="chip" id="simLink" href="#" target="_blank" rel="noopener" hidden>3D 仿真工作台 ↗</a>
+  </div>
+</header>
+
+<main id="views"></main>
+
+<footer>
+  数据只来自日志契约 <span id="contract"></span>；契约外事件已过滤，<code>t</code> 只在同一份日志内相减。
+  运动指令经 <code>POST /api/cmd</code> 下发，由控制台执行。
+</footer>
+
+<script type="module" src="/js/app.js"></script>
+</body>
+</html>
