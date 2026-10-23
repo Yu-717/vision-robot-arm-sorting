@@ -49,6 +49,7 @@ export function createControlView(root) {
       <section class="panel">
         <h2>六轴角度 <small>W2 · 拖动滑块后点“下发”，统一走六舵机批量写入</small></h2>
         <div id="jointBars" class="joints"></div>
+        <p class="hint" id="jointHint"></p>
         <div class="row">
           <button id="sendJoints" class="primary">下发角度</button>
           <button id="poseUpright">直立</button>
@@ -98,7 +99,18 @@ export function createControlView(root) {
     </div>`).join("");
 
   const readJoint = (i) => +bars.querySelector(`.joint[data-i="${i}"] input`).value;
-  const setJoint = (i, v) => { const el = bars.querySelector(`.joint[data-i="${i}"] input`); if (v != null) el.value = Math.round(v); };
+  const setJoint = (i, v) => {
+    const input = bars.querySelector(`.joint[data-i="${i}"] input`);
+    if (v == null) return;
+    input.value = Math.round(v);
+    input.closest(".joint").querySelector("strong").textContent = `${Math.round(v)}°`;
+  };
+
+  // 拖动时立刻把目标角度显示出来，不等 0.4 s 的状态轮询——之前只能等机械臂动起来才有数
+  bars.addEventListener("input", (ev) => {
+    const el = ev.target.closest(".joint");
+    if (el) el.querySelector("strong").textContent = `${Math.round(+ev.target.value)}°`;
+  });
 
   $("sendJoints").addEventListener("click", () =>
     cmd({ cmd: "set_joints", joints_deg: JOINT_LIMITS.map((_, i) => readJoint(i)) }, "角度已下发"));
@@ -155,11 +167,28 @@ export function createControlView(root) {
         const input = el.querySelector("input");
         if (+input.min !== lim.min) input.min = lim.min;
         if (+input.max !== lim.max) input.max = lim.max;
-        const value = pose?.[i];
-        el.querySelector("strong").textContent = value == null ? "—" : `${Math.round(value)}°`;
-        el.querySelector("em").textContent = `回读 ${value == null ? "—" : Math.round(value)}°`;
-        el.querySelector("em").className = value != null && (value < lim.min || value > lim.max) ? "bad" : "dim";
+        // 限位变了之后滑块值可能落在界外，先夹回来再显示
+        const clamped = Math.min(lim.max, Math.max(lim.min, +input.value));
+        if (+input.value !== clamped) input.value = clamped;
+        // strong = 滑块目标（拖动实时变），em = 执行侧回读（0.4 s 一拍）
+        el.querySelector("strong").textContent = `${Math.round(clamped)}°`;
+        const back = pose?.[i];
+        el.querySelector("em").textContent = `回读 ${back == null ? "—" : Math.round(back)}°`;
+        el.querySelector("em").className = back != null && (back < lim.min || back > lim.max) ? "bad" : "dim";
       });
+
+      // 指令不排队：上一段没走完时下发会被拒，先把按钮按住并说明原因
+      $("sendJoints").disabled = !!arm.busy;
+      $("sendJoints").textContent = arm.busy ? "运动中…" : "下发角度";
+
+      // 限位档与两个容易误会的行为，写明白省得当故障报
+      $("jointHint").textContent = !arm.attached
+        ? "未接控制台，滑块用默认限位；接上后以控制台当前档位为准。"
+        : (arm.profile === "explore"
+          ? "限位档：探索——滑块范围即课程给的舵机范围（J2–J4 可到 −10°，J5 90–270°）。注意实机上 J5 超过 180° 会挡住腕部相机；标准档会把各关节再收 5° 余量。"
+          : `限位档：${arm.profile ?? "标准"}——课程范围向内收 5° 安全余量（J1/J5 因走线短收得更多）。`)
+          + " J6 是夹爪不是普通关节：空载完全闭合的读数约 132°，指令再大也会触发阻力保护停在原地（实机相同），不是故障。"
+          + " 运动按每段 ≤15° 分段执行、六轴同段同动，段间回读校验、遇阻力立即停——所以大角度要几秒，且一次只执行一条。";
       scene.set(arm.chain_cm ?? null);
     },
   };
