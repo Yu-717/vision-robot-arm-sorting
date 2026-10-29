@@ -18,8 +18,7 @@ const wall = (at) =>
 export function createTimersView(root) {
   root.innerHTML = `
     <section class="panel">
-      <h2>已排任务 <small>W4 · 可查看、可取消；启动时刻偏差 ≤ 5 s</small></h2>
-      <div id="timerPending" class="banner" hidden></div>
+      <h2>已排任务 <small>可查看、可取消</small></h2>
       <table class="table" id="timerTable">
         <thead><tr><th>到点</th><th>重复</th><th>状态</th><th></th></tr></thead>
         <tbody></tbody>
@@ -44,7 +43,6 @@ export function createTimersView(root) {
   const $ = (id) => root.querySelector("#" + id);
   const tbody = $("timerTable").querySelector("tbody");
   const hint = $("timerHint");
-  const banner = $("timerPending");
   const atInput = $("atInput");
 
   // 默认值：一刻钟之后。datetime-local 要的是不含时区的本地串
@@ -125,31 +123,6 @@ export function createTimersView(root) {
   setInterval(reload, 5000);
   reload();
 
-  return {
-    update(store) {
-      const t = store.status.timer ?? {};
-      // 待发窗口：到点前 lead 秒。这时任务还没触发，取消仍然有效
-      if (t.pending && t.at) {
-        banner.hidden = false;
-        banner.className = "banner warn";
-        banner.innerHTML = `
-          <b>${Math.max(0, Math.round(t.countdown_s ?? 0))} s 后自动启动一整轮分拣</b>
-          <span>${wall(t.at)} · 现在取消还来得及</span>
-          <button id="panicBtn" class="danger">取消这次</button>`;
-        banner.querySelector("#panicBtn").addEventListener("click", async () => {
-          if (!t.id) return toast("找不到这个任务，刷新一下", "bad");
-          try {
-            await sendTimer({ cancel: t.id });
-            toast("已取消，这次不会启动", "good");
-            reload();
-          } catch (err) {
-            toast(err.message, "bad");
-          }
-        });
-      } else {
-        banner.hidden = true;
-        banner.innerHTML = "";
-      }
-    },
-  };
+  // 待发倒计时横幅是全局的（任何页签都可见可取消），在 app.js 里统一渲染
+  return {};
 }

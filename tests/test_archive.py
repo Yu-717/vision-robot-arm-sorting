@@ -32,10 +32,12 @@ class SafeUnderTest(unittest.TestCase):
         self.assertIsNone(S.safe_under(self.root, name), f'{name!r} 必须被拒绝')
 
     def test_a_plain_name_in_the_directory_is_allowed(self):
-        self.assertEqual(self.ok('a.jpg'), self.root / 'a.jpg')
+        # safe_under 返回的是 resolve 过的路径；tmpdir 在某些平台是符号链接（/var -> /private/var），
+        # 不 resolve 就比对会在那种平台上误红
+        self.assertEqual(self.ok('a.jpg'), (self.root / 'a.jpg').resolve())
 
     def test_a_name_in_a_subdirectory_is_allowed(self):
-        self.assertEqual(self.ok('day/b.png'), self.root / 'day' / 'b.png')
+        self.assertEqual(self.ok('day/b.png'), (self.root / 'day' / 'b.png').resolve())
 
     def test_parent_traversal_is_refused(self):
         self.refused('../outside.jpg')
@@ -47,6 +49,7 @@ class SafeUnderTest(unittest.TestCase):
         self.refused('/etc/passwd')
         self.refused(str(self.root.parent / 'outside.jpg'))
 
+    @unittest.skipUnless(sys.platform == 'win32', '盘符是 Windows 的路径形态；POSIX 上它只是普通文件名')
     def test_windows_drive_letters_are_refused(self):
         self.refused('C:\\Windows\\win.ini')
 

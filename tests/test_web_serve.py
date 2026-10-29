@@ -182,6 +182,75 @@ class ServiceTest(unittest.TestCase):
             self.assertLessEqual(e['t'], time.time() + 1)   # t 已改成写入时刻
         self.assertEqual(L.validate([e for e in events if e['event'] in L.EVENTS][0]), [])
 
+    # ---- 写操作的边界：同源 + JSON，不放开跨源 -------------------------------
+    def _post_raw(self, body: bytes, headers: dict):
+        req = urllib.request.Request(f'http://127.0.0.1:{self.port}/api/cmd',
+                                     data=body, method='POST', headers=headers)
+        try:
+            with urllib.request.urlopen(req, timeout=5) as r:
+                return r.status, json.loads(r.read())
+        except urllib.error.HTTPError as e:
+            return e.code, json.loads(e.read() or b'{}')
+
+    def test_cross_origin_write_is_rejected(self):
+        status, reply = self._post_raw(
+            json.dumps({'cmd': 'stop'}).encode(),
+            {'Content-Type': 'application/json', 'Origin': 'http://evil.example'})
+        self.assertEqual(status, 403)
+        self.assertIn('error', reply)
+
+    def test_same_origin_write_is_accepted(self):
+        status, reply = self._post_raw(
+            json.dumps({'cmd': 'stop'}).encode(),
+            {'Content-Type': 'application/json',
+             'Origin': f'http://127.0.0.1:{self.port}', 'Host': f'127.0.0.1:{self.port}'})
+        self.assertEqual(status, 200)
+        self.assertTrue(reply['ok'])
+
+    def test_non_json_write_is_rejected(self):
+        # 表单/纯文本可以绕过 CORS 预检直接打过来，必须按 Content-Type 挡掉
+        status, _ = self._post_raw(b'cmd=stop', {'Content-Type': 'text/plain'})
+        self.assertEqual(status, 415)
+
+    def test_no_cors_wildcard_on_answers(self):
+        _, _, headers = self._get('/api/status')
+        self.assertNotIn('Access-Control-Allow-Origin', headers)
+
+
+class TokenTest(unittest.TestCase):
+    """--token 打开后：静态页面照常能开（不然白屏），API 才校验口令。"""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.tmp = tempfile.TemporaryDirectory()
+        cls.state = S.State(Path(cls.tmp.name) / 'log.jsonl', token='s3cret')
+        cls.server = ThreadingHTTPServer(('127.0.0.1', 0), S.Handler)
+        cls.server.state = cls.state
+        cls.port = cls.server.server_address[1]
+        threading.Thread(target=cls.server.serve_forever, daemon=True).start()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.server.shutdown()
+        cls.server.server_close()
+        cls.tmp.cleanup()
+
+    def _status(self, path):
+        try:
+            with urllib.request.urlopen(f'http://127.0.0.1:{self.port}{path}', timeout=5) as r:
+                return r.status
+        except urllib.error.HTTPError as e:
+            return e.code
+
+    def test_static_pages_load_without_a_token(self):
+        for path in ('/', '/style.css', '/js/app.js'):
+            self.assertEqual(self._status(path), 200, path)
+
+    def test_api_needs_the_token(self):
+        self.assertEqual(self._status('/api/status'), 401)
+        self.assertEqual(self._status('/api/status?token=wrong'), 401)
+        self.assertEqual(self._status('/api/status?token=s3cret'), 200)
+
 
 if __name__ == '__main__':
     unittest.main()

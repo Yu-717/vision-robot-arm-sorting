@@ -10,7 +10,7 @@ import { fmtXY, fmtRel } from "./format.js";
 export function createUnknownView(root) {
   root.innerHTML = `
     <section class="panel">
-      <h2>未知物体 <small>E6 · 发现不属于四类的物体时不抓取，只记录并告警</small></h2>
+      <h2>未知物体 <small>发现不属于四类的物体时不抓取，只记录并告警</small></h2>
       <div class="cards">
         <div class="card"><span>累计告警</span><b id="uCount">—</b></div>
         <div class="card"><span>存档目录</span><b id="uDir">—</b></div>
@@ -39,7 +39,7 @@ export function createUnknownView(root) {
     $("uLast").textContent = events.length ? fmtRel(events[0].t, base) : "—";
 
     if (!events.length) {
-      $("uHint").textContent = "还没有未知物体告警。判定与图片由 H1-6 提供：它存图并写 "
+      $("uHint").textContent = "还没有未知物体告警。判定与图片由视觉侧提供：它存图并写 "
         + "unknown_object 事件后，这里会自动列出。";
       gallery.innerHTML = "";
       shown = 0;

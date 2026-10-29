@@ -7,7 +7,7 @@ import { fmtXY, fmtRel, fmtSeconds } from "./format.js";
 export function createFaultsView(root) {
   root.innerHTML = `
     <section class="panel">
-      <h2>异常事件 <small>按事件类型筛选；契约外的事件不计入</small></h2>
+      <h2>异常事件 <small>按事件类型筛选；不在事件表内的事件不计入</small></h2>
       <div class="row" id="faultFilter"></div>
       <table id="faultTable"><thead><tr>
         <th>#</th><th>时间</th><th>事件</th><th>含义</th><th>类别</th>

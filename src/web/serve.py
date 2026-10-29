@@ -28,6 +28,7 @@ from __future__ import annotations
 import argparse
 import datetime
 import json
+import secrets
 import sys
 import threading
 import time
@@ -35,7 +36,7 @@ import urllib.error
 import urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import parse_qs, urlsplit
+from urllib.parse import parse_qs, unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src" / "tools"))
@@ -95,6 +96,24 @@ def safe_under(root: Path, name: str) -> Path | None:
     return candidate
 
 
+class ConsoleError(ValueError):
+    """控制台返回的业务错误。status 是 HTTP 状态码：revision 冲突与凭证过期都是 409，
+    调用方按码重试，不再匹配中文长句。"""
+
+    def __init__(self, message: str, status: int | None = None):
+        super().__init__(message)
+        self.status = status
+
+
+class MotionError(ValueError):
+    """多步运动中途失败：带上已走的步数，页面能告诉用户停在中间姿态。"""
+
+    def __init__(self, message: str, steps_done: int = 0, steps_total: int = 0):
+        super().__init__(message)
+        self.steps_done = steps_done
+        self.steps_total = steps_total
+
+
 class Console:
     """把运动指令转发给控制台，并回读它的状态（视图层不自己实现任何安全边界）。
 
@@ -112,10 +131,11 @@ class Console:
     CARTESIAN_DEADBAND_CM = 0.25
     MAX_MOVES = 60                               # 一条指令最多拆多少小步，防失控
 
-    def __init__(self, base: str, owner: str = "web", timeout: float = 30.0):
+    def __init__(self, base: str, owner: str = "web", timeout: float = 30.0, onsite: bool = False):
         self.base = base.rstrip("/")
         self.owner = owner
         self.timeout = timeout
+        self.onsite = onsite                     # 实机 enable 要求 onsite=true（接口文档 §4）
         self.token: str | None = None
 
     @property
@@ -143,11 +163,12 @@ class Console:
         except urllib.error.HTTPError as exc:
             raw = exc.read()
             try:
-                raise ValueError(json.loads(raw).get("error") or f"控制台 {exc.code}") from exc
+                raise ConsoleError(json.loads(raw).get("error") or f"控制台 {exc.code}",
+                                   status=exc.code) from exc
             except json.JSONDecodeError:
-                raise ValueError(f"控制台 {exc.code} {path}") from exc
+                raise ConsoleError(f"控制台 {exc.code} {path}", status=exc.code) from exc
         except urllib.error.URLError as exc:
-            raise ValueError(f"连不上控制台 {self.base}：{exc.reason}") from exc
+            raise ConsoleError(f"连不上控制台 {self.base}：{exc.reason}") from exc
         if not raw:
             return {}
         return json.loads(raw) if "json" in mime else raw
@@ -178,18 +199,19 @@ class Console:
         return self.request("/api/sim/world")
 
     def move(self, path: str, body: dict) -> dict:
-        """动作都要新鲜的 revision；过期就重读一次再试，仍不行才放弃。"""
+        """动作都要新鲜的 revision；冲突（409）就重读一次再试，仍不行才放弃。"""
         for _ in range(2):
             revision = self.status()["revision"]
             try:
                 return self.request(path, dict(body, owner=self.owner, revision=revision))
-            except ValueError as exc:
-                if "revision" not in str(exc):
+            except ConsoleError as exc:
+                # 凭证类 409 由 request() 的重取凭证逻辑处理过仍失败，这里不再当 revision 重试
+                if exc.status != 409 or "凭证" in str(exc):
                     raise
         raise ValueError("姿态已改变（revision 反复过期），请重试")
 
     def enable(self) -> dict:
-        return self.request("/api/enable", dict(owner=self.owner, onsite=False))
+        return self.request("/api/enable", dict(owner=self.owner, onsite=self.onsite))
 
     def heartbeat(self) -> dict:
         return self.request("/api/heartbeat", dict(owner=self.owner))
@@ -220,9 +242,15 @@ class Console:
                  for d in self._chunks(round(targets[i] - pose[i]), self.JOINT_STEPS, self.JOINT_DEADBAND_DEG)]
         if len(moves) > self.MAX_MOVES:
             raise ValueError(f"这一步要拆 {len(moves)} 个点动，超过 {self.MAX_MOVES} 步上限，请分几次下发")
-        for joint, delta in moves:
-            self.move("/api/jog", dict(joint=joint, delta=int(delta)))
-        return len(moves)
+        done = 0
+        try:
+            for joint, delta in moves:
+                self.move("/api/jog", dict(joint=joint, delta=int(delta)))
+                done += 1
+        except ValueError as exc:
+            raise MotionError(f"{exc}（已走 {done}/{len(moves)} 步，机械臂可能停在中间姿态）",
+                              steps_done=done, steps_total=len(moves)) from exc
+        return done
 
     def move_to(self, target_cm, status: dict) -> int:
         """目标坐标（厘米）-> 一串直角点动。当前位置取控制台回读的 fk.tip（米）。"""
@@ -234,9 +262,15 @@ class Console:
                                        self.CARTESIAN_STEPS, self.CARTESIAN_DEADBAND_CM)]
         if len(moves) > self.MAX_MOVES:
             raise ValueError(f"这一步要拆 {len(moves)} 个直角点动，超过 {self.MAX_MOVES} 步上限")
-        for axis, amount in moves:
-            self.move("/api/cartesian", dict(axis=axis, amount=amount))
-        return len(moves)
+        done = 0
+        try:
+            for axis, amount in moves:
+                self.move("/api/cartesian", dict(axis=axis, amount=amount))
+                done += 1
+        except ValueError as exc:
+            raise MotionError(f"{exc}（已走 {done}/{len(moves)} 步，机械臂可能停在中间姿态）",
+                              steps_done=done, steps_total=len(moves)) from exc
+        return done
 
 
 class Timers:
@@ -254,6 +288,7 @@ class Timers:
 
     LEAD = 5.0          # 提前多少秒进入"待发"并开始提示
     TICK = 0.5          # 检查周期；启动时刻偏差就在这个量级
+    GRACE = 5.0         # 到点后的宽限：错过超过这个窗口就视为"错过"，不补跑
 
     def __init__(self, path: Path, fire):
         self.path = path
@@ -315,25 +350,44 @@ class Timers:
         """停下检查线程。单测与关停都要能叫住它，否则进程退不干净。"""
         self.running = False
 
+    def _settle(self, timer: dict, now: float) -> None:
+        """触发（或错过）之后收尾：daily 重排到下一个未来时刻，once 删除。**不加锁**。"""
+        if timer.get("repeat") == "daily":
+            while timer["at"] <= now:
+                timer["at"] += 86400
+        else:
+            self._remove(timer["id"])
+
     def tick(self, now: float | None = None) -> None:
-        """推进一次。now 可注入，测试里不必真的等墙钟（生产不传，取 time.time）。"""
+        """推进一次。now 可注入，测试里不必真的等墙钟（生产不传，取 time.time）。
+
+        错过不补跑：只触发 `now-GRACE < at <= now` 的任务；过期更久的 once 直接删除、
+        daily 重排到下一个未来时刻（停机几天不会重启后连续补触发）。
+        """
         now = time.time() if now is None else now
         with self.lock:
-            due = [t for t in sorted(self.list, key=lambda t: t["at"]) if t["at"] <= now]
+            due = [t for t in sorted(self.list, key=lambda t: t["at"])
+                   if now - self.GRACE < t["at"] <= now]
+            missed = [t for t in self.list if t["at"] <= now - self.GRACE]
             upcoming = [t for t in self.list if now < t["at"] <= now + self.LEAD]
             self.pending = upcoming[0] if upcoming else None
-        if not due:
-            return
         # 触发放在锁外：fire 最终要向控制台下发，慢的话几秒钟，捧着锁会把 /api/status 一起堵住
-        results = [(timer, self.fire(timer)) for timer in due]
+        results = []
+        for timer in due:
+            try:
+                results.append((timer, self.fire(timer)))
+            except Exception as exc:             # 启动失败要留下来痕，任务照样收尾，不反复补触发
+                results.append((timer, dict(ok=False, error=f"启动失败：{exc}")))
         with self.lock:
             for timer, result in results:
                 self.last_result = dict(at=round(now, 3), **result)
-                if timer.get("repeat") == "daily":
-                    timer["at"] += 86400
-                else:
-                    self._remove(timer["id"])
-            self.save()
+                self._settle(timer, now)
+            for timer in missed:
+                self.last_result = dict(at=round(now, 3), ok=False,
+                                        error="到点时服务未在运行，这次不补跑")
+                self._settle(timer, now)
+            if results or missed:
+                self.save()
 
     def status(self, now: float | None = None) -> dict:
         now = time.time() if now is None else now
@@ -370,6 +424,7 @@ class State:
         self.console_status: dict | None = None
         self.console_error: str | None = None
         self.keep_alive_on = False
+        self.motion_lock = threading.Lock()      # 运动串行化：同一时刻只执行一条运动指令
         self.lock = threading.Lock()
 
     def append(self, obj: dict) -> None:
@@ -475,8 +530,14 @@ class State:
         return dict(ok=True, started=True, reply=reply if isinstance(reply, dict) else {})
 
     def status(self) -> dict:
-        return dict(mode=self.mode, joints_deg=self.joints, t=self.joints_t,
-                    contract_version=L.VERSION, log=str(self.log_path), arm=self.arm(),
+        arm = self.arm()
+        # 姿态只认一个源：接了控制台就以控制台回读（arm.joints_deg）为准，顶层 joints_deg
+        # 只在无控制台时兜底（日志事件里的 pose）。两个源混用会让页面在两组值之间闪烁。
+        attached = self.console is not None
+        return dict(mode=self.mode,
+                    joints_deg=None if attached else self.joints,
+                    t=None if attached else self.joints_t,
+                    contract_version=L.VERSION, log=str(self.log_path), arm=arm,
                     timer=self.timers.status() if self.timers else dict(enabled=False))
 
 
@@ -528,7 +589,6 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", mime)
         self.send_header("Content-Length", str(len(body)))
         self.send_header("Cache-Control", "no-store")
-        self.send_header("Access-Control-Allow-Origin", "*")
         for key, value in extra:
             self.send_header(key, value)
         self.end_headers()
@@ -559,8 +619,13 @@ class Handler(BaseHTTPRequestHandler):
                                command="add_timer", detail=repeat))
         return self._send(dict(ok=True, timer=timer, **timers.status()))
 
-    def _fail(self, message, status=400):
-        self._send(dict(ok=False, error=message), status=status)
+    def _fail(self, message, status=400, **extra):
+        self._send(dict(ok=False, error=message,
+                        **{k: v for k, v in extra.items() if v is not None}), status=status)
+
+    @staticmethod
+    def _is_static(path: str) -> bool:
+        return path in ("/", "/index.html", "/style.css") or path.startswith("/js/")
 
     def _authorized(self) -> bool:
         token = self.state.token
@@ -569,13 +634,29 @@ class Handler(BaseHTTPRequestHandler):
         given = self.headers.get("X-Token") or parse_qs(urlsplit(self.path).query).get("token", [None])[0]
         return given == token
 
+    def _write_allowed(self) -> bool:
+        """写操作的边界：同源 + JSON 请求体。
+
+        不开 ACAO，跨源 fetch 本来就发不出来；但表单/fetch 的"简单请求"可以不带 CORS 预检
+        直接打到端口上，所以 Origin 对不上 Host 的一律拒绝（curl 这类不带 Origin 的客户端
+        不受影响——它们拿不到浏览器里的页面上下文，风险模型不同）。
+        """
+        origin = self.headers.get("Origin")
+        if origin and urlsplit(origin).netloc != self.headers.get("Host", ""):
+            self._fail("跨源写操作被拒绝", status=403)
+            return False
+        ctype = (self.headers.get("Content-Type") or "").split(";")[0].strip().lower()
+        if ctype != "application/json":
+            self._fail("Content-Type 应为 application/json", status=415)
+            return False
+        return True
+
     def _sse_headers(self):
         self.send_response(200)
         self.send_header("Content-Type", "text/event-stream; charset=utf-8")
         self.send_header("Cache-Control", "no-cache")
         self.send_header("Connection", "keep-alive")
         self.send_header("X-Accel-Buffering", "no")
-        self.send_header("Access-Control-Allow-Origin", "*")
         self.end_headers()
 
     def _events_after(self, after: int):
@@ -586,16 +667,15 @@ class Handler(BaseHTTPRequestHandler):
 
     # ---- routes --------------------------------------------------------
     def do_OPTIONS(self):
+        # 不放开跨源：页面与 API 同端口同源，浏览器不需要预检；这里只回一个空 204
         self.send_response(204)
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type, X-Token")
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
         self.end_headers()
 
     def do_GET(self):
         url = urlsplit(self.path)
         path, query = url.path, parse_qs(url.query)
-        if not self._authorized():
+        # 静态资源放行：开了 --token 时页面本身也要能加载，进来之后由页面带上 token 再调 API
+        if not self._is_static(path) and not self._authorized():
             return self._fail("token 无效", status=401)
 
         if path in ("/", "/index.html"):
@@ -625,6 +705,7 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/api/log/stream":
             after = int(query.get("after", ["0"])[0]) or int(self.headers.get("Last-Event-ID") or 0)
             self._sse_headers()
+            last_send = time.time()
             try:
                 while True:
                     events, _ = self._events_after(after)
@@ -634,6 +715,12 @@ class Handler(BaseHTTPRequestHandler):
                         after = event["seq"]
                     if events:
                         self.wfile.flush()
+                        last_send = time.time()
+                    elif time.time() - last_send > 15:
+                        # 长静默时发注释行保活：前置代理常以 30~60 s 无数据为由掐断 SSE
+                        self.wfile.write(b": ka\n\n")
+                        self.wfile.flush()
+                        last_send = time.time()
                     time.sleep(0.15)
             except (BrokenPipeError, ConnectionResetError, OSError):
                 return
@@ -684,7 +771,8 @@ class Handler(BaseHTTPRequestHandler):
         if path.startswith("/api/archive/"):
             if self.state.archive is None:
                 return self._fail("没有启用图片存档：启动时加 --archive <目录>", status=404)
-            target = safe_under(self.state.archive, path[len("/api/archive/"):])
+            # 事件里的图片名可以带中文与空格，URL 里是百分号编码，先解码再做边界校验
+            target = safe_under(self.state.archive, unquote(path[len("/api/archive/"):]))
             if target is None or not target.is_file():
                 return self._fail("存档里没有这张图", status=404)
             return self._send(target.read_bytes(),
@@ -730,6 +818,8 @@ class Handler(BaseHTTPRequestHandler):
             return self._fail("token 无效", status=401)
         if url.path not in ("/api/cmd", "/api/timers"):
             return self._fail("没有这个接口", status=404)
+        if not self._write_allowed():
+            return
         try:
             body = json.loads(self.rfile.read(int(self.headers.get("Content-Length") or 0)) or b"{}")
         except (ValueError, OSError):
@@ -802,11 +892,17 @@ class Handler(BaseHTTPRequestHandler):
                 return self._fail(f"action 应为 {'/'.join(GRIPPER_ACTIONS)}")
             if console is None:
                 return self._fail("未接控制台，无法控制夹爪", status=501)
+            if not self.state.motion_lock.acquire(blocking=False):
+                return self._fail("上一条运动指令还在执行，等它结束或用 stop 中止", status=409)
             try:
-                result = console.gripper(action)
-            except ValueError as exc:
-                return self._fail(str(exc))
-            self.state.console_status = console.status()
+                try:
+                    result = console.gripper(action)
+                except ValueError as exc:
+                    return self._fail(str(exc), steps_done=getattr(exc, "steps_done", None),
+                                      steps_total=getattr(exc, "steps_total", None))
+                self.state.console_status = console.status()
+            finally:
+                self.state.motion_lock.release()
             grip = result.get("grip") or {}
             return self._send(dict(ok=True, action=action, holding=grip.get("holding"),
                                    result=grip.get("result"), readback=grip.get("readback")))
@@ -820,17 +916,26 @@ class Handler(BaseHTTPRequestHandler):
         if console is None:
             return self._fail(f"{cmd} 需要控制台执行侧，尚未接入（--console 指定仿真或实机）", status=501)
 
+        # 运动串行化：同一时刻只执行一条；上一条没走完时新指令按 409 拒绝，不排队、不混姿态
+        if not self.state.motion_lock.acquire(blocking=False):
+            return self._fail("上一条运动指令还在执行，等它结束或用 stop 中止", status=409)
         try:
             status = console.status()                  # 最新的回读与 revision
-            if cmd == "set_joints":
-                steps = console.set_joints(joints, status.get("pose"))
-            elif cmd == "move_to":
-                steps = console.move_to(target, status)
-            else:
-                return self._fail(f"{cmd} 需要执行侧，本服务不代管运动", status=501)
-            self.state.console_status = console.status()
-        except ValueError as exc:
-            return self._fail(str(exc))
+            if status.get("busy"):
+                return self._fail("控制台正在运动中，等这一步结束再下发", status=409)
+            try:
+                if cmd == "set_joints":
+                    steps = console.set_joints(joints, status.get("pose"))
+                elif cmd == "move_to":
+                    steps = console.move_to(target, status)
+                else:
+                    return self._fail(f"{cmd} 需要执行侧，本服务不代管运动", status=501)
+                self.state.console_status = console.status()
+            except ValueError as exc:
+                return self._fail(str(exc), steps_done=getattr(exc, "steps_done", None),
+                                  steps_total=getattr(exc, "steps_total", None))
+        finally:
+            self.state.motion_lock.release()
         return self._send(dict(ok=True, cmd=cmd, steps=steps, executed=True, via_console=True))
 
 
@@ -847,14 +952,22 @@ def main(argv=None) -> int:
     parser.add_argument("--archive", default="data/archive",
                         help="E6 未知物体图片的存档目录（H1-6 往这里写，页面从这里读）")
     parser.add_argument("--port", type=int, default=8080)
-    parser.add_argument("--lan", action="store_true", help="监听所有网卡，手机可访问")
-    parser.add_argument("--token", help="开启简单鉴权，请求带 X-Token")
+    parser.add_argument("--lan", action="store_true", help="监听所有网卡，手机可访问（强制开启 token 鉴权）")
+    parser.add_argument("--token", help="开启简单鉴权，请求带 X-Token 或 ?token=")
+    parser.add_argument("--onsite", action="store_true",
+                        help="向控制台声明现场有人值守（实机 enable 的必要条件；仿真不需要）")
     args = parser.parse_args(argv)
 
-    console = Console(args.console) if args.console else None
+    token = args.token
+    if args.lan and not token:
+        # 开到局域网就必须有口令：不设防的写接口等于把机械臂暴露给同网段任何人
+        token = secrets.token_urlsafe(8)
+        print(f"--lan 已强制开启鉴权，本次访问口令：{token}（页面用 ?token={token} 打开）")
+
+    console = Console(args.console, onsite=args.onsite) if args.console else None
     # 定时到点是让 Timer 回调 state.start_task：管自己和管页面走的是同一条启动路径
     timers = Timers(ROOT / args.timers, lambda _t: state.start_task(source="timer")) if args.timers else None
-    state = State(ROOT / args.log, token=args.token, console=console, timers=timers,
+    state = State(ROOT / args.log, token=token, console=console, timers=timers,
                   archive=ROOT / args.archive if args.archive else None,
                   scene_json=ROOT / args.scene_json if args.scene_json else None,
                   scene_image=ROOT / args.scene_image if args.scene_image else None)
@@ -878,6 +991,8 @@ def main(argv=None) -> int:
     print(f"对外服务 http://{host}:{args.port}/   日志 {state.log_path}")
     if console is not None:
         print(f"控制台 {console.target}（运动指令转发过去，由它把关限位与禁区）")
+        if not args.onsite:
+            print("未声明 --onsite：实机控制台会拒绝使能（仿真不受影响）")
     else:
         print("未接控制台：运动类指令返回 501，只有日志与模式可用")
     if timers is not None:

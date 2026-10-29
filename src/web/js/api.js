@@ -3,8 +3,17 @@
 
 import { EVENTS } from "./contract.js";
 
+// --token 打开后：页面从 ?token= 进来，记住口令，之后所有请求都带上。
+// 静态页面本身不校验（不然白屏），API 才校验；EventSource 不能加请求头，走 query。
+const TOKEN = new URLSearchParams(location.search).get("token")
+  ?? sessionStorage.getItem("armToken") ?? "";
+if (TOKEN) sessionStorage.setItem("armToken", TOKEN);
+export const authUrl = (url) =>
+  TOKEN ? url + (url.includes("?") ? "&" : "?") + "token=" + encodeURIComponent(TOKEN) : url;
+const AUTH_HEADERS = TOKEN ? { "X-Token": TOKEN } : {};
+
 const json = async (url, options) => {
-  const res = await fetch(url, options);
+  const res = await fetch(authUrl(url), { ...options, headers: { ...AUTH_HEADERS, ...(options?.headers ?? {}) } });
   if (!res.ok) throw new Error(`${res.status} ${url}`);
   return res.json();
 };
@@ -35,18 +44,29 @@ export const fetchArchive = () => json("/api/archive");
 export const fetchBlocks = () => json("/api/blocks");
 
 /** 存档图片。<name> 来自 unknown_object 事件的 image 字段 */
-export const archiveUrl = (name) => `/api/archive/${encodeURIComponent(name ?? "")}`;
+export const archiveUrl = (name) => authUrl(`/api/archive/${encodeURIComponent(name ?? "")}`);
 
 /** 下发指令：POST /api/cmd，需求规格 ④ */
 export const sendCmd = async (cmd, extra = {}) => {
-  const res = await fetch("/api/cmd", {
+  const res = await fetch(authUrl("/api/cmd"), {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...AUTH_HEADERS },
     body: JSON.stringify({ cmd, source: "web", ...extra }),
   });
   const body = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(body.error || `指令失败 ${res.status}`);
+  if (!res.ok) {
+    const err = new Error(body.error || `指令失败 ${res.status}`);
+    err.status = res.status;                       // 409 = 冲突/忙，调用方刷新状态而不是重试
+    throw err;
+  }
   return body;
+};
+
+/** 页面关闭/切后台时释放操作权（sendBeacon 在 unload 期间也能发出去） */
+export const releaseControl = () => {
+  const blob = new Blob([JSON.stringify({ cmd: "stop", source: "web" })],
+                        { type: "application/json" });
+  navigator.sendBeacon(authUrl("/api/cmd"), blob);
 };
 
 /**
@@ -54,9 +74,9 @@ export const sendCmd = async (cmd, extra = {}) => {
  * at 传 epoch 秒（页面自己按浏览器时区算好，避免 ISO 字符串在时区上的歧义）。
  */
 export const sendTimer = async (body) => {
-  const res = await fetch("/api/timers", {
+  const res = await fetch(authUrl("/api/timers"), {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...AUTH_HEADERS },
     body: JSON.stringify(body),
   });
   const payload = await res.json().catch(() => ({}));
@@ -86,14 +106,22 @@ export class LogFeed {
     return Math.max(0, (performance.now() - this._wall0) / 1000 - (this._lastT - this._t0));
   }
 
-  /** since 为空时只收新事件；传入 0 会把已有日志回放一遍 */
-  async start(since = null) {
+  /**
+   * since 为空时只收新事件；传入 0 会把已有日志回放一遍。
+   * seed = {t, wall}：延迟估计的基线——最近一条回填事件的 t 加上那一刻的墙钟。
+   * 不带基线时第一条实时事件自成基线；历史回填不参与估计，免得回放出"0.00 s"冒充实时。
+   */
+  async start(since = null, seed = null) {
     this.stopped = false;
+    if (seed && typeof seed.t === "number") {
+      this._t0 = seed.t; this._wall0 = seed.wall; this._lastT = seed.t;
+    }
     this.onState("connecting");
     try {
       const first = await fetchLog(0, 1);
       this.seq = since ?? first.total ?? 0;
-      const probe = await fetch("/api/log/stream", { method: "GET", headers: { Accept: "text/event-stream" } });
+      const probe = await fetch(authUrl("/api/log/stream"),
+                                { method: "GET", headers: { Accept: "text/event-stream" } });
       probe.body?.cancel();
       if (!probe.ok || !probe.headers.get("content-type")?.includes("event-stream")) throw new Error("no sse");
       this._openSse();
@@ -103,7 +131,7 @@ export class LogFeed {
   }
 
   _openSse() {
-    this.source = new EventSource(`/api/log/stream?after=${this.seq}`);
+    this.source = new EventSource(authUrl(`/api/log/stream?after=${this.seq}`));
     this.onState("connecting");
     this.source.onopen = () => this.onState("live");
     this.source.onmessage = (m) => {
@@ -158,7 +186,7 @@ export class StatusFeed {
   start() {
     this.stopped = false;
     try {
-      this.source = new EventSource("/api/status/stream");
+      this.source = new EventSource(authUrl("/api/status/stream"));
       this.source.onmessage = (m) => { this.onState("live"); this.onStatus(JSON.parse(m.data)); };
       this.source.onerror = () => this.onState("connecting");
     } catch { this._poll(); }

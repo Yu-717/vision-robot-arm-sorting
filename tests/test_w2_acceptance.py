@@ -82,14 +82,16 @@ def call(port: int, cmd: str, timeout: float = 60.0, **body) -> dict:
 def wait_armed(port: int, timeout: float = 20.0) -> dict:
     """等到状态里有六轴回读为止。
 
-    服务刚起来时还没 poll 过控制台，joints_deg 是空的——拿空表去选轴会直接把脚本
+    姿态只认控制台一个源：接控制台时顶层 joints_deg 恒为 None，要读 arm.joints_deg。
+    服务刚起来时还没 poll 过控制台，回读是空的——拿空表去选轴会直接把脚本
     带崩（max() of empty sequence）。所以这里先等真数据。
     """
     end = time.time() + timeout
     while time.time() < end:
         status = get(port, "/api/status")
-        joints = status.get("joints_deg") or []
-        if len(joints) == JOINTS and (status.get("arm") or {}).get("tip_cm"):
+        arm = status.get("arm") or {}
+        joints = arm.get("joints_deg") or []
+        if len(joints) == JOINTS and arm.get("tip_cm"):
             return status
         time.sleep(0.3)
     raise RuntimeError("一直没等到六轴回读，控制台可能没接上")
@@ -155,7 +157,7 @@ def measure_refresh(say, port: int):
 def measure_slider(say, port: int):
     """【2】滑块响应：下发到回读角度第一次动。"""
     say("\n【2】滑块响应（需求 ≤ 1 s，量到回读角度第一次动为止）")
-    base = wait_armed(port).get("joints_deg")
+    base = (wait_armed(port).get("arm") or {}).get("joints_deg")
     target = list(base)
     # 挑一个离两端限位都最远的轴来改，别碰到限位把指令弄成被拒
     idx = max(range(JOINTS), key=lambda i: min(base[i], 180 - base[i]))
@@ -171,7 +173,7 @@ def measure_slider(say, port: int):
             say(f"  下发被拒：{str(exc)[:80]}")
             return False
         for status in stream.frames():
-            now = status.get("joints_deg") or []
+            now = (status.get("arm") or {}).get("joints_deg") or []
             if len(now) == JOINTS and max(abs(a - b) for a, b in zip(now, base)) > 0.5:
                 latency = time.time() - started
                 ok = latency <= SLIDER_S

@@ -3,6 +3,7 @@
 
 import { JOINT_LIMITS, EVENTS, categoryName, resultName, GRIPPER } from "./contract.js";
 import { fmtXY, cls, fmtRel } from "./format.js";
+import { authUrl } from "./api.js";
 
 const KEY_CARDS = [
   ["连接", "conn"], ["模式", "mode"], ["轮次", "round"],
@@ -26,18 +27,18 @@ export function createLiveView(root) {
         <p class="hint" id="camHint">等待画面…</p>
       </section>
       <section class="panel">
-        <h2>执行侧回读 <small>GET /api/status 的 arm 段，≥ 2 Hz</small></h2>
+        <h2>执行侧回读 <small>数据来自设备</small></h2>
         <div class="cards" id="armCards"></div>
         <p class="hint" id="armHint"></p>
       </section>
     </div>
     <div class="grid-2">
       <section class="panel">
-        <h2>六轴角度 <small>≥ 2 Hz 回读，超出软限位标红</small></h2>
+        <h2>六轴角度 <small>实时回读，超出软限位标红</small></h2>
         <div id="liveJoints" class="joints"></div>
       </section>
       <section class="panel">
-        <h2>当前动作 <small>最近一条契约内事件</small></h2>
+        <h2>当前动作 <small>最近一条事件</small></h2>
         <div id="liveNow" class="now">—</div>
         <h3>夹爪</h3>
         <div id="liveGrip" class="grip">—</div>
@@ -50,7 +51,7 @@ export function createLiveView(root) {
       </tr></thead><tbody></tbody></table>
     </section>
     <section class="panel">
-      <h2>事件流 <small>契约外事件已过滤，最新的在上</small></h2>
+      <h2>事件流 <small>只列事件表内的事件，最新的在上</small></h2>
       <ol id="liveFeed" class="feed" reversed></ol>
     </section>`;
 
@@ -87,7 +88,7 @@ export function createLiveView(root) {
   const camHint = $("camHint");
   const tickCam = () => {
     if (root.hidden) return;
-    cam.src = `/api/frame?t=${Date.now()}`;
+    cam.src = authUrl(`/api/frame?t=${Date.now()}`);
   };
   cam.addEventListener("load", () => {
     camHint.textContent = `${cam.naturalWidth}×${cam.naturalHeight} · 每 0.6 s 一帧`;
@@ -106,8 +107,13 @@ export function createLiveView(root) {
       setCard("conn", { connecting: "连接中", live: "实时", polling: "轮询", error: "重连中" }[store.connection] ?? "—",
               store.connection === "live" ? "good" : store.connection === "error" ? "bad" : "mid");
       setCard("mode", { manual: "手动", preset: "预设", auto: "视觉自主" }[mode] ?? mode);
-      setCard("round", store.current ? `第 ${store.current.no} 轮 · ${store.currentHandled}/${store.current.cubes || "?"}`
-                                     : `已完成 ${store.rounds.length} 轮`);
+      // 轮次口径：一次 start = 一轮。中断的轮标"未结束"不算完成；无任务的 pipeline 只算日志历史
+      setCard("round", store.current
+        ? `第 ${store.current.no} 轮 · ${store.currentHandled}/${store.current.cubes || "?"}` +
+          (store.current.unfinished ? " · 未结束" : "")
+        : store.rounds.length ? `已完成 ${store.rounds.length} 轮`
+        : store.historyRounds ? `日志历史 ${store.historyRounds} 轮（只读）`
+        : "未启动任务");
       const c = store.current ?? { sorted: 0, missed: 0, skipped: 0 };
       setCard("sorted", c.sorted, "good");
       setCard("missed", c.missed, c.missed ? "bad" : "");
@@ -131,7 +137,7 @@ export function createLiveView(root) {
         : arm.error ? `控制台错误：${arm.error}`
         : `revision ${arm.revision ?? "—"} · ${arm.error_text || "无异常"}`;
 
-      const pose = store.status.joints_deg ?? store.lastPose;
+      const pose = store.pose;
       joints.querySelectorAll(".joint").forEach((el) => {
         const i = +el.dataset.i, lim = JOINT_LIMITS[i];
         const value = pose?.[i];
@@ -158,9 +164,13 @@ export function createLiveView(root) {
         }
       }
 
-      const roundNo = store.current?.no ?? (store.rounds.at(-1)?.no ?? 0);
+      // 本轮 = 一次 start 之后的逐块记录；没有任务时回看日志里最后一轮（只读）
       const base = store.events[0]?.t ?? store.records[0]?.t;
-      const rows = store.records.filter((r) => r.round === roundNo).slice(-40);
+      const cur = store.current ?? store.rounds.at(-1) ?? null;
+      const rows = (cur
+        ? store.records.filter((r) => r.t >= cur.t && (!cur.endedAt || r.t <= cur.endedAt))
+        : store.records.filter((r) => r.round === (store.records.at(-1)?.round ?? 0))
+      ).slice(-40);
       $("liveRecords").querySelector("tbody").innerHTML = rows.map((r) => `
         <tr><td>${r.seq}</td><td>${fmtRel(r.t, base)}</td><td>${categoryName(r.category)}</td>
         <td>${fmtXY(r.cube)}</td><td>${r.bin ?? "—"}</td>

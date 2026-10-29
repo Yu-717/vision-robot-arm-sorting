@@ -127,6 +127,49 @@ class TimersTest(unittest.TestCase):
         self.assertFalse(last['ok'])
         self.assertIn('控制台', last['error'])
 
+    # ---- 错过不补跑 -------------------------------------------------------
+    def test_a_once_timer_missed_by_more_than_grace_is_dropped_not_fired(self):
+        """停机一天后重启：一次性任务到点早过了，不能补跑机械臂。"""
+        timers = self.make(LEAD=5.0)
+        timers.add(self.base + 10)
+        self.tick(timers, 10 + S.Timers.GRACE + 1)      # 已经过了宽限窗口
+        self.assertEqual(self.fired, [])
+        self.assertEqual(timers.status(self.now)['count'], 0)   # 直接收尾，不留僵尸任务
+        self.assertFalse(timers.status(self.now)['last_result']['ok'])
+
+    def test_a_missed_daily_timer_is_rescheduled_not_caught_up(self):
+        """错过 3 天的 daily：重排到下一个未来时刻，而不是连续补触发 3 次。"""
+        timers = self.make(LEAD=5.0)
+        due = self.base + 10
+        timers.add(due, repeat='daily')
+        self.tick(timers, 10 + 3 * DAY)                  # 三天后才第一次 tick
+        self.assertEqual(self.fired, [], '错过的 daily 不能补触发')
+        nxt = timers.next()['at']
+        self.assertGreater(nxt, self.now)                # 已排到未来
+        self.assertLessEqual(nxt - self.now, DAY)
+        self.tick(timers, nxt - self.base + 0.5)         # 到新时刻正常触发
+        self.assertEqual(len(self.fired), 1)
+
+    def test_a_timer_inside_the_grace_window_still_fires(self):
+        timers = self.make(LEAD=5.0)
+        timers.add(self.base + 10)
+        self.tick(timers, 10 + S.Timers.GRACE - 0.5)     # 宽限内：正常触发
+        self.assertTrue(self.fired)
+
+    def test_a_crashing_fire_still_settles_the_task(self):
+        """fire 抛异常：错误要留在 last_result 里，任务收尾，不能下个 tick 反复补触发。"""
+        def boom(timer):
+            raise RuntimeError('控制台掉线')
+        timers = S.Timers(Path(self.tmp.name) / 't.json', boom)
+        timers.add(self.base + 10)
+        timers.tick(self.base + 11)
+        last = timers.status(self.base + 11)['last_result']
+        self.assertFalse(last['ok'])
+        self.assertIn('控制台掉线', last['error'])
+        self.assertEqual(timers.status(self.base + 11)['count'], 0)
+        timers.tick(self.base + 12)                      # 不会再次触发
+        self.assertIn('控制台掉线', timers.status(self.base + 12)['last_result']['error'])
+
     # ---- 取消 -------------------------------------------------------------
     def test_cancel_removes_it_and_it_never_fires(self):
         timers = self.make(LEAD=5.0)

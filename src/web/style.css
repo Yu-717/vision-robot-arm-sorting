@@ -112,6 +112,14 @@ th{color:var(--dim);font-weight:normal}
 .shot figcaption{display:flex;flex-direction:column;gap:2px;padding:8px;font-size:12px}
 .shot figcaption b{font-weight:500}
 
+/* 扩展与调试：默认隐藏，顶栏 ⚙ 或 ?debug=1 开启，状态存 localStorage */
+.needs-debug{display:none}
+body.debug .needs-debug{display:block}
+body.debug #gear{border-color:var(--warn);color:var(--warn)}
+
+/* 全局待发横幅在 header 与 main 之间，main 的内边距管不到它 */
+#timerBanner{margin:12px 16px 0}
+
 footer{padding:10px 16px 20px;color:var(--dim);font-size:12px}
 
 /* 轻提示 */
