@@ -43,6 +43,7 @@ nav.addEventListener("click", (ev) => {
   active = btn.dataset.tab;
   nav.querySelectorAll("button").forEach((b) => b.classList.toggle("on", b === btn));
   render();
+  views[active]?.view?.show?.();          // 新页签按需装载（首次进手动操作才加载仿真工作台）
 });
 
 const chip = (id) => document.getElementById(id);
@@ -89,12 +90,17 @@ function renderBanner() {
 
 function render() {
   for (const [key, v] of Object.entries(views)) v.section.hidden = key !== active;
-  views[active].view?.update(store);
+  // 有些视图没有 update（例如任务计划自己定时刷新），必须可选调用，
+  // 否则 render 每秒抛一次 TypeError，整页都不再更新
+  views[active].view?.update?.(store);
 
   chip("chipConn").textContent = { connecting: "连接中", live: "实时", polling: "轮询", error: "重连中" }[store.connection] ?? "—";
   chip("chipConn").className = "chip " + (store.connection === "live" ? "on" : store.connection === "error" ? "warn" : "");
   chip("chipMode").textContent = `模式 ${MODE_NAMES[store.status.mode] ?? store.status.mode ?? "—"}`;
-  chip("chipLatency").textContent = store.latency === null ? "延迟 —" : `延迟 ${store.latency.toFixed(2)} s`;
+  // 回放时日志的 t 是写入时刻，延迟恒为 0——那不叫实时，直接标"回放"（接口文档要求）
+  chip("chipLatency").textContent = store.status.replay
+    ? "延迟 回放"
+    : (store.latency === null ? "延迟 —" : `延迟 ${store.latency.toFixed(2)} s`);
   chip("chipTotal").textContent = `${store.total} 事件`;
   renderBanner();
 }
@@ -125,32 +131,40 @@ store.subscribe(render);
   // 从回填末尾接续，延迟基线 = 最近一条回填事件的 t + 当时墙钟
   feed.start(lastSeq, { t: lastT, wall: performance.now() });
 
-  new StatusFeed({
+  const status = new StatusFeed({
     onStatus: (s) => store.setStatus(s),
-  }).start();
+  });
+  status.start();
 
   setInterval(() => store.refresh(), 5000);
   setInterval(() => { store.latency = feed.latency; render(); }, 1000);
+
+  // 切到后台：释放操作权，并断开两条长连接。浏览器同域只给 6 条连接，
+  // 开三个标签页就会被 SSE 占满，再开页面连 HTML 都拿不到，一直转圈。
+  // 回来时按 seq 续上，不重复收事件。
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      releaseControl();
+      feed.pause();
+      status.pause();
+      views.control?.view?.hide?.();      // 整个页面在后台才卸掉内嵌的仿真台
+    } else {
+      feed.resume();
+      status.resume();
+      views.control?.view?.show?.();
+    }
+  });
 })();
 
-// 页面关闭或切到后台时主动释放操作权，机械臂不停在一个没人看的页面名下
+// 页面关闭时释放操作权，机械臂不停在一个没人看的页面名下
 window.addEventListener("pagehide", releaseControl);
-document.addEventListener("visibilitychange", () => {
-  if (document.visibilityState === "hidden") releaseControl();
-});
 
-// 控制台：运动指令转发给它（仿真或实机），它自己的 3D 工作台也顺便链过去。
-// 那个页面内部还用 /api/sim/* 之类的路径，硬代理过来会半残，所以只做外链不做内嵌。
+// 控制台：运动指令转发给它（仿真或实机）。它自己的 3D 工作台已经内嵌在"手动操作"页，
+// 不再另开一个跳转链接。
 fetch(authUrl("/api/health")).then((r) => r.json()).then((h) => {
   const chip = document.getElementById("chipArm");
   chip.textContent = h.console ? `控制台 ${h.console.replace(/^https?:\/\//, "")}` : "控制台 未接";
   chip.className = "chip " + (h.console_ready ? "on" : "warn");
-  const link = document.getElementById("simLink");
-  if (h.console) {
-    link.href = h.console + "/sim/";
-    link.hidden = false;
-    link.title = h.console_ready ? "执行侧的 3D 机械臂与合成相机画面" : "控制台还没就绪";
-  }
 }).catch(() => { });
 window.addEventListener("resize", render);
 window.addEventListener("error", (e) => toast(e.message, "bad"));

@@ -118,8 +118,14 @@ export function createLiveView(root) {
       setCard("sorted", c.sorted, "good");
       setCard("missed", c.missed, c.missed ? "bad" : "");
       setCard("skipped", c.skipped, c.skipped ? "mid" : "");
-      setCard("latency", store.latency === null ? "—" : `${store.latency.toFixed(2)} s`,
-              store.latency !== null && store.latency <= 1 ? "good" : "bad");
+      // 回放数据不冒充实时：显示"回放"，不拿 0.00 s 当延迟
+      const replay = store.status.replay === true;
+      if (replay) {
+        setCard("latency", "回放");
+      } else {
+        setCard("latency", store.latency === null ? "—" : `${store.latency.toFixed(2)} s`,
+                store.latency !== null && store.latency <= 1 ? "good" : "bad");
+      }
 
       const arm = store.status.arm ?? {};
       setArm("armed", !arm.attached ? "未接" : arm.armed ? "已使能" : "未使能", arm.armed ? "good" : "mid");

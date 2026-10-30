@@ -30,7 +30,8 @@ python3 src/web/serve.py --console http://127.0.0.1:8770 --log data/sim/log.json
 - `POST /api/cmd` 的 `enable` / `gripper` / `set_joints` / `move_to` / `stop` 转发过去真执行
 - `GET /api/status` 多出 `arm` 段：六轴回读、使能、运动中、夹爪、末端坐标、安全余量、桌上物块
 - `GET /api/frame` 转来腕部相机画面（仿真是合成渲染，实机是真相机）
-- 页头显示控制台地址，并外链它自己的 3D 工作台（ `/sim/` ）
+- 接的是仿真控制台时，"手动操作"页会直接内嵌它的 3D 工作台（`/sim/`），不再单独开链接；
+  接实机时那一段换成按回读画的骨架视图（实机没有 `/sim/` 这一页）
 
 **安全边界不在这里重复实现**：控制台只接受小步（关节点动 ±1/2/5/10°、直角每步 ≤ 3 cm，且要带新鲜
 `revision`），所以网页给的绝对目标会在服务端拆成一串小步交它逐个校验；限位、禁入区、堵转由它把关，
@@ -160,8 +161,7 @@ js/api.js         数据层：SSE + 轮询退化 + /api/cmd
 js/store.js       事件流 → 轮次/计数/模式 的派生状态
 js/live.js        实时状态页（F1-2）
 js/faults.js      异常日志页（F1-2）
-js/control.js     控制面板 + 模式切换（F1-3/F1-4）
-js/scene3d.js     三维状态视图（骨架点用服务端正运动学回读，不在前端重算）
+js/control.js     控制面板 + 模式切换（F1-3/F1-4）；三维视图直接内嵌仿真工作台
 js/format.js      显示格式与轻提示
 ```
 

@@ -20,7 +20,7 @@ export function createTimersView(root) {
     <section class="panel">
       <h2>已排任务 <small>可查看、可取消</small></h2>
       <table class="table" id="timerTable">
-        <thead><tr><th>到点</th><th>重复</th><th>状态</th><th></th></tr></thead>
+        <thead><tr><th>到点</th><th>重复</th><th>状态</th><th>操作</th></tr></thead>
         <tbody></tbody>
       </table>
       <p class="hint" id="timerHint">读取中…</p>
@@ -120,7 +120,8 @@ export function createTimersView(root) {
     }
   });
 
-  setInterval(reload, 5000);
+  // 只在这个页签可见时刷新，别的页签上不白占请求
+  setInterval(() => { if (!root.hidden) reload(); }, 5000);
   reload();
 
   // 待发倒计时横幅是全局的（任何页签都可见可取消），在 app.js 里统一渲染

@@ -425,7 +425,25 @@ class State:
         self.console_error: str | None = None
         self.keep_alive_on = False
         self.motion_lock = threading.Lock()      # 运动串行化：同一时刻只执行一条运动指令
+        self.replay = False                      # --replay 时为真：页面据此标"回放"，不冒充实时
+        self._sim_hint = None                    # 控制台是不是仿真：探到一次就记住
         self.lock = threading.Lock()
+
+    def console_sim(self) -> bool:
+        """控制台是不是仿真。
+
+        只有仿真控制台有 /api/sim/world，实机没有——探到一次就记住，
+        页面据此决定是内嵌它的 3D 工作台还是画骨架视图。
+        """
+        if self.console is None or self.console_status is None:
+            return False                        # 还没连上，先按实机处理，别乱开
+        if self._sim_hint is None:
+            try:
+                self.console.world()
+                self._sim_hint = True
+            except Exception:
+                self._sim_hint = False
+        return self._sim_hint
 
     def append(self, obj: dict) -> None:
         with self.lock:
@@ -538,6 +556,7 @@ class State:
                     joints_deg=None if attached else self.joints,
                     t=None if attached else self.joints_t,
                     contract_version=L.VERSION, log=str(self.log_path), arm=arm,
+                    replay=self.replay,
                     timer=self.timers.status() if self.timers else dict(enabled=False))
 
 
@@ -692,6 +711,7 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(dict(ok=True, contract_version=L.VERSION, mode=self.state.mode,
                                    console=console.target if console else None,
                                    console_ready=self.state.console_status is not None,
+                                   console_sim=self.state.console_sim(),
                                    console_error=self.state.console_error))
 
         if path == "/api/log":
@@ -939,6 +959,18 @@ class Handler(BaseHTTPRequestHandler):
         return self._send(dict(ok=True, cmd=cmd, steps=steps, executed=True, via_console=True))
 
 
+class Server(ThreadingHTTPServer):
+    """浏览器关页面时 SSE/长连接会被掐断，socketserver 默认会为此打整段 traceback。
+    那不是错误，是正常的断开，静默掉，免得日志里全是噪音。"""
+
+    def handle_error(self, request, client_address) -> None:
+        import sys as _sys
+        exc = _sys.exc_info()[1]
+        if isinstance(exc, (ConnectionAbortedError, ConnectionResetError, BrokenPipeError)):
+            return
+        super().handle_error(request, client_address)
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description="对外 HTTP 服务（F1-1）")
     parser.add_argument("--log", default="data/web/log.jsonl", help="活日志文件（只追加）")
@@ -982,10 +1014,11 @@ def main(argv=None) -> int:
             print(f"找不到样例日志：{sample}", file=sys.stderr)
             return 2
         state.truncate_log()
+        state.replay = True
         Replayer(sample, state, speed=args.speed, loop=args.loop).start()
         print(f"回放 {sample}（{args.speed}×）")
 
-    server = ThreadingHTTPServer(("0.0.0.0" if args.lan else "127.0.0.1", args.port), Handler)
+    server = Server(("0.0.0.0" if args.lan else "127.0.0.1", args.port), Handler)
     server.state = state                                        # type: ignore[attr-defined]
     host = "0.0.0.0" if args.lan else "127.0.0.1"
     print(f"对外服务 http://{host}:{args.port}/   日志 {state.log_path}")

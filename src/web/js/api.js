@@ -120,25 +120,25 @@ export class LogFeed {
     try {
       const first = await fetchLog(0, 1);
       this.seq = since ?? first.total ?? 0;
-      const probe = await fetch(authUrl("/api/log/stream"),
-                                { method: "GET", headers: { Accept: "text/event-stream" } });
-      probe.body?.cancel();
-      if (!probe.ok || !probe.headers.get("content-type")?.includes("event-stream")) throw new Error("no sse");
-      this._openSse();
     } catch {
-      this._poll();                                // 退化为轮询
+      this._poll();                                // 取不到总数就直接轮询
+      return;
     }
+    this._openSse();
   }
 
   _openSse() {
+    let opened = false;
     this.source = new EventSource(authUrl(`/api/log/stream?after=${this.seq}`));
-    this.onState("connecting");
-    this.source.onopen = () => this.onState("live");
+    this.source.onopen = () => { opened = true; this.onState("live"); };
     this.source.onmessage = (m) => {
       this.onState("live");
       this._accept(JSON.parse(m.data));
     };
     this.source.onerror = () => {
+      // 连不上又没打开过：服务端没有 SSE，降级轮询，别让 console 一直报错
+      // （之前用 fetch 探测再 cancel，浏览器会记一条 ERR_ABORTED）
+      if (!opened) { this.source.close(); this._poll(); return; }
       this.onState("error");                       // EventSource 会自己重连
     };
   }
@@ -171,7 +171,26 @@ export class LogFeed {
   stop() {
     this.stopped = true;
     this.source?.close();
+    this.source = null;
     clearTimeout(this.timer);
+    this.timer = null;
+  }
+
+  /**
+   * 页面切到后台就断开长连接：每个页面占 2 条 SSE，浏览器同域只给 6 条，
+   * 开三个标签页就会占满，新页面连 HTML 都拿不到（一直转圈）。
+   * 回来时 resume() 从上次的 seq 续上，不重复收事件。
+   */
+  pause() {
+    this._paused = true;
+    this.stop();
+  }
+
+  async resume() {
+    if (!this._paused) return;
+    this._paused = false;
+    const seed = this._lastT === null ? null : { t: this._lastT, wall: performance.now() };
+    await this.start(this.seq, seed);
   }
 }
 
@@ -202,5 +221,13 @@ export class StatusFeed {
     tick();
   }
 
-  stop() { this.stopped = true; this.source?.close(); clearTimeout(this.timer); }
+  stop() { this.stopped = true; this.source?.close(); this.source = null; clearTimeout(this.timer); }
+
+  pause() { this._paused = true; this.stop(); }
+
+  resume() {
+    if (!this._paused) return;
+    this._paused = false;
+    this.start();
+  }
 }
